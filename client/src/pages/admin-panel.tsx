@@ -294,7 +294,7 @@ export default function AdminPanel() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{t('admin.title')}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('admin.panelTitle')}</h1>
           <p className="text-gray-600 mt-2">{t('admin.subtitle')}</p>
         </div>
 
@@ -352,9 +352,9 @@ export default function AdminPanel() {
         {/* Main Tabs */}
         <Tabs defaultValue="appointments" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="appointments">{t('admin.appointments')}</TabsTrigger>
-            <TabsTrigger value="users">{t('admin.users')}</TabsTrigger>
-            <TabsTrigger value="orders">{t('admin.orders')}</TabsTrigger>
+            <TabsTrigger value="appointments">{t('admin.appointmentsTab')}</TabsTrigger>
+            <TabsTrigger value="users">{t('admin.usersTab')}</TabsTrigger>
+            <TabsTrigger value="orders">{t('admin.ordersTab')}</TabsTrigger>
           </TabsList>
 
           {/* Search Bar */}

@@ -49,14 +49,24 @@ export default function Landing() {
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               {t('landing.subtitle')}
             </p>
-            <Button 
-              size="lg"
-              onClick={() => window.location.href = "/api/login"}
-              className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
-            >
-              {t('landing.getStarted')}
-              <span className="ml-2">→</span>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg"
+                onClick={() => window.location.href = "/api/login"}
+                className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
+              >
+                {t('landing.getStarted')}
+                <span className="ml-2">→</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => window.location.href = "/signup"}
+                className="border-2 border-pink-300 text-pink-600 hover:bg-pink-50 px-8 py-4 text-lg font-semibold"
+              >
+                {t('signup.title')}
+              </Button>
+            </div>
           </div>
         </div>
       </section>

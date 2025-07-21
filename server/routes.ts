@@ -55,6 +55,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile with signup data
+  app.put('/api/auth/user/profile', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { phoneNumber, workplace, region, postalCode } = req.body;
+      
+      const updatedUser = await storage.updateUser(userId, {
+        phoneNumber,
+        workplace,
+        region,
+        postalCode,
+        updatedAt: new Date(),
+      });
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
   // PayPal routes
   app.get("/api/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);

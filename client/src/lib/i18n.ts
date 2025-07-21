@@ -354,7 +354,7 @@ export const translations: Translations = {
   },
 
   // Admin Panel
-  'admin.title': {
+  'admin.panelTitle': {
     en: 'Admin Panel',
     ko: '관리자 패널',
     ja: '管理者パネル',
@@ -390,23 +390,99 @@ export const translations: Translations = {
     ja: '本日の予約',
     es: 'Citas de Hoy'
   },
-  'admin.appointments': {
+  'admin.appointmentsTab': {
     en: 'Appointments',
     ko: '예약 관리',
-    ja: '予約管理',
+    ja: '予약管理',
     es: 'Citas'
   },
-  'admin.users': {
+  'admin.usersTab': {
     en: 'Users',
     ko: '사용자 관리',
     ja: 'ユーザー管理',
     es: 'Usuarios'
   },
-  'admin.orders': {
+  'admin.ordersTab': {
     en: 'Orders',
     ko: '주문 관리',
     ja: '注文管理',
     es: 'Pedidos'
+  },
+
+  // Signup page
+  'signup.title': {
+    en: 'Sign Up',
+    ko: '회원가입',
+    ja: 'サインアップ',
+    es: 'Registrarse'
+  },
+  'signup.subtitle': {
+    en: 'Create your account to get started',
+    ko: '시작하려면 계정을 생성하세요',
+    ja: 'アカウントを作成して始めましょう',
+    es: 'Crea tu cuenta para comenzar'
+  },
+  'signup.fullName': {
+    en: 'Full Name',
+    ko: '성명',
+    ja: '氏名',
+    es: 'Nombre Completo'
+  },
+  'signup.email': {
+    en: 'Email',
+    ko: '이메일',
+    ja: 'メール',
+    es: 'Correo Electrónico'
+  },
+  'signup.phoneNumber': {
+    en: 'Phone Number',
+    ko: '전화번호',
+    ja: '電話番号',
+    es: 'Número de Teléfono'
+  },
+  'signup.workplace': {
+    en: 'Workplace',
+    ko: '직장',
+    ja: '職場',
+    es: 'Lugar de Trabajo'
+  },
+  'signup.region': {
+    en: 'Region',
+    ko: '지역',
+    ja: '地域',
+    es: 'Región'
+  },
+  'signup.postalCode': {
+    en: 'Postal Code',
+    ko: '우편번호',
+    ja: '郵便番号',
+    es: 'Código Postal'
+  },
+  'signup.submit': {
+    en: 'Create Account',
+    ko: '계정 생성',
+    ja: 'アカウント作成',
+    es: 'Crear Cuenta'
+  },
+  'signup.alreadyHaveAccount': {
+    en: 'Already have an account?',
+    ko: '이미 계정이 있으신가요?',
+    ja: 'すでにアカウントをお持ちですか？',
+    es: '¿Ya tienes una cuenta?'
+  },
+  'signup.signIn': {
+    en: 'Sign In',
+    ko: '로그인',
+    ja: 'ログイン',
+    es: 'Iniciar Sesión'
+  },
+
+  // Header admin button
+  'header.adminPanel': {
+    en: 'Admin Panel',
+    ko: '관리자 패널',
+    ja: '管理者パネル',
+    es: 'Panel de Administración'
   },
   'admin.searchPlaceholder': {
     en: 'Search customers, dates, times...',

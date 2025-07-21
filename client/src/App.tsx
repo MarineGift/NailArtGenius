@@ -15,6 +15,7 @@ import Payment from "@/pages/payment";
 import AppointmentBooking from "@/pages/appointment-booking";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
+import Signup from "@/pages/signup";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -22,7 +23,10 @@ function Router() {
   return (
     <Switch>
       {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/signup" component={Signup} />
+        </>
       ) : (
         <>
           <Route path="/" component={Home} />
@@ -32,7 +36,7 @@ function Router() {
           <Route path="/payment" component={Payment} />
           <Route path="/booking" component={AppointmentBooking} />
           <Route path="/printing" component={PrintingStatus} />
-          <Route path="/admin" component={AdminPanel} />
+          <Route path="/admin-panel" component={AdminPanel} />
         </>
       )}
       <Route component={NotFound} />

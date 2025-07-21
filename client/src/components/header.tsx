@@ -33,7 +33,7 @@ export default function Header() {
                     className="text-gray-600 hover:text-secondary"
                   >
                     <Settings className="h-4 w-4" />
-                    <span className="ml-1 hidden sm:inline">{t('nav.admin')}</span>
+                    <span className="ml-1 hidden sm:inline">{t('header.adminPanel')}</span>
                   </Button>
                 </Link>
                 
