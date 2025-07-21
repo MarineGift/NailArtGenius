@@ -2,8 +2,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Palette, LogOut } from "lucide-react";
+import { Palette, LogOut, Settings } from "lucide-react";
 import LanguageSelector from "./language-selector";
+import { Link } from "wouter";
 
 export default function Header() {
   const { user } = useAuth();
@@ -25,6 +26,17 @@ export default function Header() {
             
             {user && (
               <div className="flex items-center space-x-4">
+                <Link href="/admin-panel">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-secondary"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span className="ml-1 hidden sm:inline">{t('nav.admin')}</span>
+                  </Button>
+                </Link>
+                
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user.profileImageUrl || undefined} />

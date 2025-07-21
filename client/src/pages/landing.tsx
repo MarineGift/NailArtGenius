@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, Palette, Printer, UserPlus } from "lucide-react";
+import { Calendar, Camera, Palette, Printer, UserPlus } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import LanguageSelector from "@/components/language-selector";
 
@@ -68,7 +68,7 @@ export default function Landing() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('howItWorks.title')}</h2>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-5 gap-6">
             <div className="text-center">
               <div className="bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <UserPlus className="text-secondary text-2xl" />
@@ -95,6 +95,13 @@ export default function Landing() {
                 <Printer className="text-secondary text-2xl" />
               </div>
               <h3 className="font-semibold text-lg mb-2">4. {t('howItWorks.step4')}</h3>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-secondary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Calendar className="text-secondary text-2xl" />
+              </div>
+              <h3 className="font-semibold text-lg mb-2">5. {t('howItWorks.step5')}</h3>
             </div>
           </div>
         </div>

@@ -26,6 +26,12 @@ export const translations: Translations = {
     ja: 'ログアウト',
     es: 'Cerrar sesión'
   },
+  'nav.admin': {
+    en: 'Admin',
+    ko: '관리자',
+    ja: '管理者',
+    es: 'Administrador'
+  },
 
   // Landing Page
   'landing.title': {
@@ -49,10 +55,10 @@ export const translations: Translations = {
 
   // How it works
   'howItWorks.title': {
-    en: 'Simple 4 Steps',
-    ko: '간단한 4단계로 완성',
-    ja: '簡単な4ステップで完成',
-    es: '4 Pasos Simples'
+    en: 'Simple 5 Steps',
+    ko: '간단한 5단계로 완성',
+    ja: '簡単な5ステップで完成',
+    es: '5 Pasos Simples'
   },
   'howItWorks.step1': {
     en: 'Sign Up',
@@ -73,10 +79,16 @@ export const translations: Translations = {
     es: 'Elegir Diseño'
   },
   'howItWorks.step4': {
-    en: 'Auto Printing',
-    ko: '자동 프린팅',
-    ja: '自動プリント',
-    es: 'Impresión Automática'
+    en: 'Payment',
+    ko: '결제',
+    ja: '決済',
+    es: 'Pago'
+  },
+  'howItWorks.step5': {
+    en: 'Book Visit',
+    ko: '방문 예약',
+    ja: '来店予約',
+    es: 'Reservar Visita'
   },
 
   // Photo Upload
@@ -339,6 +351,242 @@ export const translations: Translations = {
     ko: '© 2024 AI Nail Studio. All rights reserved.',
     ja: '© 2024 AI Nail Studio. All rights reserved.',
     es: '© 2024 AI Nail Studio. Todos los derechos reservados.'
+  },
+
+  // Admin Panel
+  'admin.title': {
+    en: 'Admin Panel',
+    ko: '관리자 패널',
+    ja: '管理者パネル',
+    es: 'Panel de Administración'
+  },
+  'admin.subtitle': {
+    en: 'Manage customers, appointments, and orders',
+    ko: '고객, 예약, 주문을 관리하세요',
+    ja: '顧客、予約、注文を管理してください',
+    es: 'Administra clientes, citas y pedidos'
+  },
+  'admin.totalUsers': {
+    en: 'Total Users',
+    ko: '전체 사용자',
+    ja: '総ユーザー数',
+    es: 'Usuarios Totales'
+  },
+  'admin.totalAppointments': {
+    en: 'Total Appointments',
+    ko: '전체 예약',
+    ja: '総予約数',
+    es: 'Citas Totales'
+  },
+  'admin.totalOrders': {
+    en: 'Total Orders',
+    ko: '전체 주문',
+    ja: '総注文数',
+    es: 'Pedidos Totales'
+  },
+  'admin.todayAppointments': {
+    en: 'Today\'s Appointments',
+    ko: '오늘의 예약',
+    ja: '本日の予約',
+    es: 'Citas de Hoy'
+  },
+  'admin.appointments': {
+    en: 'Appointments',
+    ko: '예약 관리',
+    ja: '予約管理',
+    es: 'Citas'
+  },
+  'admin.users': {
+    en: 'Users',
+    ko: '사용자 관리',
+    ja: 'ユーザー管理',
+    es: 'Usuarios'
+  },
+  'admin.orders': {
+    en: 'Orders',
+    ko: '주문 관리',
+    ja: '注文管理',
+    es: 'Pedidos'
+  },
+  'admin.searchPlaceholder': {
+    en: 'Search customers, dates, times...',
+    ko: '고객, 날짜, 시간 검색...',
+    ja: '顧客、日付、時間を検索...',
+    es: 'Buscar clientes, fechas, horas...'
+  },
+  'admin.refresh': {
+    en: 'Refresh',
+    ko: '새로고침',
+    ja: '更新',
+    es: 'Actualizar'
+  },
+  'admin.appointmentManagement': {
+    en: 'Appointment Management',
+    ko: '예약 관리',
+    ja: '予約管理',
+    es: 'Gestión de Citas'
+  },
+  'admin.userManagement': {
+    en: 'User Management',
+    ko: '사용자 관리',
+    ja: 'ユーザー管理',
+    es: 'Gestión de Usuarios'
+  },
+  'admin.orderManagement': {
+    en: 'Order Management',
+    ko: '주문 관리',
+    ja: '注文管理',
+    es: 'Gestión de Pedidos'
+  },
+  'admin.customer': {
+    en: 'Customer',
+    ko: '고객',
+    ja: '顧客',
+    es: 'Cliente'
+  },
+  'admin.status': {
+    en: 'Status',
+    ko: '상태',
+    ja: 'ステータス',
+    es: 'Estado'
+  },
+  'admin.amount': {
+    en: 'Amount',
+    ko: '금액',
+    ja: '金額',
+    es: 'Cantidad'
+  },
+  'admin.actions': {
+    en: 'Actions',
+    ko: '작업',
+    ja: 'アクション',
+    es: 'Acciones'
+  },
+  'admin.name': {
+    en: 'Name',
+    ko: '이름',
+    ja: '名前',
+    es: 'Nombre'
+  },
+  'admin.email': {
+    en: 'Email',
+    ko: '이메일',
+    ja: 'メール',
+    es: 'Email'
+  },
+  'admin.joinDate': {
+    en: 'Join Date',
+    ko: '가입일',
+    ja: '登録日',
+    es: 'Fecha de Registro'
+  },
+  'admin.orderNumber': {
+    en: 'Order #',
+    ko: '주문번호',
+    ja: '注文番号',
+    es: 'Pedido #'
+  },
+  'admin.paymentStatus': {
+    en: 'Payment Status',
+    ko: '결제 상태',
+    ja: '決済状況',
+    es: 'Estado del Pago'
+  },
+  'admin.printStatus': {
+    en: 'Print Status',
+    ko: '인쇄 상태',
+    ja: '印刷状況',
+    es: 'Estado de Impresión'
+  },
+  'admin.orderDate': {
+    en: 'Order Date',
+    ko: '주문일',
+    ja: '注文日',
+    es: 'Fecha del Pedido'
+  },
+  'admin.editAppointment': {
+    en: 'Edit Appointment',
+    ko: '예약 수정',
+    ja: '予約編集',
+    es: 'Editar Cita'
+  },
+  'admin.editAppointmentDescription': {
+    en: 'Make changes to this appointment here',
+    ko: '이 예약의 정보를 수정하세요',
+    ja: 'この予約の情報を編集してください',
+    es: 'Realiza cambios a esta cita aquí'
+  },
+  'admin.editUser': {
+    en: 'Edit User',
+    ko: '사용자 수정',
+    ja: 'ユーザー編集',
+    es: 'Editar Usuario'
+  },
+  'admin.editUserDescription': {
+    en: 'Make changes to this user here',
+    ko: '이 사용자의 정보를 수정하세요',
+    ja: 'このユーザーの情報を編集してください',
+    es: 'Realiza cambios a este usuario aquí'
+  },
+  'admin.firstName': {
+    en: 'First Name',
+    ko: '이름',
+    ja: '名前',
+    es: 'Nombre'
+  },
+  'admin.lastName': {
+    en: 'Last Name',
+    ko: '성',
+    ja: '姓',
+    es: 'Apellido'
+  },
+  'admin.notes': {
+    en: 'Notes',
+    ko: '메모',
+    ja: 'メモ',
+    es: 'Notas'
+  },
+  'admin.save': {
+    en: 'Save Changes',
+    ko: '변경사항 저장',
+    ja: '変更を保存',
+    es: 'Guardar Cambios'
+  },
+  'admin.success': {
+    en: 'Success',
+    ko: '성공',
+    ja: '成功',
+    es: 'Éxito'
+  },
+  'admin.error': {
+    en: 'Error',
+    ko: '오류',
+    ja: 'エラー',
+    es: 'Error'
+  },
+  'admin.appointmentUpdated': {
+    en: 'Appointment updated successfully',
+    ko: '예약이 성공적으로 업데이트되었습니다',
+    ja: '予約が正常に更新されました',
+    es: 'Cita actualizada exitosamente'
+  },
+  'admin.appointmentDeleted': {
+    en: 'Appointment deleted successfully',
+    ko: '예약이 성공적으로 삭제되었습니다',
+    ja: '予約が正常に削除されました',
+    es: 'Cita eliminada exitosamente'
+  },
+  'admin.userUpdated': {
+    en: 'User updated successfully',
+    ko: '사용자 정보가 성공적으로 업데이트되었습니다',
+    ja: 'ユーザー情報が正常に更新されました',
+    es: 'Usuario actualizado exitosamente'
+  },
+  'admin.confirmDelete': {
+    en: 'Are you sure you want to delete this appointment?',
+    ko: '이 예약을 삭제하시겠습니까?',
+    ja: 'この予約を削除してもよろしいですか？',
+    es: '¿Estás seguro de que quieres eliminar esta cita?'
   },
   'common.save': {
     en: 'Save',

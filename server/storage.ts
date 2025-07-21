@@ -62,6 +62,9 @@ export interface IStorage {
   isUserAdmin(userId: string): Promise<boolean>;
   getAllAppointments(date?: Date): Promise<Appointment[]>;
   getAllOrders(): Promise<Order[]>;
+  getAllUsers(): Promise<User[]>;
+  updateUser(id: string, updates: Partial<User>): Promise<User>;
+  deleteAppointment(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -119,11 +122,17 @@ export class DatabaseStorage implements IStorage {
 
   // Nail designs operations
   async getNailDesigns(category?: string): Promise<NailDesign[]> {
-    let query = db.select().from(nailDesigns).where(eq(nailDesigns.isActive, true));
     if (category && category !== 'all') {
-      query = query.where(eq(nailDesigns.category, category));
+      return await db
+        .select()
+        .from(nailDesigns)
+        .where(eq(nailDesigns.category, category))
+        .orderBy(desc(nailDesigns.createdAt));
     }
-    return await query.orderBy(desc(nailDesigns.createdAt));
+    return await db
+      .select()
+      .from(nailDesigns)
+      .orderBy(desc(nailDesigns.createdAt));
   }
 
   async getNailDesign(id: number): Promise<NailDesign | undefined> {
@@ -267,6 +276,28 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(orders)
       .orderBy(desc(orders.createdAt));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .orderBy(desc(users.createdAt));
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
+
+  async deleteAppointment(id: number): Promise<void> {
+    await db
+      .delete(appointments)
+      .where(eq(appointments.id, id));
   }
 }
 
