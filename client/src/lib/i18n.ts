@@ -272,6 +272,74 @@ export const translations: Translations = {
     ja: 'ログアウトされました。再度ログインします...',
     es: 'Sesión cerrada. Iniciando sesión nuevamente...'
   },
+
+  // Footer
+  'footer.description': {
+    en: 'Personalized nail art service powered by AI technology',
+    ko: '인공지능 기술로 완성하는 개인 맞춤형 네일아트 서비스',
+    ja: 'AI技術で完成する個人向けネイルアートサービス',
+    es: 'Servicio personalizado de arte de uñas impulsado por tecnología AI'
+  },
+  'footer.services': {
+    en: 'Services',
+    ko: '서비스',
+    ja: 'サービス',
+    es: 'Servicios'
+  },
+  'footer.nailAnalysis': {
+    en: 'AI Nail Analysis',
+    ko: 'AI 네일 분석',
+    ja: 'AIネイル分析',
+    es: 'Análisis de Uñas IA'
+  },
+  'footer.designGallery': {
+    en: 'Design Gallery',
+    ko: '디자인 갤러리',
+    ja: 'デザインギャラリー',
+    es: 'Galería de Diseños'
+  },
+  'footer.autoPrinting': {
+    en: 'Auto Printing',
+    ko: '자동 프린팅',
+    ja: '自動プリンティング',
+    es: 'Impresión Automática'
+  },
+  'footer.support': {
+    en: 'Customer Support',
+    ko: '고객지원',
+    ja: 'カスタマーサポート',
+    es: 'Atención al Cliente'
+  },
+  'footer.faq': {
+    en: 'Frequently Asked Questions',
+    ko: '자주 묻는 질문',
+    ja: 'よくある質問',
+    es: 'Preguntas Frecuentes'
+  },
+  'footer.contact': {
+    en: 'Contact Us',
+    ko: '문의하기',
+    ja: 'お問い合わせ',
+    es: 'Contáctanos'
+  },
+  'footer.terms': {
+    en: 'Terms of Service',
+    ko: '이용약관',
+    ja: '利用規約',
+    es: 'Términos de Servicio'
+  },
+  'footer.contactInfo': {
+    en: 'Contact Information',
+    ko: '연락처',
+    ja: '連絡先',
+    es: 'Información de Contacto'
+  },
+  'footer.copyright': {
+    en: '© 2024 AI Nail Studio. All rights reserved.',
+    ko: '© 2024 AI Nail Studio. All rights reserved.',
+    ja: '© 2024 AI Nail Studio. All rights reserved.',
+    es: '© 2024 AI Nail Studio. Todos los derechos reservados.'
+  },
   'common.save': {
     en: 'Save',
     ko: '저장',

@@ -110,30 +110,30 @@ export default function Landing() {
                 <span className="text-lg font-bold">AI Nail Studio</span>
               </div>
               <p className="text-gray-400 text-sm">
-                인공지능 기술로 완성하는 개인 맞춤형 네일아트 서비스
+                {t('footer.description')}
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold mb-4">서비스</h3>
+              <h3 className="font-semibold mb-4">{t('footer.services')}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">AI 네일 분석</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">디자인 갤러리</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">자동 프린팅</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.nailAnalysis')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.designGallery')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.autoPrinting')}</a></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold mb-4">고객지원</h3>
+              <h3 className="font-semibold mb-4">{t('footer.support')}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">자주 묻는 질문</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">문의하기</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">이용약관</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.faq')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.contact')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold mb-4">연락처</h3>
+              <h3 className="font-semibold mb-4">{t('footer.contactInfo')}</h3>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>📞 02-1234-5678</li>
                 <li>✉️ support@ainail.com</li>
@@ -144,7 +144,7 @@ export default function Landing() {
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center">
             <p className="text-gray-400 text-sm">
-              &copy; 2024 AI Nail Studio. All rights reserved.
+              {t('footer.copyright')}
             </p>
           </div>
         </div>
