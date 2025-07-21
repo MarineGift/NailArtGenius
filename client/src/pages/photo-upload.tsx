@@ -1,212 +1,164 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Camera, Check } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+import { useLocation } from "wouter";
 import Header from "@/components/header";
-import PhotoUploadZone from "@/components/photo-upload-zone";
-import { Camera, AlertTriangle } from "lucide-react";
-import { nanoid } from "nanoid";
 
-interface UploadedPhoto {
-  file: File;
-  photoType: string;
-  fingerType: string;
-  preview: string;
+interface PhotoSlot {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  file?: File;
 }
 
 export default function PhotoUpload() {
+  const { t } = useLanguage();
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
-  const [sessionId] = useState(() => nanoid());
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeSlot, setActiveSlot] = useState<string | null>(null);
+  
+  const [photoSlots, setPhotoSlots] = useState<PhotoSlot[]>([
+    { id: 'left-hand', title: '왼손 네손톱', description: '왼손 네손톱 전체', icon: '🤚' },
+    { id: 'left-thumb', title: '왼손 엄지', description: '왼손 엄지 단독', icon: '👍' },
+    { id: 'right-hand', title: '오른손 네손톱', description: '오른손 네손톱 전체', icon: '✋' },
+    { id: 'right-thumb', title: '오른손 엄지', description: '오른손 엄지 단독', icon: '👍' },
+    { id: 'nail-curve', title: '네손톱 곡률', description: '손톱의 곡률 측정', icon: '📐' },
+    { id: 'nail-width', title: '엄지 곡률', description: '엄지 손톱 곡률', icon: '📏' },
+  ]);
 
-  const uploadMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const response = await apiRequest("POST", "/api/photos/upload", formData);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "업로드 완료",
-        description: "사진이 성공적으로 업로드되었습니다.",
-      });
-      setLocation(`/processing?sessionId=${data.sessionId}`);
-    },
-    onError: (error) => {
-      toast({
-        title: "업로드 실패",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handlePhotoUpload = (file: File, photoType: string, fingerType: string) => {
-    const preview = URL.createObjectURL(file);
-    const newPhoto: UploadedPhoto = {
-      file,
-      photoType,
-      fingerType,
-      preview
-    };
-
-    setUploadedPhotos(prev => {
-      const filtered = prev.filter(p => !(p.photoType === photoType && p.fingerType === fingerType));
-      return [...filtered, newPhoto];
-    });
-  };
-
-  const handleProcessPhotos = () => {
-    if (uploadedPhotos.length < 6) {
-      toast({
-        title: "업로드 미완료",
-        description: "6장의 사진을 모두 업로드해주세요.",
-        variant: "destructive",
-      });
-      return;
+  const handlePhotoClick = (slotId: string) => {
+    setActiveSlot(slotId);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
-
-    const formData = new FormData();
-    const photoTypes: string[] = [];
-    const fingerTypes: string[] = [];
-
-    uploadedPhotos.forEach(photo => {
-      formData.append('photos', photo.file);
-      photoTypes.push(photo.photoType);
-      fingerTypes.push(photo.fingerType);
-    });
-
-    formData.append('photoTypes', JSON.stringify(photoTypes));
-    formData.append('fingerTypes', JSON.stringify(fingerTypes));
-    formData.append('sessionId', sessionId);
-
-    uploadMutation.mutate(formData);
   };
 
-  const progressPercentage = Math.round((uploadedPhotos.length / 6) * 100);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && activeSlot) {
+      setPhotoSlots(prev => prev.map(slot => 
+        slot.id === activeSlot ? { ...slot, file } : slot
+      ));
+      setActiveSlot(null);
+    }
+  };
 
-  const fingerPositions = [
-    { type: 'thumb', label: '엄지 손가락' },
-    { type: 'index', label: '검지 손가락' },
-    { type: 'middle', label: '중지 손가락' },
-    { type: 'ring', label: '약지 손가락' }
-  ];
-
-  const curvatureAngles = [
-    { type: 'left_side', label: '왼쪽 측면 굴곡' },
-    { type: 'right_side', label: '오른쪽 측면 굴곡' }
-  ];
+  const completedPhotos = photoSlots.filter(slot => slot.file).length;
+  const isComplete = completedPhotos === 6;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">손가락 사진 촬영</h2>
-          <p className="text-gray-600">신용카드에 손가락을 올려놓고 총 6장의 사진을 촬영해주세요</p>
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800 flex items-center justify-center">
-              <AlertTriangle className="mr-2 h-4 w-4" />
-              정확한 AI 분석을 위해 신용카드 위에 손가락을 올려놓고 촬영해주세요
-            </p>
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/")}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            뒤로
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">손톱 촬영</h1>
+            <p className="text-gray-600">정확한 네일 분석을 위해 6장의 사진을 촬영해주세요</p>
           </div>
         </div>
 
-        {/* Credit Card Reference */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-center">신용카드 기준 촬영법</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center">
-              <div className="inline-block bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white shadow-lg">
-                <div className="w-64 h-40 flex items-center justify-center border-2 border-dashed border-white/50 rounded">
-                  <div className="text-center">
-                    <div className="text-3xl mb-2 opacity-75">✋</div>
-                    <p className="text-sm">손가락을 여기에 올려주세요</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Upload Zones */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* Finger Position Photos */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Camera className="mr-2 h-5 w-5 text-secondary" />
-                손가락 위치 사진 (4장)
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {fingerPositions.map(finger => (
-                  <PhotoUploadZone
-                    key={finger.type}
-                    label={finger.label}
-                    onUpload={(file) => handlePhotoUpload(file, 'finger_position', finger.type)}
-                    isUploaded={uploadedPhotos.some(p => p.photoType === 'finger_position' && p.fingerType === finger.type)}
-                  />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Finger Curvature Photos */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <div className="mr-2 h-5 w-5 text-secondary">🔄</div>
-                손가락 굴곡 사진 (2장)
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {curvatureAngles.map(angle => (
-                  <PhotoUploadZone
-                    key={angle.type}
-                    label={angle.label}
-                    onUpload={(file) => handlePhotoUpload(file, 'finger_curvature', angle.type)}
-                    isUploaded={uploadedPhotos.some(p => p.photoType === 'finger_curvature' && p.fingerType === angle.type)}
-                  />
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <span>진행상황</span>
+            <span>{completedPhotos}/6</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-pink-600 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(completedPhotos / 6) * 100}%` }}
+            />
+          </div>
         </div>
 
-        {/* Upload Progress */}
-        <Card className="mb-8">
-          <CardContent className="pt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-900">업로드 진행상황</h3>
-              <span className="text-sm text-gray-600">{uploadedPhotos.length}/6 완료</span>
-            </div>
-            <Progress value={progressPercentage} className="w-full" />
+        {/* Instructions */}
+        <Card className="mb-6 border-red-200 bg-red-50">
+          <CardContent className="p-4">
+            <p className="text-red-700 font-medium">
+              ⚠️ 아래 촬영 예시를 꼭 확인해 주세요.
+            </p>
           </CardContent>
         </Card>
 
-        {/* Continue Button */}
-        <div className="text-center">
+        {/* Photo Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {photoSlots.map((slot) => (
+            <Card 
+              key={slot.id}
+              className={`cursor-pointer transition-all hover:shadow-md ${
+                slot.file ? 'border-green-200 bg-green-50' : 'border-gray-200'
+              }`}
+              onClick={() => handlePhotoClick(slot.id)}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">{slot.icon}</span>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{slot.title}</h3>
+                      <p className="text-sm text-gray-600">{slot.description}</p>
+                    </div>
+                  </div>
+                  {slot.file && (
+                    <Badge className="bg-green-100 text-green-800">
+                      <Check className="h-3 w-3 mr-1" />
+                      완료
+                    </Badge>
+                  )}
+                </div>
+                
+                <div className="border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center">
+                  {slot.file ? (
+                    <img
+                      src={URL.createObjectURL(slot.file)}
+                      alt={slot.title}
+                      className="w-full h-full object-cover rounded"
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <Camera className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm text-gray-600">탭하여 사진 추가</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={() => setLocation("/")}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            뒤로
+          </Button>
           <Button 
-            size="lg"
-            onClick={handleProcessPhotos}
-            disabled={uploadedPhotos.length < 6 || uploadMutation.isPending}
-            className="bg-secondary text-white px-8 py-3 font-semibold hover:bg-pink-600 disabled:opacity-50"
+            disabled={!isComplete}
+            className="bg-pink-600 hover:bg-pink-700"
+            onClick={() => setLocation("/processing")}
           >
-            {uploadMutation.isPending ? "업로드 중..." : "AI 분석 시작하기"}
-            <span className="ml-2">→</span>
+            다음 단계
           </Button>
         </div>
-      </main>
+
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
     </div>
   );
 }

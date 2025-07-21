@@ -1,155 +1,178 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "wouter";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { CheckCircle, Clock, Printer, Calendar, Home, Phone } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+import { useLocation } from "wouter";
 import Header from "@/components/header";
-import { CheckCircle, Clock, Printer, Star } from "lucide-react";
-import { isUnauthorizedError } from "@/lib/authUtils";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 
 export default function PrintingStatus() {
-  const { toast } = useToast();
-  
-  const urlParams = new URLSearchParams(window.location.search);
-  const orderId = urlParams.get('orderId');
+  const { t } = useLanguage();
+  const [, setLocation] = useLocation();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  const { data: order, isLoading } = useQuery({
-    queryKey: ["/api/orders", orderId],
-    enabled: !!orderId,
-    refetchInterval: 10000, // Refresh every 10 seconds to check status
-    onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "인증 만료",
-          description: "다시 로그인해주세요...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
-    }
-  });
-
-  const { data: design } = useQuery({
-    queryKey: ["/api/designs", order?.designId],
-    enabled: !!order?.designId,
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center pt-20">
-          <div>로딩 중...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center pt-20">
-          <Card>
-            <CardContent className="pt-6">
-              <p className="text-gray-600">주문을 찾을 수 없습니다.</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  const statusSteps = [
-    {
-      id: "payment",
-      label: "결제 확인 완료",
-      time: "2024-01-15 14:30",
+  const steps = [
+    { 
+      id: 'confirmed', 
+      title: '예약 확정', 
+      description: '예약이 확정되었습니다',
       icon: CheckCircle,
-      status: order.paymentStatus === "paid" ? "completed" : "waiting"
+      status: 'completed'
     },
-    {
-      id: "preparation",
-      label: "프린터 준비 중",
-      time: "예상 시작시간: 14:35",
+    { 
+      id: 'preparing', 
+      title: '디자인 준비', 
+      description: '네일 디자인을 준비하고 있습니다',
       icon: Printer,
-      status: order.printStatus === "printing" || order.printStatus === "completed" ? "completed" : 
-              order.paymentStatus === "paid" ? "processing" : "waiting"
+      status: 'in-progress'
     },
-    {
-      id: "printing",
-      label: "프린팅 진행 중",
-      time: "약 5분 소요 예정",
-      icon: Clock,
-      status: order.printStatus === "completed" ? "completed" :
-              order.printStatus === "printing" ? "processing" : "waiting"
+    { 
+      id: 'printing', 
+      title: '네일 프린팅', 
+      description: 'AI 자동 프린팅이 진행중입니다',
+      icon: Printer,
+      status: 'pending'
     },
-    {
-      id: "completed",
-      label: "완료",
-      time: "픽업 준비",
-      icon: Star,
-      status: order.printStatus === "completed" ? "completed" : "waiting"
+    { 
+      id: 'completed', 
+      title: '완료 대기', 
+      description: '시술이 완료되어 픽업 대기중입니다',
+      icon: CheckCircle,
+      status: 'pending'
     }
   ];
+
+  // Simulate progress animation
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        if (prev < 60) return prev + 2;
+        return prev;
+      });
+    }, 200);
+
+    // Simulate step progression
+    const stepTimer = setInterval(() => {
+      setCurrentStep(prev => {
+        if (prev < 1) return prev + 1;
+        return prev;
+      });
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(stepTimer);
+    };
+  }, []);
+
+  const mockBooking = {
+    id: "NK2025-001",
+    design: "클래식 프렌치",
+    appointmentDate: new Date("2025-01-22"),
+    appointmentTime: "14:30",
+    estimatedCompletion: new Date("2025-01-22T15:30:00"),
+    status: "in-progress"
+  };
+
+  const getStepStatus = (index: number) => {
+    if (index < currentStep) return 'completed';
+    if (index === currentStep) return 'in-progress';
+    return 'pending';
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-success/10 rounded-full mb-4">
-            <CheckCircle className="text-success text-2xl" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">결제 완료!</h2>
-          <p className="text-gray-600">네일아트 프린팅이 시작됩니다</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">네일 프린팅 진행상황</h1>
+          <p className="text-gray-600">실시간으로 진행상황을 확인할 수 있습니다</p>
+          <Badge className="mt-2 bg-blue-100 text-blue-800">
+            주문번호: {mockBooking.id}
+          </Badge>
         </div>
 
-        {/* Printer Job Status */}
+        {/* Progress Overview */}
+        <Card className="mb-8">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">전체 진행률</h3>
+              <span className="text-2xl font-bold text-pink-600">{Math.round(progress)}%</span>
+            </div>
+            <Progress value={progress} className="w-full h-3 mb-2" />
+            <p className="text-sm text-gray-600">
+              예상 완료 시간: {format(mockBooking.estimatedCompletion, "HH:mm", { locale: ko })}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Step-by-step Progress */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>프린팅 상태</CardTitle>
+            <CardTitle>단계별 진행상황</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {statusSteps.map((step, index) => {
-                const Icon = step.icon;
+              {steps.map((step, index) => {
+                const status = getStepStatus(index);
+                const StepIcon = step.icon;
                 
                 return (
-                  <div key={step.id} className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-4 ${
-                      step.status === "completed" ? "bg-success" :
-                      step.status === "processing" ? "bg-secondary animate-pulse" :
-                      "bg-gray-300"
-                    }`}>
-                      <Icon className={`text-sm ${
-                        step.status === "completed" || step.status === "processing" ? "text-white" : "text-gray-500"
-                      }`} />
+                  <div key={step.id} className="flex items-start">
+                    <div className="flex-shrink-0 mr-4">
+                      <div className={`
+                        w-10 h-10 rounded-full flex items-center justify-center
+                        ${status === 'completed' ? 'bg-green-100 text-green-600' : 
+                          status === 'in-progress' ? 'bg-blue-100 text-blue-600' : 
+                          'bg-gray-100 text-gray-400'}
+                      `}>
+                        <StepIcon className="h-5 w-5" />
+                      </div>
+                      {index < steps.length - 1 && (
+                        <div className={`
+                          w-0.5 h-12 mx-auto mt-2
+                          ${status === 'completed' ? 'bg-green-300' : 'bg-gray-200'}
+                        `} />
+                      )}
                     </div>
                     <div className="flex-1">
-                      <p className={`font-medium ${
-                        step.status === "completed" ? "text-success" :
-                        step.status === "processing" ? "text-secondary" :
-                        "text-gray-500"
-                      }`}>
-                        {step.label}
-                      </p>
-                      <p className="text-sm text-gray-600">{step.time}</p>
+                      <div className="flex items-center justify-between">
+                        <h3 className={`font-semibold ${
+                          status === 'completed' ? 'text-green-700' :
+                          status === 'in-progress' ? 'text-blue-700' :
+                          'text-gray-500'
+                        }`}>
+                          {step.title}
+                        </h3>
+                        <Badge variant={
+                          status === 'completed' ? 'default' :
+                          status === 'in-progress' ? 'secondary' :
+                          'outline'
+                        } className={
+                          status === 'completed' ? 'bg-green-100 text-green-800' :
+                          status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                          'bg-gray-100 text-gray-600'
+                        }>
+                          {status === 'completed' ? '완료' :
+                           status === 'in-progress' ? '진행중' : '대기'}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                      {status === 'in-progress' && (
+                        <div className="mt-2">
+                          <div className="flex items-center text-sm text-blue-600">
+                            <Clock className="h-4 w-4 mr-1" />
+                            진행중...
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    {step.status === "processing" && (
-                      <Badge variant="secondary" className="animate-pulse">
-                        진행 중
-                      </Badge>
-                    )}
-                    {step.status === "completed" && (
-                      <Badge className="bg-success hover:bg-success">
-                        완료
-                      </Badge>
-                    )}
                   </div>
                 );
               })}
@@ -157,62 +180,80 @@ export default function PrintingStatus() {
           </CardContent>
         </Card>
 
-        {/* Order Details */}
-        <Card>
-          <CardHeader>
-            <CardTitle>주문 상세 정보</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">주문 번호</p>
-                <p className="font-mono text-sm">#{order.id.toString().padStart(8, '0')}</p>
+        {/* Booking Details */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2" />
+                예약 정보
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">디자인</span>
+                <span className="font-medium">{mockBooking.design}</span>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">주문 일시</p>
-                <p className="text-sm">
-                  {order.createdAt ? new Date(order.createdAt).toLocaleString('ko-KR') : '-'}
-                </p>
+              <div className="flex justify-between">
+                <span className="text-gray-600">예약 날짜</span>
+                <span className="font-medium">
+                  {format(mockBooking.appointmentDate, "M월 d일 (eee)", { locale: ko })}
+                </span>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">선택 디자인</p>
-                <p className="text-sm">{design?.name || "네일아트 디자인"}</p>
+              <div className="flex justify-between">
+                <span className="text-gray-600">예약 시간</span>
+                <span className="font-medium">{mockBooking.appointmentTime}</span>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">결제 금액</p>
-                <p className="text-sm font-semibold text-secondary">
-                  ₩{order.totalAmount ? parseFloat(order.totalAmount).toLocaleString() : "30,000"}
-                </p>
+              <div className="flex justify-between">
+                <span className="text-gray-600">상태</span>
+                <Badge className="bg-blue-100 text-blue-800">시술 진행중</Badge>
               </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">결제 상태</p>
-                <Badge variant={order.paymentStatus === "paid" ? "default" : "secondary"}>
-                  {order.paymentStatus === "paid" ? "결제완료" : "결제대기"}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1">프린팅 상태</p>
-                <Badge variant={
-                  order.printStatus === "completed" ? "default" :
-                  order.printStatus === "printing" ? "secondary" : "outline"
-                }>
-                  {order.printStatus === "completed" ? "완료" :
-                   order.printStatus === "printing" ? "진행중" : "대기"}
-                </Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {order.printStatus === "completed" && (
-          <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg text-center">
-            <h3 className="text-lg font-semibold text-green-800 mb-2">🎉 프린팅 완료!</h3>
-            <p className="text-green-700">
-              네일아트가 완성되었습니다. 매장에서 픽업해주세요.
-            </p>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Phone className="h-5 w-5 mr-2" />
+                연락처 및 안내
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <h4 className="font-medium text-gray-900">AI Nail Studio 강남점</h4>
+                <p className="text-sm text-gray-600">📞 02-1234-5678</p>
+                <p className="text-sm text-gray-600">📍 서울시 강남구 테헤란로 123</p>
+              </div>
+              <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                <p className="font-medium mb-1">💡 안내사항</p>
+                <ul className="space-y-1">
+                  <li>• 시술 완료 시 SMS로 알림이 발송됩니다</li>
+                  <li>• 완료 후 24시간 이내 픽업 부탁드립니다</li>
+                  <li>• 문의사항은 매장으로 연락해주세요</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="text-center space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button variant="outline" onClick={() => window.location.href = "tel:02-1234-5678"}>
+              <Phone className="h-4 w-4 mr-2" />
+              매장에 연락하기
+            </Button>
+            <Button onClick={() => setLocation("/")}>
+              <Home className="h-4 w-4 mr-2" />
+              홈으로 돌아가기
+            </Button>
           </div>
-        )}
-      </main>
+          
+          <p className="text-sm text-gray-500">
+            실시간 알림을 받으시려면 브라우저 알림 허용을 설정해주세요
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
