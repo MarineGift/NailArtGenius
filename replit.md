@@ -6,6 +6,11 @@ Connie's Nail is a full-stack web application for a traditional nail salon featu
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## User Preferences
+- 비용 효율적인 솔루션 선호
+- 단계적 배포 및 확장 희망
+- nolsae.com 도메인으로 서비스 론칭 계획
+
 ## Recent Changes (July 2025)
 
 ### Major Home Page Redesign & Customer Management System
