@@ -6,6 +6,15 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
+import { db } from "./db";
+import { smsService } from "./smsService";
+import {
+  customers,
+  customerPurchases,
+  smsTemplates,
+  smsHistory,
+} from "@shared/schema";
+import { eq, desc } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
@@ -1632,6 +1641,126 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to track design interaction" });
     }
   });
+
+  // Customer purchase history routes
+  app.get('/api/customer-purchases', isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = req.query.customerId;
+      let query = db.select().from(customerPurchases);
+      
+      if (customerId) {
+        query = query.where(eq(customerPurchases.customerId, parseInt(customerId)));
+      }
+      
+      const purchases = await query.orderBy(desc(customerPurchases.purchaseDate));
+      res.json(purchases);
+    } catch (error) {
+      console.error("Error fetching customer purchases:", error);
+      res.status(500).json({ message: "Failed to fetch customer purchases" });
+    }
+  });
+
+  app.post('/api/customer-purchases', isAuthenticated, async (req: any, res) => {
+    try {
+      const purchaseData = {
+        ...req.body,
+        purchaseDate: new Date()
+      };
+      
+      const [purchase] = await db.insert(customerPurchases).values(purchaseData).returning();
+      
+      // Update customer total spent
+      const [customer] = await db.select().from(customers).where(eq(customers.id, purchase.customerId));
+      if (customer) {
+        const currentTotal = parseFloat(customer.totalSpent);
+        const newTotal = currentTotal + parseFloat(purchase.amount);
+        
+        await db.update(customers)
+          .set({ 
+            totalSpent: newTotal.toString(),
+            lastVisit: new Date()
+          })
+          .where(eq(customers.id, purchase.customerId));
+      }
+      
+      res.json(purchase);
+    } catch (error) {
+      console.error("Error creating customer purchase:", error);
+      res.status(500).json({ message: "Failed to create customer purchase" });
+    }
+  });
+
+  // SMS template routes
+  app.get('/api/sms-templates', isAuthenticated, async (req: any, res) => {
+    try {
+      const templates = await db.select().from(smsTemplates).where(eq(smsTemplates.isActive, true));
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching SMS templates:", error);
+      res.status(500).json({ message: "Failed to fetch SMS templates" });
+    }
+  });
+
+  // SMS history routes
+  app.get('/api/sms-history', isAuthenticated, async (req: any, res) => {
+    try {
+      const customerId = req.query.customerId;
+      let query = db.select().from(smsHistory);
+      
+      if (customerId) {
+        query = query.where(eq(smsHistory.customerId, parseInt(customerId)));
+      }
+      
+      const history = await query.orderBy(desc(smsHistory.sentAt));
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching SMS history:", error);
+      res.status(500).json({ message: "Failed to fetch SMS history" });
+    }
+  });
+
+  // SMS sending route
+  app.post('/api/sms/send', isAuthenticated, async (req: any, res) => {
+    try {
+      const { customerId, templateId, message } = req.body;
+      
+      if (templateId) {
+        const success = await smsService.sendSMS(customerId, templateId);
+        res.json({ success });
+      } else if (message) {
+        // Create a temporary template for custom message
+        const [tempTemplate] = await db.insert(smsTemplates).values({
+          name: `Custom Message ${Date.now()}`,
+          type: 'custom',
+          template: message,
+          variables: [],
+          isActive: false
+        }).returning();
+        
+        const success = await smsService.sendSMS(customerId, tempTemplate.id);
+        res.json({ success });
+      } else {
+        res.status(400).json({ message: "Template ID or message is required" });
+      }
+    } catch (error) {
+      console.error("Error sending SMS:", error);
+      res.status(500).json({ message: "Failed to send SMS" });
+    }
+  });
+
+  // SMS automation routes
+  app.post('/api/sms/send-reminders', isAuthenticated, async (req: any, res) => {
+    try {
+      await smsService.sendAppointmentReminders();
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error sending reminders:", error);
+      res.status(500).json({ message: "Failed to send reminders" });
+    }
+  });
+
+  // Initialize SMS templates on startup
+  smsService.createDefaultTemplates().catch(console.error);
 
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));

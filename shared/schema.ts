@@ -158,6 +158,63 @@ export const customers = pgTable("customers", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Customer purchase history
+export const customerPurchases = pgTable("customer_purchases", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  orderId: integer("order_id").references(() => orders.id),
+  serviceId: integer("service_id").references(() => services.id),
+  serviceName: varchar("service_name").notNull(),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: varchar("payment_method").default("cash"), // cash, card, paypal
+  paymentStatus: varchar("payment_status").default("completed"), // pending, completed, refunded
+  purchaseDate: timestamp("purchase_date").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// SMS templates for customer communication
+export const smsTemplates = pgTable("sms_templates", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // reminder, promotion, welcome, followup
+  template: text("template").notNull(), // Message template with variables like {{name}}, {{date}}
+  variables: text("variables").array(), // Available variables for template
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SMS automation rules
+export const smsAutomationRules = pgTable("sms_automation_rules", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  trigger: varchar("trigger").notNull(), // appointment_reminder, visit_followup, loyalty_reward, birthday
+  daysAfterVisit: integer("days_after_visit"),
+  daysBefore: integer("days_before"),
+  templateId: integer("template_id").notNull().references(() => smsTemplates.id),
+  isActive: boolean("is_active").default(true),
+  lastTriggered: timestamp("last_triggered"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SMS history tracking
+export const smsHistory = pgTable("sms_history", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  phoneNumber: varchar("phone_number").notNull(),
+  message: text("message").notNull(),
+  type: varchar("type").notNull(), // reminder, promotion, welcome, followup
+  status: varchar("status").default("sent"), // sent, failed, pending
+  ruleId: integer("rule_id").references(() => smsAutomationRules.id),
+  templateId: integer("template_id").references(() => smsTemplates.id),
+  sentAt: timestamp("sent_at").defaultNow(),
+  deliveryStatus: varchar("delivery_status"), // delivered, failed, unknown
+  errorMessage: text("error_message"),
+});
+
 // Appointments for nail salon visits (Enhanced for real-time booking)
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),

@@ -49,7 +49,7 @@ export default function Header() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <LanguageSwitcher />
             
             {user && (
@@ -65,7 +65,7 @@ export default function Header() {
                   </Button>
                 </Link>
                 
-                <Link href="/enhanced-admin">
+                <Link href="/customer-management">
                   <Button
                     variant="ghost"
                     size="sm"
