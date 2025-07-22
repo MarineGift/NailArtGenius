@@ -1,25 +1,32 @@
-// Multi-language support for Korean and English
-export type Language = 'ko' | 'en';
+// Multi-language support for Korean, English, Japanese, and Spanish
+export type Language = 'ko' | 'en' | 'ja' | 'es';
 
 // Translation data structure
 const translations = {
   // Navigation
-  'nav.home': { ko: '홈', en: 'Home' },
-  'nav.services': { ko: '서비스', en: 'Services' },
-  'nav.about': { ko: '소개', en: 'About' },
-  'nav.booking': { ko: '예약', en: 'Booking' },
-  'nav.gallery': { ko: '갤러리', en: 'Gallery' },
-  'nav.contact': { ko: '연락처', en: 'Contact' },
-  'nav.login': { ko: '로그인', en: 'Login' },
-  'nav.logout': { ko: '로그아웃', en: 'Logout' },
+  'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', es: 'Inicio' },
+  'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
+  'nav.about': { ko: '소개', en: 'About', ja: 'について', es: 'Acerca de' },
+  'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', es: 'Reservas' },
+  'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', es: 'Galería' },
+  'nav.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', es: 'Contacto' },
+  'nav.login': { ko: '로그인', en: 'Login', ja: 'ログイン', es: 'Iniciar sesión' },
+  'nav.logout': { ko: '로그아웃', en: 'Logout', ja: 'ログアウト', es: 'Cerrar sesión' },
+  'nav.signup': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', es: 'Registrarse' },
+  'nav.photo_measurement': { ko: '사진 측정', en: 'Photo Measurement', ja: '写真測定', es: 'Medición de fotos' },
+  'nav.design_studio': { ko: '디자인 스튜디오', en: 'Design Studio', ja: 'デザインスタジオ', es: 'Estudio de Diseño' },
+  'nav.analytics': { ko: '분석', en: 'Analytics', ja: 'アナリティクス', es: 'Análisis' },
 
   // Home page
-  'home.title': { ko: 'Connie\'s Nail', en: 'Connie\'s Nail' },
-  'home.welcome': { ko: '안녕하세요, {name}님! 👋', en: 'Hello, {name}! 👋' },
-  'home.subtitle': { ko: '프리미엄 네일 케어와 스파 서비스로 당신의 아름다움을 완성하세요', en: 'Complete your beauty with premium nail care and spa services' },
-  'home.book_appointment': { ko: '예약하기', en: 'Book Appointment' },
-  'home.view_services': { ko: '서비스 보기', en: 'View Services' },
-  'home.contact_us': { ko: '연락하기', en: 'Contact Us' },
+  'home.title': { ko: 'Connie\'s Nail', en: 'Connie\'s Nail', ja: 'Connie\'s Nail', es: 'Connie\'s Nail' },
+  'home.welcome': { ko: '안녕하세요, {name}님! 👋', en: 'Hello, {name}! 👋', ja: 'こんにちは、{name}さん！ 👋', es: '¡Hola, {name}! 👋' },
+  'home.subtitle': { ko: '프리미엄 네일 케어와 스파 서비스로 당신의 아름다움을 완성하세요', en: 'Complete your beauty with premium nail care and spa services', ja: 'プレミアムネイルケアとスパサービスで美しさを完成させましょう', es: 'Completa tu belleza con servicios premium de cuidado de uñas y spa' },
+  'home.book_appointment': { ko: '예약하기', en: 'Book Appointment', ja: '予約する', es: 'Reservar Cita' },
+  'home.view_services': { ko: '서비스 보기', en: 'View Services', ja: 'サービスを見る', es: 'Ver Servicios' },
+  'home.contact_us': { ko: '연락하기', en: 'Contact Us', ja: 'お問い合わせ', es: 'Contáctanos' },
+  'home.get_started': { ko: '시작하기', en: 'Get Started', ja: '始める', es: 'Empezar' },
+  'home.test_system': { ko: '시스템 테스트', en: 'Test System', ja: 'システムテスト', es: 'Probar Sistema' },
+  'home.pdf_preview': { ko: 'PDF 미리보기', en: 'PDF Preview', ja: 'PDFプレビュー', es: 'Vista previa PDF' },
 
   // Photo measurement
   'photo.title': { ko: '정밀 손가락 측정', en: 'Precise Finger Measurement' },
@@ -124,10 +131,63 @@ const translations = {
   'contact.email': { ko: 'Sungimconniekim@gmail.com', en: 'Sungimconniekim@gmail.com' },
   'contact.appointment_call': { ko: '**예약을 위해서는 202.898.0826으로 전화해 주세요!', en: '**For appointments, please call us 202.898.0826!' },
 
+  // Landing page
+  'landing.title': { ko: 'AI 네일 스튜디오에 오신 것을 환영합니다', en: 'Welcome to AI Nail Studio', ja: 'AIネイルスタジオへようこそ', es: 'Bienvenido al Estudio de Uñas AI' },
+  'landing.subtitle': { ko: '혁신적인 AI 기술로 완벽한 네일아트를 만나보세요', en: 'Discover perfect nail art with innovative AI technology', ja: '革新的なAI技術で完璧なネイルアートを発見', es: 'Descubre el arte de uñas perfecto con tecnología AI innovadora' },
+  'landing.getStarted': { ko: '시작하기', en: 'Get Started', ja: '開始する', es: 'Comenzar' },
+
+  // Signup
+  'signup.title': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', es: 'Registrarse' },
+
+  // How it Works
+  'howItWorks.title': { ko: '작동 방식', en: 'How It Works', ja: '仕組み', es: 'Cómo Funciona' },
+  'howItWorks.step1': { ko: '1. 손톱 사진 업로드', en: '1. Upload Nail Photos', ja: '1. ネイル写真をアップロード', es: '1. Subir Fotos de Uñas' },
+  'howItWorks.step2': { ko: '2. AI 분석', en: '2. AI Analysis', ja: '2. AI分析', es: '2. Análisis AI' },
+  'howItWorks.step3': { ko: '3. 디자인 선택', en: '3. Design Selection', ja: '3. デザイン選択', es: '3. Selección de Diseño' },
+  'howItWorks.step4': { ko: '4. 결제', en: '4. Payment', ja: '4. 支払い', es: '4. Pago' },
+  'howItWorks.step5': { ko: '5. 인쇄', en: '5. Printing', ja: '5. 印刷', es: '5. Impresión' },
+
+  // Footer
+  'footer.description': { ko: '전문적인 네일아트 서비스', en: 'Professional nail art services', ja: 'プロフェッショナルネイルアートサービス', es: 'Servicios profesionales de arte de uñas' },
+  'footer.services': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
+  'footer.nailAnalysis': { ko: '네일 분석', en: 'Nail Analysis', ja: 'ネイル分析', es: 'Análisis de Uñas' },
+  'footer.designGallery': { ko: '디자인 갤러리', en: 'Design Gallery', ja: 'デザインギャラリー', es: 'Galería de Diseños' },
+  'footer.autoPrinting': { ko: '자동 인쇄', en: 'Auto Printing', ja: '自動印刷', es: 'Impresión Automática' },
+  'footer.support': { ko: '지원', en: 'Support', ja: 'サポート', es: 'Soporte' },
+  'footer.faq': { ko: 'FAQ', en: 'FAQ', ja: 'FAQ', es: 'Preguntas Frecuentes' },
+  'footer.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', es: 'Contacto' },
+  'footer.terms': { ko: '이용약관', en: 'Terms', ja: '利用規約', es: 'Términos' },
+  'footer.contactInfo': { ko: '연락 정보', en: 'Contact Info', ja: '連絡先情報', es: 'Información de Contacto' },
+  'footer.copyright': { ko: '© 2025 Connie\'s Nail. 모든 권리 보유.', en: '© 2025 Connie\'s Nail. All rights reserved.', ja: '© 2025 Connie\'s Nail. 無断転載禁止。', es: '© 2025 Connie\'s Nail. Todos los derechos reservados.' },
+  'footer.company.description': { ko: 'Connie\'s Nail은 최첨단 AI 기술을 활용한 프리미엄 네일아트 서비스를 제공합니다.', en: 'Connie\'s Nail provides premium nail art services using cutting-edge AI technology.', ja: 'Connie\'s Nailは最新のAI技術を使用したプレミアムネイルアートサービスを提供します。', es: 'Connie\'s Nail ofrece servicios premium de arte de uñas utilizando tecnología AI de vanguardia.' },
+  'footer.quickLinks.title': { ko: '빠른 링크', en: 'Quick Links', ja: 'クイックリンク', es: 'Enlaces Rápidos' },
+  'footer.quickLinks.about': { ko: '소개', en: 'About', ja: 'について', es: 'Acerca de' },
+  'footer.quickLinks.services': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
+  'footer.quickLinks.pricing': { ko: '가격', en: 'Pricing', ja: '料金', es: 'Precios' },
+  'footer.quickLinks.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', es: 'Galería' },
+  'footer.quickLinks.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', es: 'Contacto' },
+  'footer.services.title': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
+  'footer.services.aiAnalysis': { ko: 'AI 네일 분석', en: 'AI Nail Analysis', ja: 'AIネイル分析', es: 'Análisis AI de Uñas' },
+  'footer.services.customDesign': { ko: '맞춤 디자인', en: 'Custom Design', ja: 'カスタムデザイン', es: 'Diseño Personalizado' },
+  'footer.services.printing': { ko: '3D 프린팅', en: '3D Printing', ja: '3Dプリンティング', es: 'Impresión 3D' },
+  'footer.services.consultation': { ko: '상담', en: 'Consultation', ja: 'コンサルテーション', es: 'Consulta' },
+  'footer.contact.title': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', es: 'Contacto' },
+  'footer.contact.address': { ko: '1300 Pennsylvania Avenue, Washington DC', en: '1300 Pennsylvania Avenue, Washington DC', ja: '1300 Pennsylvania Avenue, Washington DC', es: '1300 Pennsylvania Avenue, Washington DC' },
+  'footer.contact.phone': { ko: '202.898.0826', en: '202.898.0826', ja: '202.898.0826', es: '202.898.0826' },
+  'footer.contact.email': { ko: 'Sungimconniekim@gmail.com', en: 'Sungimconniekim@gmail.com', ja: 'Sungimconniekim@gmail.com', es: 'Sungimconniekim@gmail.com' },
+  'footer.contact.hours.weekdays': { ko: '월-금: 10:00am - 7:00pm', en: 'Mon-Fri: 10:00am - 7:00pm', ja: '月-金: 10:00am - 7:00pm', es: 'Lun-Vie: 10:00am - 7:00pm' },
+  'footer.contact.hours.weekend': { ko: '주말: 휴무', en: 'Weekend: Closed', ja: '週末: 休み', es: 'Fin de semana: Cerrado' },
+  'footer.legal.privacy': { ko: '개인정보처리방침', en: 'Privacy Policy', ja: 'プライバシーポリシー', es: 'Política de Privacidad' },
+  'footer.legal.terms': { ko: '이용약관', en: 'Terms of Service', ja: '利用規約', es: 'Términos de Servicio' },
+  'footer.legal.cookies': { ko: '쿠키 정책', en: 'Cookie Policy', ja: 'クッキーポリシー', es: 'Política de Cookies' },
+
+  // Header/Admin
+  'header.adminPanel': { ko: '관리자 패널', en: 'Admin Panel', ja: '管理者パネル', es: 'Panel de Administrador' },
+
   // Errors
-  'error.upload_failed': { ko: '업로드에 실패했습니다', en: 'Upload failed' },
-  'error.analysis_failed': { ko: 'AI 분석에 실패했습니다', en: 'AI analysis failed' },
-  'error.quota_exceeded': { ko: 'API 할당량이 초과되었습니다', en: 'API quota exceeded' }
+  'error.upload_failed': { ko: '업로드에 실패했습니다', en: 'Upload failed', ja: 'アップロードに失敗しました', es: 'Error en la carga' },
+  'error.analysis_failed': { ko: 'AI 분석에 실패했습니다', en: 'AI analysis failed', ja: 'AI分析に失敗しました', es: 'Análisis AI falló' },
+  'error.quota_exceeded': { ko: 'API 할당량이 초과되었습니다', en: 'API quota exceeded', ja: 'API割当量を超過しました', es: 'Cuota de API excedida' }
 };
 
 // Translation function
@@ -155,7 +215,7 @@ export function saveLanguagePreference(lang: Language): void {
 export function loadLanguagePreference(): Language {
   try {
     const saved = localStorage.getItem('preferred-language') as Language;
-    if (saved && (saved === 'ko' || saved === 'en')) {
+    if (saved && (saved === 'ko' || saved === 'en' || saved === 'ja' || saved === 'es')) {
       return saved;
     }
   } catch (e) {
@@ -167,6 +227,10 @@ export function loadLanguagePreference(): Language {
     const browserLang = navigator.language.toLowerCase();
     if (browserLang.startsWith('ko')) {
       return 'ko';
+    } else if (browserLang.startsWith('ja')) {
+      return 'ja';
+    } else if (browserLang.startsWith('es')) {
+      return 'es';
     }
   }
   

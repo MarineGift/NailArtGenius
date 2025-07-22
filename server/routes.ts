@@ -153,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sessionId = req.params.sessionId;
 
       // Get the latest AI generated nails for the user
-      const aiNails = await storage.getAiGeneratedNails(userId);
+      const aiNails = await storage.getAiGeneratedNails(userId, sessionId);
       
       if (aiNails.length === 0) {
         return res.status(404).json({ message: "생성된 네일아트 결과가 없습니다." });
@@ -396,7 +396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         designSpecs: nailArtResult.designSpecs || [],
         pdfUrl: pdfUrl,
         totalImages: 10,
-        analysisTime: `${Date.now() - startTime}ms`,
+        analysisTime: `${Date.now() - new Date().getTime()}ms`,
         demoMode: analysisResult.recommendations.includes("데모 모드"),
         recommendations: analysisResult.recommendations,
         success: true
@@ -902,7 +902,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         measurements: formattedMeasurements
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating design with measurements:", error);
       res.status(500).json({ message: error.message || "디자인 생성 중 오류가 발생했습니다." });
     }
@@ -948,7 +948,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         measurements: formattedMeasurements,
         preferences: advancedPreferences
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating advanced design:", error);
       res.status(500).json({ message: error.message || "고급 디자인 생성 중 오류가 발생했습니다." });
     }
@@ -993,7 +993,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         variationCount: designUrls.length
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating design variations:", error);
       res.status(500).json({ message: error.message || "디자인 변형 생성 중 오류가 발생했습니다." });
     }
@@ -1033,7 +1033,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         analysis,
         sessionId
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error analyzing design recommendations:", error);
       res.status(500).json({ message: error.message || "디자인 분석 중 오류가 발생했습니다." });
     }

@@ -13,8 +13,10 @@ export default function LanguageSelector() {
   
   const languageOptions = [
     { code: 'ko', name: '한국어', flag: '🇰🇷' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
-  ];
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' }
+  ] as const;
   
   const currentLanguage = languageOptions.find(lang => lang.code === language);
 
@@ -31,7 +33,7 @@ export default function LanguageSelector() {
         {languageOptions.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => setLanguage(lang.code as any)}
             className={`flex items-center space-x-2 ${
               language === lang.code ? 'bg-secondary/10' : ''
             }`}
