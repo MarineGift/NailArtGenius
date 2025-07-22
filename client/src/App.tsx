@@ -25,6 +25,7 @@ import DesignGeneration from "@/pages/design-generation";
 import AdvancedDesignStudio from "@/pages/advanced-design-studio";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import EnhancedPhotoGuide from "@/pages/enhanced-photo-guide";
+import TestGuide from "@/pages/test-guide";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -55,6 +56,7 @@ function Router() {
           <Route path="/advanced-design-studio" component={AdvancedDesignStudio} />
           <Route path="/analytics" component={AnalyticsDashboard} />
           <Route path="/photo-guide" component={EnhancedPhotoGuide} />
+          <Route path="/test-guide" component={TestGuide} />
         </>
       )}
       <Route component={NotFound} />

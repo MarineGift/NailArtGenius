@@ -144,6 +144,25 @@ export default function Home() {
                 총 12장의 사진이 필요합니다.
               </p>
             </div>
+            
+            {/* Testing Guide */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <h4 className="font-semibold text-blue-800 mb-2">🧪 시스템 테스트 방법</h4>
+              <div className="space-y-2 text-sm text-blue-700">
+                <p><strong>1단계:</strong> "상세 가이드 보기" 버튼을 클릭하여 촬영 방법 확인</p>
+                <p><strong>2단계:</strong> "정밀 측정 시작" 버튼으로 12장 사진 업로드</p>
+                <p><strong>3단계:</strong> AI 분석 완료 후 10개 네일아트 이미지 확인</p>
+                <p><strong>4단계:</strong> "분석 대시보드"에서 결과 리포트 확인</p>
+              </div>
+              <div className="mt-4">
+                <Button 
+                  onClick={() => setLocation('/test-guide')}
+                  className="bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  🧪 전체 시스템 테스트하기
+                </Button>
+              </div>
+            </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">손가락 위치 사진 (4장)</h4>
