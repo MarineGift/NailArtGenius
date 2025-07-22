@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { Camera, Palette, Printer, CreditCard, Calendar } from "lucide-react";
 
 export default function Home() {
@@ -41,16 +42,27 @@ export default function Home() {
             안녕하세요, {user?.firstName || '고객'}님! 👋
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            AI 기술로 완벽한 네일아트를 시작해보세요
+            AI가 그려낸 당신만의 손끝 예술, 지금부터 시작해보세요
           </p>
-          <Button 
-            size="lg"
-            onClick={() => setLocation('/upload')}
-            className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
-          >
-            새 네일아트 시작하기
-            <Camera className="ml-2 h-5 w-5" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg"
+              onClick={() => setLocation('/upload')}
+              className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
+            >
+              <Camera className="mr-2 h-5 w-5" />
+              새 네일아트 시작하기
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="border-secondary text-secondary hover:bg-pink-50 px-8 py-4 text-lg"
+              onClick={() => setLocation("/appointment-booking")}
+            >
+              <Calendar className="mr-2 h-5 w-5" />
+              방문 예약하기
+            </Button>
+          </div>
         </div>
 
         {/* Service Process Cards */}
@@ -102,11 +114,11 @@ export default function Home() {
               <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Printer className="h-6 w-6 text-secondary" />
               </div>
-              <CardTitle className="text-lg">자동 프린팅</CardTitle>
+              <CardTitle className="text-lg">네일 아트</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 text-sm">
-                결제 후 전용 프린터로 네일아트가 자동 제작됩니다
+                당신을 위해 선택된 아트, 손끝 위에 섬세하게 담아냅니다
               </p>
             </CardContent>
           </Card>
@@ -202,6 +214,8 @@ export default function Home() {
           </Card>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

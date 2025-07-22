@@ -1237,6 +1237,140 @@ export const translations: Translations = {
     es: 'Error en la generación de PDF. Por favor intenta de nuevo.'
   },
 
+  // Footer translations
+  'footer.company.description': {
+    en: 'Revolutionary AI-powered nail art studio providing personalized beauty experiences through cutting-edge technology.',
+    ko: '최첨단 AI 기술로 개인 맞춤형 뷰티 경험을 제공하는 혁신적인 네일아트 스튜디오입니다.',
+    ja: '最先端のAI技術でパーソナライズされた美容体験を提供する革新的なネイルアートスタジオです。',
+    es: 'Estudio revolucionario de arte de uñas con IA que ofrece experiencias de belleza personalizadas a través de tecnología de vanguardia.'
+  },
+  'footer.quickLinks.title': {
+    en: 'Quick Links',
+    ko: '빠른 링크',
+    ja: 'クイックリンク',
+    es: 'Enlaces Rápidos'
+  },
+  'footer.quickLinks.about': {
+    en: 'About Us',
+    ko: '회사 소개',
+    ja: '会社概要',
+    es: 'Acerca de Nosotros'
+  },
+  'footer.quickLinks.services': {
+    en: 'Services',
+    ko: '서비스',
+    ja: 'サービス',
+    es: 'Servicios'
+  },
+  'footer.quickLinks.pricing': {
+    en: 'Pricing',
+    ko: '가격',
+    ja: '料金',
+    es: 'Precios'
+  },
+  'footer.quickLinks.gallery': {
+    en: 'Gallery',
+    ko: '갤러리',
+    ja: 'ギャラリー',
+    es: 'Galería'
+  },
+  'footer.quickLinks.contact': {
+    en: 'Contact',
+    ko: '연락처',
+    ja: 'お問い合わせ',
+    es: 'Contacto'
+  },
+  'footer.services.title': {
+    en: 'Services',
+    ko: '서비스',
+    ja: 'サービス',
+    es: 'Servicios'
+  },
+  'footer.services.aiAnalysis': {
+    en: 'AI Analysis',
+    ko: 'AI 분석',
+    ja: 'AI分析',
+    es: 'Análisis de IA'
+  },
+  'footer.services.customDesign': {
+    en: 'Custom Design',
+    ko: '맞춤 디자인',
+    ja: 'カスタムデザイン',
+    es: 'Diseño Personalizado'
+  },
+  'footer.services.printing': {
+    en: 'Nail Printing',
+    ko: '네일 프린팅',
+    ja: 'ネイルプリンティング',
+    es: 'Impresión de Uñas'
+  },
+  'footer.services.consultation': {
+    en: 'Consultation',
+    ko: '상담',
+    ja: 'コンサルテーション',
+    es: 'Consulta'
+  },
+  'footer.contact.title': {
+    en: 'Contact Info',
+    ko: '연락처 정보',
+    ja: '連絡先情報',
+    es: 'Información de Contacto'
+  },
+  'footer.contact.address': {
+    en: '123 Teheran-ro, Gangnam-gu, Seoul, 2nd Floor',
+    ko: '서울특별시 강남구 테헤란로 123, 2층',
+    ja: 'ソウル特別市江南区テヘラン路123, 2階',
+    es: 'Teheran-ro 123, Gangnam-gu, Seúl, 2º Piso'
+  },
+  'footer.contact.phone': {
+    en: '02-1234-5678',
+    ko: '02-1234-5678',
+    ja: '02-1234-5678',
+    es: '02-1234-5678'
+  },
+  'footer.contact.email': {
+    en: 'info@ainailstudio.com',
+    ko: 'info@ainailstudio.com',
+    ja: 'info@ainailstudio.com',
+    es: 'info@ainailstudio.com'
+  },
+  'footer.contact.hours.weekdays': {
+    en: 'Mon-Fri: 09:00-18:00',
+    ko: '월-금: 09:00-18:00',
+    ja: '月-金: 09:00-18:00',
+    es: 'Lun-Vie: 09:00-18:00'
+  },
+  'footer.contact.hours.weekend': {
+    en: 'Sat-Sun: 10:00-17:00',
+    ko: '토-일: 10:00-17:00',
+    ja: '土-日: 10:00-17:00',
+    es: 'Sáb-Dom: 10:00-17:00'
+  },
+  'footer.copyright': {
+    en: 'All rights reserved.',
+    ko: '모든 권리 보유.',
+    ja: '全著作権所有。',
+    es: 'Todos los derechos reservados.'
+  },
+  'footer.legal.privacy': {
+    en: 'Privacy Policy',
+    ko: '개인정보처리방침',
+    ja: 'プライバシーポリシー',
+    es: 'Política de Privacidad'
+  },
+  'footer.legal.terms': {
+    en: 'Terms of Service',
+    ko: '이용약관',
+    ja: '利用規約',
+    es: 'Términos de Servicio'
+  },
+  'footer.legal.cookies': {
+    en: 'Cookie Policy',
+    ko: '쿠키 정책',
+    ja: 'クッキーポリシー',
+    es: 'Política de Cookies'
+  }
+
 };
 
 // Language context and hooks  
