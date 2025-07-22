@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Camera, Check } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, Camera, Check, Info, HelpCircle } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
@@ -50,20 +51,115 @@ export default function PhotoUpload() {
   const completedPhotos = photoSlots.filter(slot => slot.file).length;
   const isComplete = completedPhotos === 6;
 
+  const PhotoGuideModal = () => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="mb-6">
+          <HelpCircle className="h-4 w-4 mr-2" />
+          촬영 방법 가이드
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">네일 사진 촬영 가이드</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-6 py-4">
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg text-pink-600">📸 기본 촬영 요령</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">✨ 조명</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• 자연광이 가장 좋습니다</li>
+                  <li>• 그림자가 생기지 않게 해주세요</li>
+                  <li>• 플래시는 사용하지 마세요</li>
+                </ul>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium mb-2">📱 카메라 각도</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• 손톱과 수직으로 촬영</li>
+                  <li>• 카메라를 흔들지 마세요</li>
+                  <li>• 10-15cm 거리 유지</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg text-pink-600">🤚 각 사진별 촬영법</h3>
+            
+            <div className="space-y-3">
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium flex items-center mb-2">
+                  🤚 왼손/오른손 네손톱
+                </h4>
+                <p className="text-sm text-gray-600 mb-2">손가락 4개를 모두 펼친 상태로 촬영</p>
+                <ul className="text-xs text-gray-500 space-y-1">
+                  <li>• 손가락을 자연스럽게 펼치세요</li>
+                  <li>• 손톱이 모두 보이도록 해주세요</li>
+                  <li>• 흰 배경 위에 올려놓고 촬영</li>
+                </ul>
+              </div>
+
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium flex items-center mb-2">
+                  👍 엄지손톱 단독
+                </h4>
+                <p className="text-sm text-gray-600 mb-2">엄지손톱만 따로 클로즈업 촬영</p>
+                <ul className="text-xs text-gray-500 space-y-1">
+                  <li>• 엄지만 세우고 나머지는 주먹</li>
+                  <li>• 손톱 전체가 선명하게 보여야 함</li>
+                  <li>• 정면에서 수직으로 촬영</li>
+                </ul>
+              </div>
+
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium flex items-center mb-2">
+                  📐 손톱 곡률 측정
+                </h4>
+                <p className="text-sm text-gray-600 mb-2">신용카드와 함께 옆면에서 촬영</p>
+                <ul className="text-xs text-gray-500 space-y-1">
+                  <li>• 신용카드를 손톱 옆에 나란히 배치</li>
+                  <li>• 카드와 손톱이 같은 높이가 되도록</li>
+                  <li>• 옆면에서 90도 각도로 촬영</li>
+                  <li>• 손톱의 곡률이 선명하게 보여야 함</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-medium text-blue-800 mb-2">💡 촬영 팁</h4>
+            <ul className="text-sm text-blue-700 space-y-1">
+              <li>• 손을 깨끗하게 씻고 촬영하세요</li>
+              <li>• 매니큐어나 반지는 제거해주세요</li>
+              <li>• 각 사진마다 2-3장 촬영 후 가장 선명한 것을 선택</li>
+              <li>• 흔들림 없이 정확한 초점으로 촬영</li>
+            </ul>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            뒤로
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">손톱 촬영</h1>
-            <p className="text-gray-600">정확한 네일 분석을 위해 6장의 사진을 촬영해주세요</p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center">
+            <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              뒤로
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">손톱 촬영</h1>
+              <p className="text-gray-600">정확한 네일 분석을 위해 6장의 사진을 촬영해주세요</p>
+            </div>
           </div>
+          <PhotoGuideModal />
         </div>
 
         {/* Progress Bar */}

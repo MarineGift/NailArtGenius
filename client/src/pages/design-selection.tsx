@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, ShoppingCart, Star } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, Heart, ShoppingCart, Star, Eye, Info } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
@@ -104,6 +106,83 @@ export default function DesignSelection() {
 
   const selectedDesignData = designs.find(d => d.id === selectedDesign);
 
+  const DesignDetailModal = ({ design }: { design: Design }) => (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="w-full mb-2">
+          <Eye className="h-4 w-4 mr-2" />
+          상세보기
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-xl">{design.name}</DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <img 
+              src={design.image} 
+              alt={design.name}
+              className="w-full h-64 object-cover rounded-lg"
+            />
+          </div>
+          <div className="space-y-4">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-2xl font-bold text-pink-600">
+                  ₩{design.price.toLocaleString()}
+                </span>
+                <Badge className="bg-yellow-100 text-yellow-800">
+                  ⭐ {design.rating}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                {design.isPopular && (
+                  <Badge className="bg-red-100 text-red-800">인기</Badge>
+                )}
+                {design.isNew && (
+                  <Badge className="bg-blue-100 text-blue-800">신규</Badge>
+                )}
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div>
+              <h4 className="font-semibold mb-2">디자인 특징</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 전문 네일 아티스트 디자인</li>
+                <li>• 고품질 네일 프린팅 소재</li>
+                <li>• 약 7-10일 지속</li>
+                <li>• 자연스러운 마감</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-2">시술 안내</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• 시술 시간: 약 60분</li>
+                <li>• 베이스코트 + 디자인 + 탑코트</li>
+                <li>• 전문 UV 램프 사용</li>
+                <li>• 24시간 방수</li>
+              </ul>
+            </div>
+            
+            <Button 
+              className="w-full bg-pink-600 hover:bg-pink-700"
+              onClick={() => {
+                setSelectedDesign(design.id);
+              }}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              이 디자인 선택하기
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -135,80 +214,95 @@ export default function DesignSelection() {
           ))}
         </div>
 
-        {/* Design Grid */}
+        {/* Design Grid - Shopping Mall Style */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredDesigns.map((design) => (
             <Card 
               key={design.id}
-              className={`cursor-pointer transition-all hover:shadow-lg ${
-                selectedDesign === design.id ? 'ring-2 ring-pink-600 border-pink-300' : ''
-              }`}
-              onClick={() => setSelectedDesign(design.id)}
+              className="group cursor-pointer transition-all hover:shadow-xl hover:scale-105 overflow-hidden bg-white"
             >
-              <CardContent className="p-0">
-                <div className="relative">
-                  <div 
-                    className="w-full h-48 bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg flex items-center justify-center"
-                    style={{
-                      background: `linear-gradient(135deg, ${
-                        design.category === 'french' ? '#fdf2f8, #fce7f3' :
-                        design.category === 'glitter' ? '#fef3c7, #fde68a' :
-                        design.category === 'floral' ? '#ecfdf5, #d1fae5' :
-                        design.category === 'gradient' ? '#fdf4ff, #f3e8ff' :
-                        design.category === 'geometric' ? '#f1f5f9, #e2e8f0' :
-                        '#f8fafc, #f1f5f9'
-                      })`
-                    }}
-                  >
-                    <span className="text-4xl">💅</span>
-                  </div>
-                  
-                  {/* Badges */}
-                  <div className="absolute top-2 left-2 flex gap-1">
-                    {design.isPopular && (
-                      <Badge className="bg-red-500 text-white text-xs">인기</Badge>
-                    )}
-                    {design.isNew && (
-                      <Badge className="bg-green-500 text-white text-xs">NEW</Badge>
-                    )}
-                  </div>
-
-                  {/* Favorite Button */}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="absolute top-2 right-2 h-8 w-8 p-0 bg-white/80 hover:bg-white"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(design.id);
-                    }}
-                  >
-                    <Heart 
-                      className={`h-4 w-4 ${
-                        favorites.includes(design.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'
-                      }`} 
-                    />
-                  </Button>
+              <div className="relative">
+                <div 
+                  className="w-full h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center"
+                  style={{
+                    background: `linear-gradient(135deg, ${
+                      design.category === 'french' ? '#fdf2f8, #fce7f3' :
+                      design.category === 'glitter' ? '#fef3c7, #fde68a' :
+                      design.category === 'floral' ? '#ecfdf5, #d1fae5' :
+                      design.category === 'gradient' ? '#fdf4ff, #f3e8ff' :
+                      design.category === 'geometric' ? '#f1f5f9, #e2e8f0' :
+                      '#f8fafc, #f1f5f9'
+                    })`
+                  }}
+                >
+                  <span className="text-5xl group-hover:scale-110 transition-transform duration-300">💅</span>
+                </div>
+                
+                {/* Badges */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  {design.isPopular && (
+                    <Badge className="bg-red-500 text-white text-xs px-2 py-1 font-semibold">HOT</Badge>
+                  )}
+                  {design.isNew && (
+                    <Badge className="bg-blue-500 text-white text-xs px-2 py-1 font-semibold">NEW</Badge>
+                  )}
                 </div>
 
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2">{design.name}</h3>
+                {/* Favorite Button */}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="absolute top-3 right-3 h-8 w-8 bg-white/90 hover:bg-white border-0 shadow-md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(design.id);
+                  }}
+                >
+                  <Heart 
+                    className={`h-4 w-4 transition-colors ${
+                      favorites.includes(design.id) ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-400'
+                    }`} 
+                  />
+                </Button>
+              </div>
+
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <h3 className="font-semibold text-lg text-gray-900 mb-1">{design.name}</h3>
                   
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-bold text-pink-600">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xl font-bold text-pink-600">
                       ₩{design.price.toLocaleString()}
                     </span>
                     <div className="flex items-center">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                      <span className="text-sm text-gray-600">{design.rating}</span>
+                      <span className="text-sm font-medium text-gray-700">{design.rating}</span>
+                      <span className="text-xs text-gray-500 ml-1">(128)</span>
                     </div>
                   </div>
 
-                  {selectedDesign === design.id && (
-                    <Badge className="w-full justify-center bg-pink-100 text-pink-700">
-                      선택됨
-                    </Badge>
-                  )}
+                  <div className="flex gap-2">
+                    <DesignDetailModal design={design} />
+                    <Button 
+                      className={`flex-1 ${
+                        selectedDesign === design.id 
+                          ? 'bg-pink-600 text-white' 
+                          : 'bg-white text-pink-600 border-pink-600'
+                      } hover:bg-pink-600 hover:text-white transition-colors`}
+                      variant={selectedDesign === design.id ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setSelectedDesign(design.id)}
+                    >
+                      {selectedDesign === design.id ? (
+                        <>
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          선택됨
+                        </>
+                      ) : (
+                        '선택하기'
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -247,10 +341,10 @@ export default function DesignSelection() {
           <Button 
             disabled={!selectedDesign}
             className="bg-pink-600 hover:bg-pink-700"
-            onClick={() => setLocation("/payment")}
+            onClick={() => setLocation("/preview")}
           >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            결제하기
+            <Eye className="h-4 w-4 mr-2" />
+            AI 미리보기
           </Button>
         </div>
       </div>

@@ -11,6 +11,7 @@ import Home from "@/pages/home";
 import PhotoUpload from "@/pages/photo-upload";
 import AiProcessing from "@/pages/ai-processing";
 import DesignSelection from "@/pages/design-selection";
+import DesignPreview from "@/pages/design-preview";
 import Payment from "@/pages/payment";
 import AppointmentBooking from "@/pages/appointment-booking";
 import PrintingStatus from "@/pages/printing-status";
@@ -33,6 +34,7 @@ function Router() {
           <Route path="/upload" component={PhotoUpload} />
           <Route path="/processing" component={AiProcessing} />
           <Route path="/designs" component={DesignSelection} />
+          <Route path="/preview" component={DesignPreview} />
           <Route path="/payment" component={Payment} />
           <Route path="/booking" component={AppointmentBooking} />
           <Route path="/printing" component={PrintingStatus} />

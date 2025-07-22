@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Clock, Printer, Calendar, Home, Phone } from "lucide-react";
+import { CheckCircle, Clock, Printer, Calendar, Home, Phone, Download, FileText } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { generateNailDesignPDF } from "@/lib/pdf-generator";
+import { useToast } from "@/hooks/use-toast";
 
 export default function PrintingStatus() {
   const { t } = useLanguage();
@@ -76,13 +78,46 @@ export default function PrintingStatus() {
     appointmentDate: new Date("2025-01-22"),
     appointmentTime: "14:30",
     estimatedCompletion: new Date("2025-01-22T15:30:00"),
-    status: "in-progress"
+    status: "in-progress",
+    customerName: "김사용자",
+    price: 35000,
+    category: "프렌치"
   };
+
+  const { toast } = useToast();
 
   const getStepStatus = (index: number) => {
     if (index < currentStep) return 'completed';
     if (index === currentStep) return 'in-progress';
     return 'pending';
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      const designData = {
+        id: mockBooking.id,
+        name: mockBooking.design,
+        price: mockBooking.price,
+        orderNumber: mockBooking.id,
+        customerName: mockBooking.customerName,
+        appointmentDate: format(mockBooking.appointmentDate, "yyyy년 M월 d일", { locale: ko }),
+        appointmentTime: mockBooking.appointmentTime,
+        designCategory: mockBooking.category
+      };
+
+      await generateNailDesignPDF(designData);
+      
+      toast({
+        title: "PDF 다운로드 완료",
+        description: "네일 디자인 가이드 PDF가 생성되었습니다.",
+      });
+    } catch (error) {
+      toast({
+        title: "PDF 생성 실패",
+        description: "PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -235,6 +270,33 @@ export default function PrintingStatus() {
             </CardContent>
           </Card>
         </div>
+
+        {/* PDF Download Section */}
+        <Card className="mb-6 border-green-200 bg-green-50">
+          <CardHeader>
+            <CardTitle className="flex items-center text-green-800">
+              <FileText className="h-5 w-5 mr-2" />
+              네일 디자인 가이드 다운로드
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-green-700 mb-4">
+              시술 시 참고할 수 있는 네일 디자인 가이드를 PDF로 다운로드하세요.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={handleDownloadPDF}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                시술 가이드 PDF 다운로드
+              </Button>
+              <div className="text-xs text-green-600 self-center">
+                • 주문정보, 디자인 미리보기, 시술 안내사항 포함
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="text-center space-y-4">
