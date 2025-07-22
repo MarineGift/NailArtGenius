@@ -38,17 +38,14 @@ export default function AppointmentBooking() {
 
   // Fetch booked slots for selected date
   const { data: bookedSlots = [] } = useQuery({
-    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString()],
+    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString().split('T')[0]],
     enabled: !!selectedDate,
   });
 
   // Create appointment mutation
   const createAppointmentMutation = useMutation({
     mutationFn: async (appointmentData: any) => {
-      return await apiRequest("/api/appointments", {
-        method: "POST",
-        body: JSON.stringify(appointmentData),
-      });
+      return await apiRequest("/api/appointments", "POST", appointmentData);
     },
     onSuccess: () => {
       toast({
@@ -78,12 +75,16 @@ export default function AppointmentBooking() {
     }
     
     const appointmentData = {
-      customerName,
-      phoneNumber,
-      email: email || null,
-      visitType,
       appointmentDate: selectedDate.toISOString(),
       timeSlot: selectedTime,
+      visitReason: "네일아트 서비스",
+      customer: {
+        name: customerName,
+        phoneNumber,
+        email: email || null,
+        visitType,
+      },
+      mailingList: false,
     };
 
     createAppointmentMutation.mutate(appointmentData);
