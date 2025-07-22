@@ -7,24 +7,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 
-type Language = 'ko' | 'en';
+type Language = 'ko' | 'en' | 'ja' | 'zh';
 
 const languageOptions = [
   { code: 'ko' as Language, name: '한국어', flag: '🇰🇷' },
-  { code: 'en' as Language, name: 'English', flag: '🇺🇸' }
+  { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
+  { code: 'ja' as Language, name: '日本語', flag: '🇯🇵' },
+  { code: 'zh' as Language, name: '中文', flag: '🇨🇳' }
 ];
 
 export default function LanguageSwitcher() {
   const getCurrentLanguage = (): Language => {
     try {
       const saved = localStorage.getItem('preferred-language') as Language;
-      if (saved && (saved === 'ko' || saved === 'en')) {
+      if (saved && (saved === 'ko' || saved === 'en' || saved === 'ja' || saved === 'zh')) {
         return saved;
       }
     } catch (e) {
       // Silent fail
     }
-    return 'en';
+    return 'ko'; // Default to Korean for Connie's Nail
   };
 
   const setLanguage = (lang: Language) => {

@@ -2,26 +2,31 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+import store1 from "@assets/store_1753218028383.jpg";
+import nailart1 from "@assets/nailart1_1753154093464.jpg";
+import nailart2 from "@assets/nailart2_1753154093464.jpg";
+import nailart3 from "@assets/nailart3_1753154093464.jpg";
+
 const sampleImages = [
   {
-    url: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=1200&h=600&fit=crop',
-    title: '프리미엄 네일 케어',
-    description: '최고급 네일 서비스'
+    url: store1,
+    title: "Connie's Nail Salon",
+    description: '워싱턴 DC 프리미엄 네일 살롱'
   },
   {
-    url: 'https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=1200&h=600&fit=crop',
-    title: 'AI 맞춤 디자인',
-    description: '혁신적인 네일아트'
+    url: nailart1,
+    title: '아름다운 네일아트',
+    description: '전문가의 세심한 디자인'
   },
   {
-    url: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=1200&h=600&fit=crop',
-    title: '편안한 스파 환경',
-    description: '힐링 공간에서의 특별한 경험'
+    url: nailart2,
+    title: 'AI 맞춤 네일',
+    description: '혁신적인 AI 기술로 완성'
   },
   {
-    url: 'https://images.unsplash.com/photo-1562887284-5233374ea3a2?w=1200&h=600&fit=crop',
-    title: '정밀한 네일 케어',
-    description: '전문가의 세심한 손길'
+    url: nailart3,
+    title: '프리미엄 케어',
+    description: '최고급 네일 서비스 경험'
   }
 ];
 
