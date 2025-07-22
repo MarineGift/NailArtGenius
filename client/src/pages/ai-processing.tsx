@@ -167,7 +167,7 @@ export default function AiProcessing() {
 
         {/* Navigation */}
         <div className="flex justify-between mt-8">
-          <Button variant="outline" onClick={() => setLocation("/upload")}>
+          <Button variant="outline" onClick={() => setLocation("/design-selection")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             뒤로
           </Button>
@@ -183,9 +183,9 @@ export default function AiProcessing() {
           </div>
           <Button 
             className="bg-black text-white hover:bg-gray-800"
-            onClick={() => setLocation("/designs")}
+            onClick={() => setLocation("/booking")}
           >
-            NEXT
+            예약하기
           </Button>
         </div>
       </div>

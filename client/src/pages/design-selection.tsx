@@ -189,7 +189,7 @@ export default function DesignSelection() {
       
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center mb-6">
-          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/processing")}>
+          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/upload")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             {t('common.back')}
           </Button>
@@ -341,7 +341,7 @@ export default function DesignSelection() {
           <Button 
             disabled={!selectedDesign}
             className="bg-pink-600 hover:bg-pink-700"
-            onClick={() => setLocation("/preview")}
+            onClick={() => setLocation("/processing")}
           >
             <Eye className="h-4 w-4 mr-2" />
             AI 미리보기

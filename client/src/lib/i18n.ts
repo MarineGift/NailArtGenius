@@ -694,6 +694,18 @@ export const translations: Translations = {
     ja: '次へ',
     es: 'Siguiente'
   },
+  'common.previous': {
+    en: 'Previous',
+    ko: '이전',
+    ja: '前へ',
+    es: 'Anterior'
+  },
+  'common.close': {
+    en: 'Close',
+    ko: '닫기',
+    ja: '閉じる',
+    es: 'Cerrar'
+  },
 
   // Design Selection - Shopping Mall Style
   'designs.title': {
@@ -1121,6 +1133,86 @@ export const translations: Translations = {
     ko: 'PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
     ja: 'PDF生成中にエラーが発生しました。再度お試しください。',
     es: 'Error en la generación de PDF. Por favor intenta de nuevo.'
+  },
+
+  // Photo Guide Modal
+  'photoGuide.title': {
+    en: 'Photo Shooting Guide',
+    ko: '손톱 촬영 가이드',
+    ja: '爪撮影ガイド',
+    es: 'Guía de Fotografía de Uñas'
+  },
+  'photoGuide.thumb.title': {
+    en: 'Right Thumb Shooting Guide',
+    ko: '오른손 엄지손톱 촬영안내',
+    ja: '右手親指の撮影ガイド',
+    es: 'Guía de Fotografía del Pulgar Derecho'
+  },
+  'photoGuide.thumb.description': {
+    en: '1. Keep the card straight\n2. Position your thumb clearly visible without shadow\n3. Keep fingertip open\n4. Take photo with fingertip focused',
+    ko: '1. 카드는 똑바르지 않습니다.\n2. 엄지 손톱만 화면에 보이도록, 손톱 끝 그림자가 위로 들록하게 보이도록 조정해주세요.\n3. 손톱 끝선을 밝게 확실에 맞춰 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードは真っ直ぐにしてください\n2. 親指の爪のみが画面に見えるよう、爪先の影が上に浮き出るよう調整してください\n3. 爪先のラインを明るく確実に合わせてください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Mantén la tarjeta recta\n2. Ajusta para que solo la uña del pulgar sea visible, con la sombra de la punta hacia arriba\n3. Alinea claramente la línea de la punta de la uña\n4. Enfoca en la uña al tomar la foto'
+  },
+  'photoGuide.fingers.title': {
+    en: 'Four Fingers Shooting Guide',
+    ko: '네 손톱 곡률 촬영안내',
+    ja: '4本指の撮影ガイド',
+    es: 'Guía de Fotografía de Cuatro Dedos'
+  },
+  'photoGuide.fingers.description': {
+    en: '1. Keep the card straight\n2. Position fingers clearly without shadow on the curve area\n3. Keep fingertips open\n4. Take photo with fingertips focused',
+    ko: '1. 카드는 똑바르지 않습니다.\n2. 엄지를 제외한 엄지 네 손톱 끝 그림자가 위로 들록하게 보이도록 조정해주세요.\n3. 손톱 끝선을 밝게 확실에 맞춰 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードは真っ直ぐにしてください\n2. 親指を除く4本の爪先の影が上に浮き出るよう調整してください\n3. 爪先のラインを明るく確実に合わせてください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Mantén la tarjeta recta\n2. Ajusta para que las sombras de las puntas de los cuatro dedos (excluyendo el pulgar) sean visibles hacia arriba\n3. Alinea claramente las líneas de las puntas\n4. Enfoca en las uñas al tomar la foto'
+  },
+  'photoGuide.rightThumb.title': {
+    en: 'Right Thumb Size Guide',
+    ko: '오른손 엄지 손톱 촬영안내',
+    ja: '右手親指サイズガイド',
+    es: 'Guía de Tamaño del Pulgar Derecho'
+  },
+  'photoGuide.rightThumb.description': {
+    en: '1. Place thumb tip on the card\n2. Position thumb clearly visible on the frame\n3. Make sure card and thumb both appear clearly on the back\n4. Take photo with fingertip focused',
+    ko: '1. 카드 위에 엄지손가락을 밀착해 주세요.\n2. 화면에 엄지손톱 정면이 잘 보이도록 조정하고, 특히 세게 손톱이 잘 보이도록 유의해 주세요.\n3. 카드와 손톱이 모두 화면에 보이도록, 카드를 밝간 선에 맞춰 촬영해 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードの上に親指を密着させてください\n2. 画面に親指の爪の正面がよく見えるよう調整し、特に細い爪がよく見えるよう注意してください\n3. カードと爪の両方が画面に見えるよう、カードを明るい線に合わせて撮影してください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Presiona el pulgar firmemente contra la tarjeta\n2. Ajusta para que la parte frontal de la uña del pulgar sea claramente visible, especialmente las uñas delgadas\n3. Asegúrate de que tanto la tarjeta como la uña sean visibles, alinea la tarjeta con la línea brillante\n4. Enfoca en la uña al tomar la foto'
+  },
+  'photoGuide.rightFingers.title': {
+    en: 'Right Four Fingers Size Guide',
+    ko: '오른손 네 손톱 촬영안내',
+    ja: '右手4本指サイズガイド',
+    es: 'Guía de Tamaño de Cuatro Dedos Derechos'
+  },
+  'photoGuide.rightFingers.description': {
+    en: '1. Place fingertips on the card\n2. All fingers should be clearly visible and properly adjusted\n3. Make sure card and fingers both appear clearly on the back\n4. Take photo with fingertips focused',
+    ko: '1. 카드 위에 손가락을 밀착해 주세요.\n2. 모든 손톱이 정면으로 잘 보이도록 조정하고, 특히 세게 손톱이 잘 보이도록 유의해 주세요.\n3. 카드와 손톱이 모두 화면에 보이도록, 카드를 밝간 선에 맞춰 촬영해 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードの上に指を密着させてください\n2. すべての爪が正面によく見えるよう調整し、特に細い爪がよく見えるよう注意してください\n3. カードと爪の両方が画面に見えるよう、カードを明るい線に合わせて撮影してください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Presiona los dedos firmemente contra la tarjeta\n2. Ajusta para que todas las uñas sean claramente visibles de frente, especialmente las uñas delgadas\n3. Asegúrate de que tanto la tarjeta como las uñas sean visibles, alinea la tarjeta con la línea brillante\n4. Enfoca en las uñas al tomar la foto'
+  },
+  'photoGuide.leftThumb.title': {
+    en: 'Left Thumb Size Guide',
+    ko: '왼손 엄지 손톱 촬영안내',
+    ja: '左手親指サイズガイド',
+    es: 'Guía de Tamaño del Pulgar Izquierdo'
+  },
+  'photoGuide.leftThumb.description': {
+    en: '1. Place thumb tip on the card\n2. Position thumb clearly visible on the frame\n3. Make sure card and thumb both appear clearly on the back\n4. Take photo with fingertip focused',
+    ko: '1. 카드 위에 엄지손가락을 밀착해 주세요.\n2. 화면에 엄지손톱 정면이 잘 보이도록 조정하고, 특히 세게 손톱이 잘 보이도록 유의해 주세요.\n3. 카드와 손톱이 모두 화면에 보이도록, 카드를 밝간 선에 맞춰 촬영해 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードの上に親指を密着させてください\n2. 画面に親指の爪の正面がよく見えるよう調整し、特に細い爪がよく見えるよう注意してください\n3. カードと爪の両方が画面に見えるよう、カードを明るい線に合わせて撮影してください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Presiona el pulgar firmemente contra la tarjeta\n2. Ajusta para que la parte frontal de la uña del pulgar sea claramente visible, especialmente las uñas delgadas\n3. Asegúrate de que tanto la tarjeta como la uña sean visibles, alinea la tarjeta con la línea brillante\n4. Enfoca en la uña al tomar la foto'
+  },
+  'photoGuide.leftFingers.title': {
+    en: 'Left Four Fingers Size Guide',
+    ko: '왼손 네 손톱 촬영안내',
+    ja: '左手4本指サイズガイド',
+    es: 'Guía de Tamaño de Cuatro Dedos Izquierdos'
+  },
+  'photoGuide.leftFingers.description': {
+    en: '1. Place fingertips on the card\n2. All fingers should be clearly visible and properly adjusted\n3. Make sure card and fingers both appear clearly on the back\n4. Take photo with fingertips focused',
+    ko: '1. 카드 위에 손가락을 밀착해 주세요.\n2. 모든 손톱이 정면으로 잘 보이도록 조정하고, 특히 세게 손톱이 잘 보이도록 유의해 주세요.\n3. 카드와 손톱이 모두 화면에 보이도록, 카드를 밝간 선에 맞춰 촬영해 주세요.\n4. 손톱에 초점을 맞춰 촬영해 주세요.',
+    ja: '1. カードの上に指を密着させてください\n2. すべての爪が正面によく見えるよう調整し、特に細い爪がよく見えるよう注意してください\n3. カードと爪の両方が画面に見えるよう、カードを明るい線に合わせて撮影してください\n4. 爪にピントを合わせて撮影してください',
+    es: '1. Presiona los dedos firmemente contra la tarjeta\n2. Ajusta para que todas las uñas sean claramente visibles de frente, especialmente las uñas delgadas\n3. Asegúrate de que tanto la tarjeta como las uñas sean visibles, alinea la tarjeta con la línea brillante\n4. Enfoca en las uñas al tomar la foto'
   }
 };
 
