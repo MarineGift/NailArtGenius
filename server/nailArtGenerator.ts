@@ -215,36 +215,6 @@ function createNailArtPrompt(
   
   return basePrompt + shapeDescription + styleDescription + colorDescription + inspirationDescription + technicalRequirements;
 }
-  
-  return `Create a stunning nail art design for a ${measurement.fingerType} finger with the following specifications:
-
-NAIL DIMENSIONS:
-- Width: ${measurement.nailWidth}mm
-- Length: ${measurement.nailLength}mm  
-- Shape category: ${measurement.shapeCategory}
-- Curvature: ${measurement.nailCurvature}mm radius
-
-DESIGN REQUIREMENTS:
-${shapeGuidance}
-
-STYLE PREFERENCES:
-- Personality: ${personality}
-- Color harmony: ${colorHarmony} (${colorPalette})
-- Pattern preference: ${patternPreference} (${patternGuidance})
-- Design intensity: ${designIntensity} (${intensityGuidance})
-- Inspiration: ${inspirationKeywords.join(', ')}
-
-TECHNICAL SPECIFICATIONS:
-- High resolution, photorealistic nail art design
-- Perfect application on natural nail surface
-- Professional salon quality finish
-- Optimal proportions for the specified nail dimensions
-- Suitable for ${measurement.fingerType} finger positioning
-- Clean, precise edges and detailed work
-- Proper depth and dimension for realistic appearance
-
-Create a masterpiece that perfectly combines artistry with the specified measurements and style preferences.`;
-}
 
 /**
  * Process generated image to match specific nail measurements
@@ -318,7 +288,7 @@ export async function combineNailWithDesign(
     
   } catch (error) {
     console.error(`Error combining nail image for ${measurement.fingerType}:`, error);
-    throw new Error(`Failed to combine nail image: ${error.message}`);
+    throw new Error(`Failed to combine nail image: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
