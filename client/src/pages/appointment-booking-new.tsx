@@ -127,14 +127,7 @@ export default function AppointmentBooking() {
   };
 
   const handleCustomerInfoNext = (data: AppointmentFormData) => {
-    if (checkPhoneMutation.data?.exists) {
-      toast({
-        title: "등록된 고객",
-        description: "이미 등록된 고객입니다.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Allow existing customers to proceed - we'll upsert them in the backend
     setStep(3);
   };
 

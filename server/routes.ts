@@ -496,7 +496,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         style: stylePreferences?.preferredStyles?.join(", ") || "modern",
         complexity: stylePreferences?.complexity || "medium",
         occasion: stylePreferences?.occasions?.[0] || "daily",
-        personalizedElements: customPrompt.split(" ").filter(word => word.length > 3)
+        personalizedElements: customPrompt.split(" ").filter((word: string) => word.length > 3)
       };
       
       const price = calculateCustomDesignPricing(customization);
