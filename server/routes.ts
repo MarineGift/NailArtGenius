@@ -314,7 +314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointment routes
   app.get("/api/appointments/booked-slots/:date", async (req, res) => {
     try {
-      const date = new Date(req.params.date);
+      const date = new Date(req.params.date + 'T00:00:00');
       const bookedSlots = await storage.getBookedSlotsByDate(date);
       res.json(bookedSlots);
     } catch (error) {

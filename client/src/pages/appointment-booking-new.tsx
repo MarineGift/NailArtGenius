@@ -74,9 +74,9 @@ export default function AppointmentBooking() {
 
   // Fetch booked slots for selected date
   const { data: bookedSlots = [] } = useQuery({
-    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString()],
+    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString().split('T')[0]],
     enabled: !!selectedDate,
-  }) as { data: string[] };
+  });
 
   // Check if phone number exists
   const checkPhoneMutation = useMutation({
@@ -155,7 +155,7 @@ export default function AppointmentBooking() {
     createAppointmentMutation.mutate(appointmentData);
   };
 
-  const availableSlots = timeSlots.filter(slot => !bookedSlots.includes(slot));
+  const availableSlots = timeSlots.filter(slot => !(bookedSlots as string[]).includes(slot));
 
   return (
     <div className="min-h-screen bg-gray-50">

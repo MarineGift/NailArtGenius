@@ -214,8 +214,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBookedSlotsByDate(date: Date): Promise<string[]> {
-    const bookedAppointments = await this.getAppointmentsByDate(date);
-    return bookedAppointments.map(app => app.timeSlot);
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookedAppointments = await db
+      .select({ timeSlot: appointments.timeSlot })
+      .from(appointments)
+      .where(
+        and(
+          gte(appointments.appointmentDate, startOfDay),
+          lte(appointments.appointmentDate, endOfDay),
+          eq(appointments.status, "scheduled")
+        )
+      );
+
+    return bookedAppointments.map(apt => apt.timeSlot);
   }
 
   async getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined> {
@@ -306,11 +321,11 @@ export class DatabaseStorage implements IStorage {
     return updatedAppointment;
   }
 
-  async getUserAppointments(userId: string): Promise<Appointment[]> {
+  async getUserAppointments(customerId: number): Promise<Appointment[]> {
     return await db
       .select()
       .from(appointments)
-      .where(eq(appointments.userId, userId))
+      .where(eq(appointments.customerId, customerId))
       .orderBy(desc(appointments.appointmentDate));
   }
 
