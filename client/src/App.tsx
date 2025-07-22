@@ -20,6 +20,8 @@ import AdminPanel from "@/pages/admin-panel";
 import Signup from "@/pages/signup";
 import StylePreferences from "@/pages/style-preferences";
 import CustomDesign from "@/pages/custom-design";
+import PhotoMeasurement from "@/pages/photo-measurement";
+import DesignGeneration from "@/pages/design-generation";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -45,6 +47,8 @@ function Router() {
           <Route path="/admin-panel" component={AdminPanel} />
           <Route path="/style-preferences" component={StylePreferences} />
           <Route path="/custom-design" component={CustomDesign} />
+          <Route path="/photo-measurement" component={PhotoMeasurement} />
+          <Route path="/design-generation" component={DesignGeneration} />
         </>
       )}
       <Route component={NotFound} />

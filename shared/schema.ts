@@ -43,25 +43,37 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Customer photos for nail analysis
+// Customer photos for nail analysis with card-based measurement
 export const customerPhotos = pgTable("customer_photos", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
+  sessionId: varchar("session_id").notNull(), // Groups photos from same session
   fileName: varchar("file_name").notNull(),
   filePath: varchar("file_path").notNull(),
-  photoType: varchar("photo_type").notNull(), // 'finger_position' or 'finger_curvature'
-  fingerType: varchar("finger_type"), // 'thumb', 'index', 'middle', 'ring', 'pinky'
+  photoType: varchar("photo_type").notNull(), // 'finger_with_card', 'finger_curvature', 'card_reference'
+  fingerType: varchar("finger_type"), // 'thumb', 'index', 'middle', 'ring', 'pinky', 'reference_card'
+  cardDetected: boolean("card_detected").default(false), // Whether card was detected for scale
+  cardPixelWidth: integer("card_pixel_width"), // Card width in pixels for scale calculation
+  cardPixelHeight: integer("card_pixel_height"), // Card height in pixels for scale calculation
+  scaleFactor: decimal("scale_factor", { precision: 10, scale: 6 }), // mm per pixel ratio
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
-// AI generated nail shapes
+// AI generated nail analysis with precise measurements
 export const aiGeneratedNails = pgTable("ai_generated_nails", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   sessionId: varchar("session_id").notNull(),
   fingerType: varchar("finger_type").notNull(),
-  shapeData: jsonb("shape_data"), // AI analysis results
-  imageUrl: varchar("image_url"), // Generated nail shape image
+  nailWidth: decimal("nail_width", { precision: 8, scale: 3 }), // Width in mm
+  nailLength: decimal("nail_length", { precision: 8, scale: 3 }), // Length in mm
+  nailCurvature: decimal("nail_curvature", { precision: 8, scale: 3 }), // Curvature radius in mm
+  fingerWidth: decimal("finger_width", { precision: 8, scale: 3 }), // Finger width in mm
+  fingerLength: decimal("finger_length", { precision: 8, scale: 3 }), // Finger length in mm
+  shapeCategory: varchar("shape_category"), // oval, square, round, almond, coffin
+  shapeData: jsonb("shape_data"), // Detailed AI analysis results
+  measurementConfidence: decimal("measurement_confidence", { precision: 5, scale: 2 }), // 0-100 confidence score
+  imageUrl: varchar("image_url"), // Generated nail shape visualization
   createdAt: timestamp("created_at").defaultNow(),
 });
 

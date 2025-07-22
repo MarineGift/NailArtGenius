@@ -90,48 +90,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
 
-  // Photo upload routes
-  app.post('/api/photos/upload', isAuthenticated, upload.array('photos', 6), async (req: any, res) => {
+  // Photo upload routes for card-based measurement
+  app.post('/api/photos/upload', isAuthenticated, upload.single('photo'), async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const files = req.files as Express.Multer.File[];
-      const { photoTypes, fingerTypes, sessionId } = req.body;
-
-      if (!files || files.length === 0) {
-        return res.status(400).json({ message: "No files uploaded" });
-      }
-
-      const savedPhotos = [];
+      const { sessionId, fingerType, photoType } = req.body;
       
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const photoType = Array.isArray(photoTypes) ? photoTypes[i] : photoTypes;
-        const fingerType = Array.isArray(fingerTypes) ? fingerTypes[i] : fingerTypes;
-
-        const photoData = {
-          userId,
-          fileName: file.filename,
-          filePath: file.path,
-          photoType,
-          fingerType,
-        };
-
-        const savedPhoto = await storage.saveCustomerPhoto(photoData);
-        savedPhotos.push(savedPhoto);
+      if (!req.file) {
+        return res.status(400).json({ message: "사진 파일이 필요합니다." });
       }
 
-      res.json({ 
-        message: "Photos uploaded successfully", 
-        photos: savedPhotos,
-        sessionId 
+      // Save photo information to database
+      const photoData = {
+        userId,
+        sessionId,
+        fileName: req.file.filename,
+        filePath: req.file.path,
+        photoType,
+        fingerType,
+        cardDetected: false, // Will be updated during analysis
+      };
+
+      const savedPhoto = await storage.saveCustomerPhoto(photoData);
+      
+      res.json({
+        id: savedPhoto.id,
+        imageUrl: `/uploads/${req.file.filename}`,
+        fingerType,
+        photoType
       });
     } catch (error) {
-      console.error("Error uploading photos:", error);
-      res.status(500).json({ message: "Failed to upload photos" });
+      console.error("Photo upload error:", error);
+      res.status(500).json({ message: "사진 업로드 중 오류가 발생했습니다." });
     }
   });
 
-  // AI analysis routes
+  // Photo analysis route for nail measurements
+  app.post("/api/photos/analyze", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId } = req.body;
+      
+      // Get all photos for this session
+      const photos = await storage.getCustomerPhotos(userId, sessionId);
+      
+      if (photos.length < 6) {
+        return res.status(400).json({ message: "6장의 사진이 모두 필요합니다." });
+      }
+
+      // Import nail measurement AI functions
+      const { analyzeNailPhotos } = await import("./nailMeasurementAI");
+      
+      // Analyze photos and get measurements
+      const measurements = await analyzeNailPhotos(sessionId, photos);
+      
+      // Save measurements to database
+      const savedMeasurements = [];
+      for (const measurement of measurements) {
+        const nailData = {
+          userId,
+          sessionId,
+          fingerType: measurement.fingerType,
+          nailWidth: measurement.nailWidth.toString(),
+          nailLength: measurement.nailLength.toString(),
+          nailCurvature: measurement.nailCurvature.toString(),
+          fingerWidth: measurement.fingerWidth.toString(),
+          fingerLength: measurement.fingerLength.toString(),
+          shapeCategory: measurement.shapeCategory,
+          measurementConfidence: measurement.confidence.toString(),
+          shapeData: measurement
+        };
+        
+        const savedMeasurement = await storage.saveAiGeneratedNail(nailData);
+        savedMeasurements.push(savedMeasurement);
+      }
+      
+      res.json({
+        measurements: savedMeasurements,
+        sessionId,
+        success: true
+      });
+    } catch (error) {
+      console.error("Photo analysis error:", error);
+      res.status(500).json({ message: error.message || "사진 분석 중 오류가 발생했습니다." });
+    }
+  });
+
+  // Legacy AI analysis route
   app.post('/api/ai/analyze', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -466,6 +511,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching custom designs:", error);
       res.status(500).json({ message: "Failed to fetch custom designs" });
+    }
+  });
+
+  // Get AI measurements route
+  app.get("/api/ai/measurements/:sessionId", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId } = req.params;
+      
+      const measurements = await storage.getAiGeneratedNails(userId, sessionId);
+      res.json(measurements);
+    } catch (error) {
+      console.error("Error fetching measurements:", error);
+      res.status(500).json({ message: "측정 데이터를 가져오는 중 오류가 발생했습니다." });
+    }
+  });
+
+  // Generate design with measurements route
+  app.post("/api/designs/generate-with-measurements", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, customPrompt, stylePreferences } = req.body;
+      
+      // Get measurements
+      const measurements = await storage.getAiGeneratedNails(userId, sessionId);
+      
+      if (!measurements || measurements.length === 0) {
+        return res.status(400).json({ message: "손톱 측정 데이터가 필요합니다." });
+      }
+
+      // Import and use nail measurement AI
+      const { generateNailArtWithMeasurements } = await import("./nailMeasurementAI");
+      
+      // Convert database measurements to the expected format
+      const formattedMeasurements = measurements.map((m: any) => ({
+        fingerType: m.fingerType,
+        nailWidth: parseFloat(m.nailWidth),
+        nailLength: parseFloat(m.nailLength),
+        nailCurvature: parseFloat(m.nailCurvature),
+        fingerWidth: parseFloat(m.fingerWidth),
+        fingerLength: parseFloat(m.fingerLength),
+        shapeCategory: m.shapeCategory,
+        confidence: parseFloat(m.measurementConfidence)
+      }));
+      
+      const designUrl = await generateNailArtWithMeasurements(
+        formattedMeasurements,
+        customPrompt,
+        stylePreferences
+      );
+      
+      res.json({
+        designUrl,
+        sessionId,
+        measurements: formattedMeasurements
+      });
+    } catch (error) {
+      console.error("Error generating design with measurements:", error);
+      res.status(500).json({ message: error.message || "디자인 생성 중 오류가 발생했습니다." });
     }
   });
 
