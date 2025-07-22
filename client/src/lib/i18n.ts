@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
-// Multi-language support for Korean, English, Japanese, and Chinese
-export type Language = 'ko' | 'en' | 'ja' | 'zh' | 'es';
+// Multi-language support for English, Korean, Japanese, and Spanish
+export type Language = 'en' | 'ko' | 'ja' | 'es';
 
 // Translation data structure
 const translations = {
   // Navigation
-  'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', zh: '首页', es: 'Inicio' },
-  'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', zh: '服务', es: 'Servicios' },
-  'nav.about': { ko: '소개', en: 'About', ja: 'について', zh: '关于', es: 'Acerca de' },
-  'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', zh: '预约', es: 'Reserva' },
-  'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', zh: '画廊', es: 'Galería' },
-  'nav.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', zh: '联系我们', es: 'Contacto' },
-  'nav.login': { ko: '로그인', en: 'Login', ja: 'ログイン', zh: '登录' },
-  'nav.logout': { ko: '로그아웃', en: 'Logout', ja: 'ログアウト', zh: '退出' },
-  'nav.signup': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', zh: '注册' },
+  'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', es: 'Inicio' },
+  'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
+  'nav.about': { ko: '소개', en: 'About', ja: 'について', es: 'Acerca de' },
+  'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', es: 'Reserva' },
+  'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', es: 'Galería' },
+  'nav.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', es: 'Contacto' },
+  'nav.login': { ko: '로그인', en: 'Login', ja: 'ログイン', es: 'Iniciar sesión' },
+  'nav.logout': { ko: '로그아웃', en: 'Logout', ja: 'ログアウト', es: 'Cerrar sesión' },
+  'nav.signup': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', es: 'Registrarse' },
   'nav.photo_measurement': { ko: '사진 측정', en: 'Photo Measurement', ja: '写真測定', zh: '照片测量' },
   'nav.design_studio': { ko: '디자인 스튜디오', en: 'Design Studio', ja: 'デザインスタジオ', zh: '设计工作室' },
   'nav.analytics': { ko: '분석', en: 'Analytics', ja: 'アナリティクス', zh: '分析' },
@@ -215,14 +215,14 @@ const translations = {
   'header.adminPanel': { ko: '관리자 패널', en: 'Admin Panel', ja: '管理者パネル', es: 'Panel de Administrador' },
 
   // Carousel
-  'carousel.salon.title': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', zh: 'Connie\'s Nail沙龙' },
-  'carousel.salon.description': { ko: '워싱턴 DC 프리미엄 네일 살롱', en: 'Premium Nail Salon in Washington DC', ja: 'ワシントンDCのプレミアムネイルサロン', zh: '华盛顿特区高端美甲沙龙' },
-  'carousel.art1.title': { ko: '아름다운 네일아트', en: 'Beautiful Nail Art', ja: '美しいネイルアート', zh: '美丽的美甲艺术' },
-  'carousel.art1.description': { ko: '전문가의 세심한 디자인', en: 'Expert meticulous design', ja: '専門家の繊細なデザイン', zh: '专家精心设计' },
-  'carousel.art2.title': { ko: 'AI 맞춤 네일', en: 'AI Custom Nails', ja: 'AIカスタムネイル', zh: 'AI定制美甲' },
-  'carousel.art2.description': { ko: '혁신적인 AI 기술로 완성', en: 'Completed with innovative AI technology', ja: '革新的なAI技術で完成', zh: '采用创新AI技术完成' },
-  'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', zh: '高端护理' },
-  'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', zh: '顶级美甲服务体验' },
+  'carousel.salon.title': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', es: 'Salón Connie\'s Nail' },
+  'carousel.salon.description': { ko: '워싱턴 DC 프리미엄 네일 살롱', en: 'Premium Nail Salon in Washington DC', ja: 'ワシントンDCのプレミアムネイルサロン', es: 'Salón de uñas premium en Washington DC' },
+  'carousel.art1.title': { ko: '아름다운 네일아트', en: 'Beautiful Nail Art', ja: '美しいネイルアート', es: 'Arte de uñas hermoso' },
+  'carousel.art1.description': { ko: '전문가의 세심한 디자인', en: 'Expert meticulous design', ja: '専門家の繊細なデザイン', es: 'Diseño meticuloso de expertos' },
+  'carousel.art2.title': { ko: 'AI 맞춤 네일', en: 'AI Custom Nails', ja: 'AIカスタムネイル', es: 'Uñas personalizadas con IA' },
+  'carousel.art2.description': { ko: '혁신적인 AI 기술로 완성', en: 'Completed with innovative AI technology', ja: '革新的なAI技術で完成', es: 'Completado con tecnología IA innovadora' },
+  'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado premium' },
+  'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' },
 
   // Errors
   'error.upload_failed': { ko: '업로드에 실패했습니다', en: 'Upload failed', ja: 'アップロードに失敗しました', es: 'Error en la carga' },
@@ -255,15 +255,15 @@ export function saveLanguagePreference(lang: Language): void {
 export function loadLanguagePreference(): Language {
   try {
     const saved = localStorage.getItem('preferred-language') as Language;
-    if (saved && (saved === 'ko' || saved === 'en' || saved === 'ja' || saved === 'zh')) {
+    if (saved && (saved === 'en' || saved === 'ko' || saved === 'ja' || saved === 'es')) {
       return saved;
     }
   } catch (e) {
     // Silent fail for environments without localStorage
   }
   
-  // For Connie's Nail, always default to Korean first
-  return 'ko';
+  // For Connie's Nail, default to English
+  return 'en';
 }
 
 // Hook for using translations in components
@@ -272,11 +272,11 @@ export function useTranslation() {
     if (typeof window !== 'undefined') {
       return loadLanguagePreference();
     }
-    return 'ko';
+    return 'en';
   });
 
   const t = (key: string, params?: { [key: string]: string | number }): string => {
-    const translation = translations[key];
+    const translation = (translations as any)[key];
     if (!translation) {
       return key;
     }
