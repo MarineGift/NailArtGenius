@@ -154,12 +154,18 @@ export default function Home() {
                 <p><strong>3단계:</strong> AI 분석 완료 후 10개 네일아트 이미지 확인</p>
                 <p><strong>4단계:</strong> "분석 대시보드"에서 결과 리포트 확인</p>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 flex gap-3">
                 <Button 
                   onClick={() => setLocation('/test-guide')}
                   className="bg-blue-600 text-white hover:bg-blue-700"
                 >
                   🧪 전체 시스템 테스트하기
+                </Button>
+                <Button 
+                  onClick={() => setLocation('/pdf-preview')}
+                  className="bg-green-600 text-white hover:bg-green-700"
+                >
+                  📄 PDF 미리보기
                 </Button>
               </div>
             </div>

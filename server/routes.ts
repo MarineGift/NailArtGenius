@@ -146,6 +146,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get latest nail art results for PDF preview
+  app.get('/api/photos/latest-results/:sessionId?', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const sessionId = req.params.sessionId;
+
+      // Get the latest AI generated nails for the user
+      const aiNails = await storage.getAiGeneratedNails(userId);
+      
+      if (aiNails.length === 0) {
+        return res.status(404).json({ message: "생성된 네일아트 결과가 없습니다." });
+      }
+
+      // Filter by session ID if provided
+      const filteredNails = sessionId 
+        ? aiNails.filter(nail => nail.sessionId === sessionId)
+        : aiNails;
+
+      if (filteredNails.length === 0) {
+        return res.status(404).json({ message: "해당 세션의 결과를 찾을 수 없습니다." });
+      }
+
+      // Group by session and get the most recent
+      const sessionGroups = filteredNails.reduce((acc, nail) => {
+        const session = nail.sessionId || 'default';
+        if (!acc[session]) {
+          acc[session] = [];
+        }
+        acc[session].push(nail);
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      const latestSession = Object.keys(sessionGroups).sort().pop();
+      const latestNails = sessionGroups[latestSession || 'default'];
+
+      // Format response for PDF preview
+      const generatedImages = latestNails
+        .map(nail => nail.generatedImageUrl || nail.imageUrl || '')
+        .filter(Boolean);
+
+      const descriptions = latestNails.map(nail => 
+        `${nail.fingerType} 손가락용 네일아트 (${nail.nailWidthMm?.toFixed(1) || 'N/A'}mm × ${nail.nailLengthMm?.toFixed(1) || 'N/A'}mm)`
+      );
+
+      const designSpecs = latestNails.map(nail => ({
+        fingerType: nail.fingerType,
+        designDescription: `${nail.fingerType} 손가락을 위한 맞춤형 디자인`,
+        estimatedSize: `${nail.nailWidthMm?.toFixed(1) || 'N/A'}mm × ${nail.nailLengthMm?.toFixed(1) || 'N/A'}mm`,
+        designComplexity: nail.shapeCategory || 'medium'
+      }));
+
+      // Check for existing PDF file
+      const pdfFileName = `nail_art_${latestSession}_*.pdf`;
+      let pdfUrl = '';
+      try {
+        const uploadsDir = path.join(process.cwd(), 'uploads');
+        const files = await fs.readdir(uploadsDir);
+        const pdfFile = files.find(file => file.startsWith(`nail_art_${latestSession}_`) && file.endsWith('.pdf'));
+        if (pdfFile) {
+          pdfUrl = `/uploads/${pdfFile}`;
+        }
+      } catch (error) {
+        console.log("No PDF file found, will generate on request");
+      }
+
+      res.json({
+        generatedImages,
+        descriptions,
+        designSpecs,
+        pdfUrl,
+        sessionId: latestSession,
+        totalImages: generatedImages.length,
+        demoMode: latestNails.some(nail => nail.fingerType?.includes('demo')),
+        success: true
+      });
+
+    } catch (error) {
+      console.error("Error fetching latest results:", error);
+      res.status(500).json({ message: "결과를 불러오는 중 오류가 발생했습니다." });
+    }
+  });
+
   // New combined route: analyze photos and generate nail art images with PDF
   app.post("/api/photos/analyze-and-generate", isAuthenticated, async (req: any, res) => {
     try {

@@ -26,6 +26,7 @@ import AdvancedDesignStudio from "@/pages/advanced-design-studio";
 import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import EnhancedPhotoGuide from "@/pages/enhanced-photo-guide";
 import TestGuide from "@/pages/test-guide";
+import PDFPreview from "@/pages/pdf-preview";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -57,6 +58,7 @@ function Router() {
           <Route path="/analytics" component={AnalyticsDashboard} />
           <Route path="/photo-guide" component={EnhancedPhotoGuide} />
           <Route path="/test-guide" component={TestGuide} />
+          <Route path="/pdf-preview" component={PDFPreview} />
         </>
       )}
       <Route component={NotFound} />
