@@ -161,19 +161,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "6장의 사진이 모두 필요합니다." });
       }
 
-      // Step 1: Create mock measurements (OpenAI quota exceeded)
-      console.log("Creating mock measurements due to API limitations...");
-      const fingerTypes = ['thumb', 'index', 'middle', 'ring', 'pinky'];
-      const measurements = fingerTypes.map((fingerType, index) => ({
-        fingerType,
-        nailWidth: 12 + index * 0.5,
-        nailLength: 15 + index * 0.3,
-        nailCurvature: 0.3 + index * 0.1,
-        fingerWidth: 18 + index * 0.4,
-        fingerLength: 45 + index * 2,
-        shapeCategory: ['oval', 'square', 'round', 'coffin', 'almond'][index],
-        confidence: 0.85 + index * 0.02
+      // Step 1: Analyze photos with precise nail measurements
+      const { analyzePreciseNailMeasurements } = await import("./preciseNailMeasurement");
+      console.log("Analyzing nail photos with precise measurements...");
+      const photosForAnalysis = photos.map(photo => ({
+        filePath: photo.filePath,
+        fingerType: photo.fingerType || 'unknown',
+        photoType: photo.photoType
       }));
+      const analysisResult = await analyzePreciseNailMeasurements(sessionId, photosForAnalysis);
+      
+      if (!analysisResult.cardDetected) {
+        return res.status(400).json({ 
+          message: "카드를 감지할 수 없습니다. 카드가 선명하게 보이는 사진을 다시 업로드해주세요.",
+          recommendations: analysisResult.recommendations
+        });
+      }
+      
+      const measurements = analysisResult.fingerMeasurements;
       
       // Save measurements to database
       const savedMeasurements = [];
@@ -196,18 +201,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savedMeasurements.push(savedMeasurement);
       }
       
-      // Step 2: Create mock nail art generation (OpenAI quota exceeded)
-      console.log("Creating mock nail art generation due to API limitations...");
+      // Step 2: Generate precision nail art for all 10 fingers
+      const { generatePrecisionNailArt } = await import("./advancedNailArtGenerator");
+      console.log("Generating precision nail art for 10 fingers...");
       
-      const nailArtResult = {
-        generatedImages: Array(10).fill(0).map((_, i) => `/uploads/mock_nail_art_${i + 1}.png`),
-        descriptions: Array(10).fill(0).map((_, i) => {
-          const fingerNames = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
-          const handSide = i < 5 ? 'Left' : 'Right';
-          const fingerIndex = i % 5;
-          return `AI-generated ${handSide} ${fingerNames[fingerIndex]} nail art design with elegant patterns`;
-        })
-      };
+      const nailArtResult = await generatePrecisionNailArt(
+        sessionId,
+        measurements,
+        {
+          style: 'elegant',
+          colors: ['#FFB6C1', '#FFC0CB', '#FFFFFF'],
+          theme: 'classic',
+          complexity: 'medium'
+        }
+      );
       
       // Step 3: Create PDF with all generated nail art images
       console.log("Creating PDF with nail art images...");

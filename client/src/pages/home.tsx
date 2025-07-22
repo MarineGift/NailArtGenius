@@ -127,15 +127,21 @@ export default function Home() {
         {/* Instructions Card */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <CreditCard className="mr-2 h-5 w-5 text-secondary" />
-              촬영 가이드
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <CreditCard className="mr-2 h-5 w-5 text-secondary" />
+                정밀 촬영 가이드
+              </div>
+              <Button variant="outline" onClick={() => setLocation('/photo-guide')}>
+                상세 가이드 보기
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-yellow-800">
-                <span className="font-semibold">중요:</span> 정확한 AI 분석을 위해 반드시 신용카드 위에 손가락을 올려놓고 촬영해주세요
+                <span className="font-semibold">중요:</span> 정확한 AI 분석을 위해 반드시 신용카드 위에 손가락을 올려놓고 촬영해주세요. 
+                총 12장의 사진이 필요합니다.
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
