@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Camera, Palette, Printer, UserPlus } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import LanguageSelector from "@/components/language-selector";
 
 export default function Landing() {

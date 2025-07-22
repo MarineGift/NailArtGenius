@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 
 // Import guide images - using new uploaded images
 import thumbGuideImg from "@assets/KakaoTalk_20250721_223405822_1753153723937.jpg";

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { t } from "@/lib/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Camera, Palette, Printer, CreditCard, Calendar, Sparkles, Wand2, BarChart3 } from "lucide-react";
+import DemoLanguageTest from "@/components/demo-language-test";
 
 export default function Home() {
   const { toast } = useToast();
@@ -39,10 +41,10 @@ export default function Home() {
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            안녕하세요, {user?.firstName || '고객'}님! 👋
+            {t('home.title')} 👋
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            AI가 그려낸 당신만의 손끝 예술, 지금부터 시작해보세요
+            {t('home.subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -51,7 +53,7 @@ export default function Home() {
               className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
             >
               <Camera className="mr-2 h-5 w-5" />
-              새 네일아트 시작하기
+{t('home.get_started')}
             </Button>
             <Button 
               variant="outline" 
@@ -63,6 +65,11 @@ export default function Home() {
               AI 디자인 스튜디오
             </Button>
           </div>
+        </div>
+
+        {/* Multi-Language Demo */}
+        <div className="mb-12">
+          <DemoLanguageTest />
         </div>
 
         {/* Service Process Cards */}
@@ -159,13 +166,13 @@ export default function Home() {
                   onClick={() => setLocation('/test-guide')}
                   className="bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  🧪 전체 시스템 테스트하기
+{t('home.test_system')}
                 </Button>
                 <Button 
                   onClick={() => setLocation('/pdf-preview')}
                   className="bg-green-600 text-white hover:bg-green-700"
                 >
-                  📄 PDF 미리보기
+{t('home.pdf_preview')}
                 </Button>
               </div>
             </div>

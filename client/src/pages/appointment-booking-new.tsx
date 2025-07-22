@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Calendar as CalendarIcon, Clock, User, Phone, ArrowLeft } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { format, isAfter, startOfToday } from "date-fns";
 import { ko } from "date-fns/locale";
 import Header from "@/components/header";

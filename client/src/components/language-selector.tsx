@@ -5,11 +5,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLanguage, languageOptions } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Globe } from "lucide-react";
 
 export default function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
+  
+  const languageOptions = [
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    { code: 'en', name: 'English', flag: '🇺🇸' }
+  ];
   
   const currentLanguage = languageOptions.find(lang => lang.code === language);
 

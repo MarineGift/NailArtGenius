@@ -6,6 +6,14 @@ AI Nail Studio is a full-stack web application that provides personalized nail a
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (January 2025)
+- **Multi-Language Support Implementation**: Complete Korean/English i18n system implemented
+  - Created comprehensive translation system with 70+ translation keys
+  - Built language switcher component with flag indicators  
+  - Added persistent language preference storage
+  - Implemented browser language auto-detection
+  - Fixed all import issues across components
+
 ## System Architecture
 
 ### Full-Stack Structure

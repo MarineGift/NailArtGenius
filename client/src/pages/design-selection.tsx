@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Heart, ShoppingCart, Star, Eye, Info } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 

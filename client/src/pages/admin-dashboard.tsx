@@ -21,7 +21,7 @@ import {
   Trash2,
   UserCheck
 } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 import { format } from "date-fns";

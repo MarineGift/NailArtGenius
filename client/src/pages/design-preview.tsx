@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Wand2, ShoppingCart, RefreshCw, Download } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 import { generateDesignPreviewPDF } from "@/lib/pdf-generator";

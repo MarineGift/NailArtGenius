@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useLanguage } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Palette, LogOut, Settings, BarChart3 } from "lucide-react";
@@ -8,7 +8,6 @@ import { Link } from "wouter";
 
 export default function Header() {
   const { user } = useAuth();
-  const { t } = useLanguage();
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100">
@@ -17,12 +16,12 @@ export default function Header() {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Palette className="text-secondary text-2xl mr-2" />
-              <span className="text-xl font-bold text-gray-900">AI Nail Studio</span>
+              <span className="text-xl font-bold text-gray-900">{t('home.title')}</span>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
-            <LanguageSwitcher size="sm" />
+            <LanguageSwitcher />
             
             {user && (
               <div className="flex items-center space-x-4">

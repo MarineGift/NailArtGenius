@@ -1,4 +1,4 @@
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 export default function Footer() {

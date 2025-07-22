@@ -1,71 +1,66 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useLanguage, type Language } from "@/lib/i18n";
-import { Languages } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Globe } from "lucide-react";
+
+type Language = 'ko' | 'en';
 
 const languageOptions = [
   { code: 'ko' as Language, name: '한국어', flag: '🇰🇷' },
-  { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
-  { code: 'ja' as Language, name: '日本語', flag: '🇯🇵' },
-  { code: 'es' as Language, name: 'Español', flag: '🇪🇸' }
+  { code: 'en' as Language, name: 'English', flag: '🇺🇸' }
 ];
 
-interface LanguageSwitcherProps {
-  variant?: 'select' | 'button';
-  size?: 'sm' | 'md' | 'lg';
-}
+export default function LanguageSwitcher() {
+  const getCurrentLanguage = (): Language => {
+    try {
+      const saved = localStorage.getItem('preferred-language') as Language;
+      if (saved && (saved === 'ko' || saved === 'en')) {
+        return saved;
+      }
+    } catch (e) {
+      // Silent fail
+    }
+    return 'en';
+  };
 
-export default function LanguageSwitcher({ variant = 'select', size = 'md' }: LanguageSwitcherProps) {
-  const { language, setLanguage } = useLanguage();
+  const setLanguage = (lang: Language) => {
+    try {
+      localStorage.setItem('preferred-language', lang);
+      window.location.reload(); // Simple reload to update all components
+    } catch (e) {
+      // Silent fail
+    }
+  };
 
-  const currentLanguage = languageOptions.find(lang => lang.code === language);
-
-  if (variant === 'button') {
-    return (
-      <div className="flex items-center gap-2">
-        {languageOptions.map((lang) => (
-          <Button
-            key={lang.code}
-            variant={language === lang.code ? "default" : "outline"}
-            size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
-            onClick={() => setLanguage(lang.code)}
-            className={`${size === 'sm' ? 'px-2 py-1 text-xs' : ''} ${
-              language === lang.code ? 'bg-pink-600 hover:bg-pink-700' : ''
-            }`}
-          >
-            <span className="mr-1">{lang.flag}</span>
-            {size !== 'sm' && lang.name}
-          </Button>
-        ))}
-      </div>
-    );
-  }
+  const currentLanguage = languageOptions.find(lang => lang.code === getCurrentLanguage());
 
   return (
-    <Select value={language} onValueChange={setLanguage}>
-      <SelectTrigger className={`w-fit ${
-        size === 'sm' ? 'h-8 px-2 text-sm' : 
-        size === 'lg' ? 'h-12 px-4 text-lg' : 
-        'h-10 px-3'
-      }`}>
-        <div className="flex items-center gap-2">
-          <Languages className={`${size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'}`} />
-          <span className="flex items-center gap-1">
-            <span>{currentLanguage?.flag}</span>
-            {size !== 'sm' && <span>{currentLanguage?.name}</span>}
-          </span>
-        </div>
-      </SelectTrigger>
-      <SelectContent>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+          <Globe className="h-4 w-4" />
+          <span>{currentLanguage?.flag}</span>
+          <span className="hidden sm:inline">{currentLanguage?.name}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
         {languageOptions.map((lang) => (
-          <SelectItem key={lang.code} value={lang.code}>
-            <div className="flex items-center gap-2">
-              <span>{lang.flag}</span>
-              <span>{lang.name}</span>
-            </div>
-          </SelectItem>
+          <DropdownMenuItem
+            key={lang.code}
+            onClick={() => setLanguage(lang.code)}
+            className={`flex items-center space-x-2 ${
+              getCurrentLanguage() === lang.code ? 'bg-secondary/10' : ''
+            }`}
+          >
+            <span>{lang.flag}</span>
+            <span>{lang.name}</span>
+          </DropdownMenuItem>
         ))}
-      </SelectContent>
-    </Select>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

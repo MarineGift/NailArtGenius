@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Camera, CreditCard, Info } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 import cardImage1 from "@assets/KakaoTalk_20250721_192903601_1753140740907.jpg";

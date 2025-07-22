@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Sparkles, Download, Eye, Palette, Wand2 } from "lucide-react";
-import { useLanguage } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface NailArtGeneratorProps {
   sessionId: string;
