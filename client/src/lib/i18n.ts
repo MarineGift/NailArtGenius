@@ -162,9 +162,9 @@ const translations = {
   'contact.appointment_call': { ko: '**예약을 위해서는 202.898.0826으로 전화해 주세요!', en: '**For appointments, please call us 202.898.0826!' },
 
   // Landing page
-  'landing.title': { ko: 'AI 네일 스튜디오에 오신 것을 환영합니다', en: 'Welcome to AI Nail Studio', ja: 'AIネイルスタジオへようこそ', es: 'Bienvenido al Estudio de Uñas AI' },
-  'landing.subtitle': { ko: '혁신적인 AI 기술로 완벽한 네일아트를 만나보세요', en: 'Discover perfect nail art with innovative AI technology', ja: '革新的なAI技術で完璧なネイルアートを発見', es: 'Descubre el arte de uñas perfecto con tecnología AI innovadora' },
-  'landing.getStarted': { ko: '시작하기', en: 'Get Started', ja: '開始する', es: 'Comenzar' },
+  'landing.title': { ko: 'Connie\'s Nail에 오신 것을 환영합니다', en: 'Welcome to Connie\'s Nail', ja: 'Connie\'s Nailへようこそ', es: 'Bienvenido a Connie\'s Nail' },
+  'landing.subtitle': { ko: '전문적인 네일 케어와 스파 서비스로 아름다움을 완성하세요', en: 'Complete your beauty with professional nail care and spa services', ja: 'プロフェッショナルなネイルケアとスパサービスで美しさを完成', es: 'Completa tu belleza con cuidado profesional de uñas y servicios de spa' },
+  'landing.getStarted': { ko: '예약하기', en: 'Book Now', ja: '予約する', es: 'Reservar Ahora' },
 
   // Signup
   'signup.title': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', es: 'Registrarse' },
@@ -252,19 +252,8 @@ export function loadLanguagePreference(): Language {
     // Silent fail for environments without localStorage
   }
   
-  // Auto-detect browser language
-  if (typeof navigator !== 'undefined') {
-    const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith('ko')) {
-      return 'ko';
-    } else if (browserLang.startsWith('ja')) {
-      return 'ja';
-    } else if (browserLang.startsWith('zh')) {
-      return 'zh';
-    }
-  }
-  
-  return 'en'; // Default to English
+  // For Connie's Nail, always default to Korean first
+  return 'ko';
 }
 
 // Hook for using translations in components

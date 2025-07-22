@@ -16,7 +16,7 @@ export default function Landing() {
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
                 <Palette className="text-secondary text-2xl mr-2" />
-                <span className="text-xl font-bold text-gray-900">AI Nail Studio</span>
+                <span className="text-xl font-bold text-gray-900">Connie's Nail</span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
