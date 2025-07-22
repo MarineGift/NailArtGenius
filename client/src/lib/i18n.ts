@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
 // Multi-language support for Korean, English, Japanese, and Chinese
-export type Language = 'ko' | 'en' | 'ja' | 'zh';
+export type Language = 'ko' | 'en' | 'ja' | 'zh' | 'es';
 
 // Translation data structure
 const translations = {
   // Navigation
-  'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', zh: '首页' },
-  'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', zh: '服务' },
-  'nav.about': { ko: '소개', en: 'About', ja: 'について', zh: '关于' },
-  'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', zh: '预约' },
-  'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', zh: '画廊' },
-  'nav.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', zh: '联系我们' },
+  'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', zh: '首页', es: 'Inicio' },
+  'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', zh: '服务', es: 'Servicios' },
+  'nav.about': { ko: '소개', en: 'About', ja: 'について', zh: '关于', es: 'Acerca de' },
+  'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', zh: '预约', es: 'Reserva' },
+  'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', zh: '画廊', es: 'Galería' },
+  'nav.contact': { ko: '연락처', en: 'Contact', ja: 'お問い合わせ', zh: '联系我们', es: 'Contacto' },
   'nav.login': { ko: '로그인', en: 'Login', ja: 'ログイン', zh: '登录' },
   'nav.logout': { ko: '로그아웃', en: 'Logout', ja: 'ログアウト', zh: '退出' },
   'nav.signup': { ko: '회원가입', en: 'Sign Up', ja: 'サインアップ', zh: '注册' },
@@ -123,6 +123,10 @@ const translations = {
   'services.design.acrylic': { ko: '아크릴', en: 'Acrylic' },
   'services.design.removal': { ko: '제거', en: 'Removal' },
   'services.design.dip_powder': { ko: '딥 파우더', en: 'DIP Powder' },
+  
+  // Gallery
+  'gallery.title': { ko: '네일아트 갤러리', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', zh: '美甲艺术画廊', es: 'Galería de Arte de Uñas' },
+  'gallery.subtitle': { ko: '프로페셔널한 네일아트 디자인을 확인하고 원하는 스타일을 선택하세요', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロフェッショナルなネイルアートデザインをご覧になり、お好みのスタイルをお選びください', zh: '浏览我们专业的美甲艺术设计，选择您喜欢的风格', es: 'Explore nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
   
   // Chair Massage
   'services.massage.title': { ko: '체어 마사지', en: 'Chair Massage' },

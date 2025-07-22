@@ -18,6 +18,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import { EnhancedAdminPanel } from "@/components/enhanced-admin-panel";
+import Gallery from "@/pages/gallery";
 import Signup from "@/pages/signup";
 import Booking from "@/pages/booking";
 import StylePreferences from "@/pages/style-preferences";
@@ -60,6 +61,7 @@ function Router() {
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin-panel" component={AdminPanel} />
           <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
+          <Route path="/gallery" component={Gallery} />
           <Route path="/style-preferences" component={StylePreferences} />
           <Route path="/custom-design" component={CustomDesign} />
           <Route path="/photo-measurement" component={PhotoMeasurement} />
