@@ -28,6 +28,7 @@ import EnhancedPhotoGuide from "@/pages/enhanced-photo-guide";
 import TestGuide from "@/pages/test-guide";
 import PDFPreview from "@/pages/pdf-preview";
 import Services from "@/pages/services";
+import Contact from "@/pages/contact";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -38,12 +39,14 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/services" component={Services} />
+          <Route path="/contact" component={Contact} />
           <Route path="/signup" component={Signup} />
         </>
       ) : (
         <>
           <Route path="/" component={Home} />
           <Route path="/services" component={Services} />
+          <Route path="/contact" component={Contact} />
           <Route path="/upload" component={PhotoUpload} />
           <Route path="/design-selection" component={DesignSelection} />
           <Route path="/processing" component={AiProcessing} />

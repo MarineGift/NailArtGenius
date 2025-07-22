@@ -102,6 +102,28 @@ const translations = {
   'services.kids.finger_polish': { ko: '손톱 폴리시 체인지', en: 'Finger Polish Change' },
   'services.kids.toe_polish': { ko: '발톱 폴리시 체인지', en: 'Toe Polish Change' },
 
+  // Contact page
+  'contact.title': { ko: 'Connie\'s nail location', en: 'Connie\'s nail location' },
+  'contact.salon_name': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon' },
+  'contact.call_us': { ko: '전화번호 @ 202.898.0826', en: 'Call us @ 202.898.0826' },
+  'contact.hours': { ko: '월요일 - 금요일 오전 10시부터 오후 7시까지 영업합니다', en: 'We are here Monday - Friday from 10:00am to 7:00pm' },
+  'contact.appointment_note': { ko: '전화로 예약해 주시기 바랍니다. 여러분을 만나뵙기를 기대합니다!', en: 'Kindly make your appointments by giving us a call. We look forward to seeing you!' },
+  'contact.where_title': { ko: '저희 위치는?', en: 'Where are we?' },
+  'contact.building': { ko: 'The Ronald Reagan Building & International Trade Center', en: 'The Ronald Reagan Building & International Trade Center' },
+  'contact.space': { ko: 'Space C-084', en: 'Space C-084' },
+  'contact.address': { ko: '1300 Pennsylvania Avenue', en: '1300 Pennsylvania Avenue' },
+  'contact.city': { ko: 'Washington DC, 20004', en: 'Washington DC, 20004' },
+  'contact.directions_title': { ko: '- 길찾기 -', en: '- Directions -' },
+  'contact.metro_title': { ko: 'FEDERAL TRIANGLE STATION에서:', en: 'FROM FEDERAL TRIANGLE STATION:' },
+  'contact.metro_directions': { ko: 'Federal Triangle Metro에서 내린 후, 2개의 에스컬레이터가 있습니다. 첫 번째 에스컬레이터만 이용하여 올라가서 Ronald Reagan Building 방향으로 걸어가세요. 저희는 야외를 향한 가운데 매장입니다.', en: 'Once you get off at Federal Triangle Metro, there are 2 rising escalators. Go up ONLY the FIRST escalator, walk towards the Ronald Reagan Building. We are the middle store facing the outdoors.' },
+  'contact.walking_title': { ko: '건물까지 걸어서:', en: 'WALKING TO THE BUILDING:' },
+  'contact.walking_directions': { ko: 'CVS 앞에 도착하면, 중정을 향해 길을 건너세요. 테이블과 벤치가 보일 것입니다. Woodrow Wilson Plaza로 내려가는 계단 옆의 장미 조각상이 보일 때까지 계속 걸으세요. 저희는 배너 아래 가운데 매장입니다.', en: 'Once you are in front of CVS, cross the street towards the courtyard. You will see tables and benches. Keep walking until you see a rose statue right next to the stair case downstairs to the Woodrow Wilson Plaza. We are the middle store under the banners.' },
+  'contact.location_note': { ko: '저희는 TIMGAD와 Market 2 Market 사이, 콘코스 레벨의 두 번째 매장입니다.', en: 'We are the second store on the concourse level, between TIMGAD and Market 2 Market.' },
+  'contact.feedback_title': { ko: '고객님의 의견을 듣고 싶습니다!', en: 'We love to hear from you!' },
+  'contact.email_note': { ko: '개인적으로 이메일을 보내실 수도 있습니다 @', en: 'You can also personally email us @' },
+  'contact.email': { ko: 'Sungimconniekim@gmail.com', en: 'Sungimconniekim@gmail.com' },
+  'contact.appointment_call': { ko: '**예약을 위해서는 202.898.0826으로 전화해 주세요!', en: '**For appointments, please call us 202.898.0826!' },
+
   // Errors
   'error.upload_failed': { ko: '업로드에 실패했습니다', en: 'Upload failed' },
   'error.analysis_failed': { ko: 'AI 분석에 실패했습니다', en: 'AI analysis failed' },
