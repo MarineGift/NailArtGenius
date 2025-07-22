@@ -1355,7 +1355,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid date format" });
       }
       
-      const availableSlots = await storage.getAvailableTimeSlots(
+      const availableSlots = await storage.getAvailableTimeSlotsWithService(
         requestedDate, 
         serviceId ? parseInt(serviceId as string) : undefined
       );

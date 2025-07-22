@@ -616,7 +616,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Availability operations
-  async getAvailableTimeSlots(date: Date, serviceId?: number): Promise<string[]> {
+  async getAvailableTimeSlotsWithService(date: Date, serviceId?: number): Promise<string[]> {
     const dayOfWeek = date.getDay();
     
     // Get operating hours for the day
@@ -681,7 +681,7 @@ export class DatabaseStorage implements IStorage {
     return hours;
   }
 
-  async getUserAppointments(userId: string): Promise<Appointment[]> {
+  async getUserAppointmentsByUserId(userId: string): Promise<Appointment[]> {
     // First get user's customer records
     const user = await this.getUser(userId);
     if (!user) return [];
