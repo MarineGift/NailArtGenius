@@ -2,10 +2,18 @@ import React from 'react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { CustomerManagement } from '@/components/customer-management';
+import { DemoCustomerData } from '@/components/demo-customer-data';
 import { useLanguage } from "@/hooks/useLanguage";
+import { useQuery } from '@tanstack/react-query';
 
 export default function CustomerManagementPage() {
   const { t } = useLanguage();
+
+  // 사용자 인증 확인
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
+    retry: false,
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950">
@@ -22,7 +30,8 @@ export default function CustomerManagementPage() {
           <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto"></div>
         </div>
 
-        <CustomerManagement />
+        {/* 인증된 사용자에게는 실제 고객 관리 시스템을 보여주고, 그렇지 않으면 데모 데이터 표시 */}
+        {user ? <CustomerManagement /> : <DemoCustomerData />}
       </main>
 
       <Footer />
