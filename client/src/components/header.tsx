@@ -40,6 +40,11 @@ export default function Header() {
                     {t('nav.gallery')}
                   </Button>
                 </Link>
+                <Link href="/ai-generator">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.ai_generator')}
+                  </Button>
+                </Link>
                 <Link href="/contact">
                   <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
                     {t('nav.contact')}

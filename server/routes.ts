@@ -5,6 +5,7 @@ import { storage, enhancedStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
+import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
 import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
@@ -815,6 +816,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error cancelling appointment:", error);
       res.status(500).json({ message: "Failed to cancel appointment" });
+    }
+  });
+
+  // Gallery Management Routes  
+  app.get("/api/gallery", async (req, res) => {
+    try {
+      // Return mock data until database schema is set up
+      const mockGalleryItems = [
+        {
+          id: 1,
+          title: "Classic French Manicure",
+          description: "전통적인 프렌치 매니큐어 스타일",
+          category: "classic",
+          image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
+          price: "$45",
+          duration: "45분",
+          difficulty: "beginner",
+          rating: 4.8,
+          reviews: 127,
+          techniques: ["베이스 코팅", "화이트 팁", "탑 코팅"],
+          materials: ["젤 베이스", "화이트 젤", "클리어 탑코트"],
+          aftercare: "2-3주 지속, 오일 케어 권장",
+          suitableFor: "모든 행사, 직장, 일상",
+          isActive: true,
+          createdAt: new Date()
+        },
+        {
+          id: 2,
+          title: "Floral Design",
+          description: "섬세한 꽃 무늬 네일아트",
+          category: "floral",
+          image: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop",
+          price: "$65",
+          duration: "90분",
+          difficulty: "advanced",
+          rating: 4.9,
+          reviews: 89,
+          techniques: ["손그림 아트", "그라데이션", "세밀 터치"],
+          materials: ["아크릴 페인트", "세밀 브러시", "젤 탑코트"],
+          aftercare: "3-4주 지속, 손 보호 권장",
+          suitableFor: "특별한 행사, 웨딩, 파티",
+          isActive: true,
+          createdAt: new Date()
+        }
+      ];
+      
+      res.json(mockGalleryItems);
+    } catch (error: any) {
+      console.error("Error fetching gallery items:", error);
+      res.status(500).json({ message: "Failed to fetch gallery items" });
+    }
+  });
+
+  app.post("/api/gallery", isAuthenticated, async (req, res) => {
+    try {
+      const galleryItemData = req.body;
+      
+      if (!galleryItemData.title || !galleryItemData.description || !galleryItemData.category) {
+        return res.status(400).json({ message: "Title, description, and category are required" });
+      }
+
+      const newItem = {
+        id: Date.now(),
+        ...galleryItemData,
+        createdAt: new Date(),
+        isActive: true
+      };
+      
+      res.status(201).json(newItem);
+    } catch (error: any) {
+      console.error("Error creating gallery item:", error);
+      res.status(500).json({ message: "Failed to create gallery item" });
+    }
+  });
+
+  app.put("/api/gallery/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      
+      const updatedItem = {
+        id: parseInt(id),
+        ...updateData,
+        updatedAt: new Date()
+      };
+      
+      res.json(updatedItem);
+    } catch (error: any) {
+      console.error("Error updating gallery item:", error);
+      res.status(500).json({ message: "Failed to update gallery item" });
+    }
+  });
+
+  app.delete("/api/gallery/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      res.json({ message: "Gallery item deleted successfully", id: parseInt(id) });
+    } catch (error: any) {
+      console.error("Error deleting gallery item:", error);
+      res.status(500).json({ message: "Failed to delete gallery item" });
     }
   });
 

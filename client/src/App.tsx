@@ -19,6 +19,8 @@ import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import { EnhancedAdminPanel } from "@/components/enhanced-admin-panel";
 import Gallery from "@/pages/gallery";
+import AITailGenerator from "@/pages/ai-nail-generator";
+import GalleryAdmin from "@/pages/gallery-admin";
 import CustomerManagementPage from "@/pages/customer-management";
 import Signup from "@/pages/signup";
 import Booking from "@/pages/booking";
@@ -45,6 +47,7 @@ function Router() {
         <Route path="/services" component={Services} />
         <Route path="/contact" component={Contact} />
         <Route path="/gallery" component={Gallery} />
+        <Route path="/ai-generator" component={AITailGenerator} />
         <Route path="/booking" component={Booking} />
         <Route path="/signup" component={Signup} />
         <Route path="/landing" component={Landing} />
@@ -63,6 +66,7 @@ function Router() {
             <Route path="/admin-panel" component={AdminPanel} />
             <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
             <Route path="/customer-management" component={CustomerManagementPage} />
+            <Route path="/gallery-admin" component={GalleryAdmin} />
             <Route path="/style-preferences" component={StylePreferences} />
             <Route path="/custom-design" component={CustomDesign} />
             <Route path="/photo-measurement" component={PhotoMeasurement} />

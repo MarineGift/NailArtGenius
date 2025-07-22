@@ -13,6 +13,8 @@ import { useTranslation } from '@/lib/i18n';
 import { CalendarDays, Clock, Phone, Mail, User, FileText } from 'lucide-react';
 import { format, addDays, startOfDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 interface Service {
   id: number;
@@ -134,17 +136,19 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <div className="text-center space-y-2">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header />
+      <div className="max-w-4xl mx-auto p-6 space-y-8">
+        <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {t('booking.title')}
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           {t('booking.subtitle')}
         </p>
-      </div>
+        </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
         {/* Service Selection */}
         <Card>
           <CardHeader>
@@ -319,7 +323,9 @@ export default function BookingPage() {
             {createAppointmentMutation.isPending ? t('booking.submitting') : t('booking.confirm_booking')}
           </Button>
         </div>
-      </form>
+        </form>
+      </div>
+      <Footer />
     </div>
   );
 }

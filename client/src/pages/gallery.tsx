@@ -1,13 +1,35 @@
+import { useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Eye, Clock, Star, Heart } from 'lucide-react';
+
+interface NailArtItem {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+  price: string;
+  duration?: string;
+  difficulty?: string;
+  rating?: number;
+  reviews?: number;
+  techniques?: string[];
+  materials?: string[];
+  aftercare?: string;
+  suitableFor?: string;
+}
 
 export default function Gallery() {
   const { t } = useTranslation();
+  const [selectedItem, setSelectedItem] = useState<NailArtItem | null>(null);
 
-  // 네일아트 갤러리 데이터
+  // 네일아트 갤러리 데이터 (샘플 정보 완성)
   const nailArtGallery = [
     {
       id: 1,
@@ -15,7 +37,15 @@ export default function Gallery() {
       description: "전통적인 프렌치 매니큐어 스타일",
       category: "classic",
       image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
-      price: "$45"
+      price: "$45",
+      duration: "45분",
+      difficulty: "초급",
+      rating: 4.8,
+      reviews: 127,
+      techniques: ["베이스 코팅", "화이트 팁", "탑 코팅"],
+      materials: ["젤 베이스", "화이트 젤", "클리어 탑코트"],
+      aftercare: "2-3주 지속, 오일 케어 권장",
+      suitableFor: "모든 행사, 직장, 일상"
     },
     {
       id: 2,
@@ -23,15 +53,31 @@ export default function Gallery() {
       description: "섬세한 꽃 무늬 네일아트",
       category: "floral",
       image: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop",
-      price: "$65"
+      price: "$65",
+      duration: "90분",
+      difficulty: "고급",
+      rating: 4.9,
+      reviews: 89,
+      techniques: ["손그림 아트", "그라데이션", "세밀 터치"],
+      materials: ["아크릴 페인트", "세밀 브러시", "젤 탑코트"],
+      aftercare: "3-4주 지속, 손 보호 권장",
+      suitableFor: "특별한 행사, 웨딩, 파티"
     },
     {
       id: 3,
       title: "Geometric Patterns",
       description: "모던한 기하학적 패턴",
-      category: "modern",
+      category: "modern", 
       image: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=400&h=400&fit=crop",
-      price: "$55"
+      price: "$55",
+      duration: "60분",
+      difficulty: "중급",
+      rating: 4.7,
+      reviews: 156,
+      techniques: ["스트라이핑 테이프", "기하학 패턴", "컬러 블로킹"],
+      materials: ["젤 폴리시", "스트라이핑 테이프", "정밀 브러시"],
+      aftercare: "2-3주 지속, 충격 주의",
+      suitableFor: "현대적 스타일, 비즈니스"
     },
     {
       id: 4,
@@ -173,14 +219,108 @@ export default function Gallery() {
                   <p className="text-gray-600 mb-4">
                     {item.description}
                   </p>
-                  <div className="flex gap-2">
-                    <button className="flex-1 bg-secondary text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
-                      예약하기
-                    </button>
-                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                      자세히
-                    </button>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <span className="text-sm font-medium">{item.rating}</span>
+                      <span className="text-sm text-gray-500">({item.reviews})</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{item.duration}</span>
+                    </div>
                   </div>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => setSelectedItem(item)}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        상세히 보기
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl font-bold">{item.title}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-6">
+                        <div className="aspect-video relative rounded-lg overflow-hidden">
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-4 right-4">
+                            <Badge className={getCategoryColor(item.category)}>
+                              {item.category}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <h4 className="font-semibold">기본 정보</h4>
+                            <div className="text-sm space-y-1">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">가격:</span>
+                                <span className="font-medium">{item.price}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">소요 시간:</span>
+                                <span className="font-medium">{item.duration}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">난이도:</span>
+                                <span className="font-medium">{item.difficulty}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">평점:</span>
+                                <span className="font-medium flex items-center gap-1">
+                                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                  {item.rating} ({item.reviews}개 리뷰)
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <h4 className="font-semibold">시술 기법</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {item.techniques?.map((technique, idx) => (
+                                <Badge key={idx} variant="secondary" className="text-xs">
+                                  {technique}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-semibold">사용 재료</h4>
+                          <div className="flex flex-wrap gap-1">
+                            {item.materials?.map((material, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {material}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-semibold">관리 방법</h4>
+                          <p className="text-sm text-gray-600">{item.aftercare}</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-semibold">추천 상황</h4>
+                          <p className="text-sm text-gray-600">{item.suitableFor}</p>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+
                 </CardContent>
               </Card>
             ))}
