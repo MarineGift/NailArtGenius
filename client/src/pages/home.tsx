@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { Camera, Palette, Printer, CreditCard, Calendar } from "lucide-react";
+import { Camera, Palette, Printer, CreditCard, Calendar, Sparkles, Wand2 } from "lucide-react";
 
 export default function Home() {
   const { toast } = useToast();
@@ -175,6 +175,54 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+
+        {/* New AI Design Features */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            🤖 AI 맞춤형 디자인 서비스
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
+              <CardHeader>
+                <CardTitle className="text-center text-purple-800 flex items-center justify-center">
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  스타일 설정
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-purple-700 mb-4">AI가 당신만의 맞춤형 디자인을 생성할 수 있도록 선호도를 설정하세요</p>
+                <Button 
+                  size="lg"
+                  onClick={() => setLocation('/style-preferences')}
+                  className="bg-purple-600 text-white px-6 py-3 font-semibold hover:bg-purple-700"
+                >
+                  스타일 선호도 설정
+                  <Sparkles className="ml-2 h-5 w-5" />
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-pink-200 bg-gradient-to-br from-pink-50 to-purple-50">
+              <CardHeader>
+                <CardTitle className="text-center text-pink-800 flex items-center justify-center">
+                  <Wand2 className="mr-2 h-5 w-5" />
+                  AI 디자인 생성
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-pink-700 mb-4">AI가 당신만의 독특한 네일 디자인을 생성해드립니다</p>
+                <Button 
+                  size="lg"
+                  onClick={() => setLocation('/custom-design')}
+                  className="bg-pink-600 text-white px-6 py-3 font-semibold hover:bg-pink-700"
+                >
+                  맞춤형 디자인 생성
+                  <Wand2 className="ml-2 h-5 w-5" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">

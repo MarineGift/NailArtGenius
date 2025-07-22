@@ -7,6 +7,8 @@ import {
   orders,
   appointments,
   adminUsers,
+  userStylePreferences,
+  customNailDesigns,
   type User,
   type UpsertUser,
   type Customer,
@@ -23,6 +25,10 @@ import {
   type InsertAppointment,
   type AdminUser,
   type InsertAdminUser,
+  type UserStylePreferences,
+  type InsertUserStylePreferences,
+  type CustomNailDesign,
+  type InsertCustomNailDesign,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -73,6 +79,16 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
   deleteAppointment(id: number): Promise<void>;
+
+  // Style preferences operations
+  upsertUserStylePreferences(preferences: InsertUserStylePreferences): Promise<UserStylePreferences>;
+  getUserStylePreferences(userId: string): Promise<UserStylePreferences | undefined>;
+  
+  // Custom nail designs operations
+  createCustomNailDesign(design: InsertCustomNailDesign): Promise<CustomNailDesign>;
+  getUserCustomNailDesigns(userId: string): Promise<CustomNailDesign[]>;
+  getCustomNailDesign(id: number): Promise<CustomNailDesign | undefined>;
+  updateCustomNailDesign(id: number, updates: Partial<CustomNailDesign>): Promise<CustomNailDesign>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -422,6 +438,64 @@ export class DatabaseStorage implements IStorage {
     await db
       .delete(appointments)
       .where(eq(appointments.id, id));
+  }
+
+  // Style preferences operations
+  async upsertUserStylePreferences(preferences: InsertUserStylePreferences): Promise<UserStylePreferences> {
+    const [upsertedPreferences] = await db
+      .insert(userStylePreferences)
+      .values(preferences)
+      .onConflictDoUpdate({
+        target: userStylePreferences.userId,
+        set: {
+          ...preferences,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return upsertedPreferences;
+  }
+
+  async getUserStylePreferences(userId: string): Promise<UserStylePreferences | undefined> {
+    const [preferences] = await db
+      .select()
+      .from(userStylePreferences)
+      .where(eq(userStylePreferences.userId, userId));
+    return preferences;
+  }
+
+  // Custom nail designs operations
+  async createCustomNailDesign(design: InsertCustomNailDesign): Promise<CustomNailDesign> {
+    const [savedDesign] = await db
+      .insert(customNailDesigns)
+      .values(design)
+      .returning();
+    return savedDesign;
+  }
+
+  async getUserCustomNailDesigns(userId: string): Promise<CustomNailDesign[]> {
+    return await db
+      .select()
+      .from(customNailDesigns)
+      .where(eq(customNailDesigns.userId, userId))
+      .orderBy(desc(customNailDesigns.createdAt));
+  }
+
+  async getCustomNailDesign(id: number): Promise<CustomNailDesign | undefined> {
+    const [design] = await db
+      .select()
+      .from(customNailDesigns)
+      .where(eq(customNailDesigns.id, id));
+    return design;
+  }
+
+  async updateCustomNailDesign(id: number, updates: Partial<CustomNailDesign>): Promise<CustomNailDesign> {
+    const [updatedDesign] = await db
+      .update(customNailDesigns)
+      .set(updates)
+      .where(eq(customNailDesigns.id, id))
+      .returning();
+    return updatedDesign;
   }
 }
 

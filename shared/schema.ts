@@ -65,15 +65,53 @@ export const aiGeneratedNails = pgTable("ai_generated_nails", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Nail art designs
+// Nail designs table - catalog of available designs
 export const nailDesigns = pgTable("nail_designs", {
   id: serial("id").primaryKey(),
   name: varchar("name").notNull(),
   description: text("description"),
-  category: varchar("category").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   imageUrl: varchar("image_url").notNull(),
+  category: varchar("category").notNull(), // "minimalist", "floral", "geometric", "seasonal", etc.
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  difficulty: varchar("difficulty").default("medium"), // easy, medium, hard
+  timeRequired: integer("time_required").default(30), // minutes
+  colors: text("colors").array(), // Array of color names/codes
+  tags: text("tags").array(), // Array of style tags
   isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User style preferences for AI customization
+export const userStylePreferences = pgTable("user_style_preferences", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  preferredColors: text("preferred_colors").array(), // Array of preferred colors
+  preferredStyles: text("preferred_styles").array(), // Array of style preferences
+  occasions: text("occasions").array(), // daily, party, wedding, business, etc.
+  complexity: varchar("complexity").default("medium"), // simple, medium, complex
+  budget: varchar("budget").default("medium"), // low, medium, high
+  skinTone: varchar("skin_tone"), // fair, medium, tan, deep
+  lifestyle: varchar("lifestyle"), // active, professional, artistic, etc.
+  inspirationImages: text("inspiration_images").array(), // URLs to inspiration images
+  notes: text("notes"), // Additional preference notes
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI-generated custom designs
+export const customNailDesigns = pgTable("custom_nail_designs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  sessionId: varchar("session_id").notNull(), // Links to photo analysis session
+  designPrompt: text("design_prompt").notNull(), // The AI prompt used
+  generatedImageUrl: varchar("generated_image_url"), // AI-generated design image
+  stylePreferencesId: integer("style_preferences_id").references(() => userStylePreferences.id),
+  baseDesignId: integer("base_design_id").references(() => nailDesigns.id), // If based on existing design
+  customization: jsonb("customization"), // Detailed customization data
+  aiModel: varchar("ai_model").default("dalle-3"), // Which AI model was used
+  generationParams: jsonb("generation_params"), // Generation parameters used
+  status: varchar("status").default("generated"), // generated, approved, rejected
+  price: decimal("price", { precision: 10, scale: 2 }), // Custom pricing
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -153,3 +191,11 @@ export type Appointment = typeof appointments.$inferSelect;
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({ id: true, createdAt: true });
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type AdminUser = typeof adminUsers.$inferSelect;
+
+export const insertUserStylePreferencesSchema = createInsertSchema(userStylePreferences).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertUserStylePreferences = z.infer<typeof insertUserStylePreferencesSchema>;
+export type UserStylePreferences = typeof userStylePreferences.$inferSelect;
+
+export const insertCustomNailDesignSchema = createInsertSchema(customNailDesigns).omit({ id: true, createdAt: true });
+export type InsertCustomNailDesign = z.infer<typeof insertCustomNailDesignSchema>;
+export type CustomNailDesign = typeof customNailDesigns.$inferSelect;

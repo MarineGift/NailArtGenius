@@ -428,6 +428,153 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Style preferences routes
+  app.get("/api/style-preferences", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const preferences = await storage.getUserStylePreferences(userId);
+      res.json(preferences);
+    } catch (error) {
+      console.error("Error fetching style preferences:", error);
+      res.status(500).json({ message: "Failed to fetch style preferences" });
+    }
+  });
+
+  app.post("/api/style-preferences", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const preferencesData = {
+        userId,
+        ...req.body
+      };
+      
+      const preferences = await storage.upsertUserStylePreferences(preferencesData);
+      res.json(preferences);
+    } catch (error) {
+      console.error("Error saving style preferences:", error);
+      res.status(500).json({ message: "Failed to save style preferences" });
+    }
+  });
+
+  // Custom design routes
+  app.get("/api/custom-designs", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const designs = await storage.getUserCustomNailDesigns(userId);
+      res.json(designs);
+    } catch (error) {
+      console.error("Error fetching custom designs:", error);
+      res.status(500).json({ message: "Failed to fetch custom designs" });
+    }
+  });
+
+  app.post("/api/custom-designs/generate", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { customPrompt, baseDesignId, stylePreferencesId, nailAnalysis } = req.body;
+      
+      // Import the AI design generator functions
+      const { generateDesignPrompt, generateCustomDesignImage, calculateCustomDesignPricing } = await import("./aiDesignGenerator");
+      
+      // Get user's style preferences
+      const stylePreferences = await storage.getUserStylePreferences(userId);
+      
+      // Generate enhanced prompt
+      const enhancedPrompt = await generateDesignPrompt({
+        customPrompt,
+        stylePreferences,
+        nailAnalysis,
+        baseDesignId
+      });
+      
+      // Generate design image
+      const generatedImageUrl = await generateCustomDesignImage(enhancedPrompt);
+      
+      // Calculate pricing
+      const customization = {
+        colors: stylePreferences?.preferredColors || [],
+        style: stylePreferences?.preferredStyles?.join(", ") || "modern",
+        complexity: stylePreferences?.complexity || "medium",
+        occasion: stylePreferences?.occasions?.[0] || "daily",
+        personalizedElements: customPrompt.split(" ").filter(word => word.length > 3)
+      };
+      
+      const price = calculateCustomDesignPricing(customization);
+      
+      // Save custom design
+      const designData = {
+        userId,
+        sessionId: req.body.sessionId || `custom_${Date.now()}`,
+        designPrompt: enhancedPrompt,
+        generatedImageUrl,
+        stylePreferencesId: stylePreferences?.id || null,
+        baseDesignId: baseDesignId || null,
+        customization,
+        generationParams: {
+          model: "dalle-3",
+          prompt: enhancedPrompt,
+          timestamp: new Date().toISOString()
+        },
+        price: price.toString(),
+        status: "generated"
+      };
+      
+      const savedDesign = await storage.createCustomNailDesign(designData);
+      res.json(savedDesign);
+    } catch (error) {
+      console.error("Error generating custom design:", error);
+      res.status(500).json({ message: "Failed to generate custom design" });
+    }
+  });
+
+  app.get("/api/custom-designs/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const designId = parseInt(req.params.id);
+      const design = await storage.getCustomNailDesign(designId);
+      
+      if (!design) {
+        return res.status(404).json({ message: "Design not found" });
+      }
+      
+      res.json(design);
+    } catch (error) {
+      console.error("Error fetching custom design:", error);
+      res.status(500).json({ message: "Failed to fetch custom design" });
+    }
+  });
+
+  app.post("/api/custom-designs/:id/save", isAuthenticated, async (req: any, res) => {
+    try {
+      const designId = parseInt(req.params.id);
+      const userId = req.user.claims.sub;
+      
+      const design = await storage.getCustomNailDesign(designId);
+      if (!design || design.userId !== userId) {
+        return res.status(404).json({ message: "Design not found" });
+      }
+      
+      // Create order for custom design
+      const orderData = {
+        userId,
+        designId: null, // Custom designs don't use regular design ID
+        sessionId: design.sessionId,
+        totalAmount: design.price || "50000",
+        paymentStatus: "pending",
+        printStatus: "waiting"
+      };
+      
+      const order = await storage.createOrder(orderData);
+      
+      // Update design status
+      await storage.updateCustomNailDesign(designId, { status: "approved" });
+      
+      res.json({ order, design });
+    } catch (error) {
+      console.error("Error saving custom design:", error);
+      res.status(500).json({ message: "Failed to save custom design" });
+    }
+  });
+
   // Admin routes (temporarily allow all authenticated users for demo)
   app.get("/api/admin/appointments", isAuthenticated, async (req: any, res) => {
     try {

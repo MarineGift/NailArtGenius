@@ -18,6 +18,8 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import Signup from "@/pages/signup";
+import StylePreferences from "@/pages/style-preferences";
+import CustomDesign from "@/pages/custom-design";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -41,6 +43,8 @@ function Router() {
           <Route path="/printing" component={PrintingStatus} />
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin-panel" component={AdminPanel} />
+          <Route path="/style-preferences" component={StylePreferences} />
+          <Route path="/custom-design" component={CustomDesign} />
         </>
       )}
       <Route component={NotFound} />
