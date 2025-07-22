@@ -4,13 +4,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { useLanguage } from "@/lib/i18n";
 
-// Import guide images
-import thumbGuideImg from "@assets/KakaoTalk_20250721_223405822_1753151788891.jpg";
-import fingersGuideImg from "@assets/KakaoTalk_20250721_223405822_01_1753151788892.jpg";
-import rightThumbGuideImg from "@assets/KakaoTalk_20250721_223405822_02_1753151788892.jpg";
-import rightFingersGuideImg from "@assets/KakaoTalk_20250721_223405822_03_1753151788893.jpg";
-import leftThumbGuideImg from "@assets/KakaoTalk_20250721_223405822_04_1753151788893.jpg";
-import leftFingersGuideImg from "@assets/KakaoTalk_20250721_223405822_05_1753151788893.jpg";
+// Import guide images - using new uploaded images
+import thumbGuideImg from "@assets/KakaoTalk_20250721_223405822_1753153723937.jpg";
+import fingersGuideImg from "@assets/KakaoTalk_20250721_223405822_01_1753153723937.jpg";
+import rightThumbGuideImg from "@assets/KakaoTalk_20250721_223405822_02_1753153723938.jpg";
+import rightFingersGuideImg from "@assets/KakaoTalk_20250721_223405822_03_1753153723938.jpg";
+import leftThumbGuideImg from "@assets/KakaoTalk_20250721_223405822_04_1753153723938.jpg";
+import leftFingersGuideImg from "@assets/KakaoTalk_20250721_223405822_05_1753153723938.jpg";
 
 interface PhotoGuideModalProps {
   isOpen: boolean;

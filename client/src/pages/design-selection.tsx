@@ -9,6 +9,14 @@ import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 
+// Import nail art design images
+import nailart1 from "@assets/nailart1_1753154093464.jpg";
+import nailart2 from "@assets/nailart2_1753154093464.jpg";
+import nailart3 from "@assets/nailart3_1753154093464.jpg";
+import nailart4 from "@assets/nailart4_1753154093465.jpg";
+import nailart5 from "@assets/nailart5_1753154093465.jpg";
+import nailart6 from "@assets/nailart6_1753154093465.jpg";
+
 interface Design {
   id: string;
   name: string;
@@ -40,53 +48,53 @@ export default function DesignSelection() {
   const designs: Design[] = [
     {
       id: "1",
-      name: "클래식 프렌치",
-      price: 35000,
-      image: "/api/placeholder/200/200",
-      category: "french",
+      name: "다이아몬드 홀로그램",
+      price: 45000,
+      image: nailart1,
+      category: "glitter",
       rating: 4.8,
       isPopular: true,
     },
     {
       id: "2", 
-      name: "로즈 골드 글리터",
+      name: "오로라 3D 젤네일",
       price: 42000,
-      image: "/api/placeholder/200/200",
+      image: nailart2,
       category: "glitter",
       rating: 4.9,
       isNew: true,
     },
     {
       id: "3",
-      name: "벚꽃 아트",
-      price: 48000,
-      image: "/api/placeholder/200/200",
-      category: "floral",
+      name: "네온라이트 컬러 믹스",
+      price: 38000,
+      image: nailart3,
+      category: "gradient",
       rating: 4.7,
       isPopular: true,
     },
     {
       id: "4",
-      name: "그라데이션 핑크",
-      price: 38000,
-      image: "/api/placeholder/200/200",
+      name: "수채화 컬러 아트",
+      price: 44000,
+      image: nailart4,
       category: "gradient",
       rating: 4.6,
     },
     {
       id: "5",
-      name: "지오메트릭 블랙",
-      price: 45000,
-      image: "/api/placeholder/200/200",
-      category: "geometric",
+      name: "시크 블랙 프렌치",
+      price: 40000,
+      image: nailart5,
+      category: "french",
       rating: 4.5,
       isNew: true,
     },
     {
       id: "6",
-      name: "화이트 마블",
-      price: 40000,
-      image: "/api/placeholder/200/200",
+      name: "너무 우아해 고급 미끌림",
+      price: 48000,
+      image: nailart6,
       category: "classic",
       rating: 4.8,
     },
@@ -222,20 +230,12 @@ export default function DesignSelection() {
               className="group cursor-pointer transition-all hover:shadow-xl hover:scale-105 overflow-hidden bg-white"
             >
               <div className="relative">
-                <div 
-                  className="w-full h-48 bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${
-                      design.category === 'french' ? '#fdf2f8, #fce7f3' :
-                      design.category === 'glitter' ? '#fef3c7, #fde68a' :
-                      design.category === 'floral' ? '#ecfdf5, #d1fae5' :
-                      design.category === 'gradient' ? '#fdf4ff, #f3e8ff' :
-                      design.category === 'geometric' ? '#f1f5f9, #e2e8f0' :
-                      '#f8fafc, #f1f5f9'
-                    })`
-                  }}
-                >
-                  <span className="text-5xl group-hover:scale-110 transition-transform duration-300">💅</span>
+                <div className="w-full h-48 overflow-hidden">
+                  <img 
+                    src={design.image} 
+                    alt={design.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
                 </div>
                 
                 {/* Badges */}
