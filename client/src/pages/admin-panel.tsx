@@ -97,53 +97,20 @@ export default function AdminPanel() {
   // Fetch data with error handling
   const { data: appointments = [], isLoading: appointmentsLoading, refetch: refetchAppointments } = useQuery({
     queryKey: ["/api/admin/appointments"],
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: t('common.unauthorized'),
-          description: t('common.loginRequired'),
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-      }
-    }
   });
 
   const { data: orders = [], isLoading: ordersLoading, refetch: refetchOrders } = useQuery({
     queryKey: ["/api/admin/orders"],
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: t('common.unauthorized'),
-          description: t('common.loginRequired'),
-          variant: "destructive",
-        });
-      }
-    }
   });
 
   const { data: users = [], isLoading: usersLoading, refetch: refetchUsers } = useQuery({
     queryKey: ["/api/admin/users"],
-    onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: t('common.unauthorized'),
-          description: t('common.loginRequired'),
-          variant: "destructive",
-        });
-      }
-    }
   });
 
   // Mutations for CRUD operations
   const updateAppointmentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: EditAppointmentData }) => {
-      return apiRequest(`/api/admin/appointments/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      return apiRequest(`/api/admin/appointments/${id}`, "PUT", data);
     },
     onSuccess: () => {
       toast({
@@ -165,9 +132,7 @@ export default function AdminPanel() {
 
   const deleteAppointmentMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/admin/appointments/${id}`, {
-        method: "DELETE",
-      });
+      return apiRequest(`/api/admin/appointments/${id}`, "DELETE");
     },
     onSuccess: () => {
       toast({
@@ -187,10 +152,7 @@ export default function AdminPanel() {
 
   const updateUserMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: EditUserData }) => {
-      return apiRequest(`/api/admin/users/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
+      return apiRequest(`/api/admin/users/${id}`, "PUT", data);
     },
     onSuccess: () => {
       toast({
@@ -266,24 +228,24 @@ export default function AdminPanel() {
     }
   };
 
-  const filteredUsers = users.filter((user: User) =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredUsers = (users as any[]).filter((user: any) =>
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (user.firstName && user.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (user.lastName && user.lastName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const filteredAppointments = appointments.filter((appointment: Appointment) =>
-    appointment.user?.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (appointment.user?.firstName && appointment.user.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+  const filteredAppointments = (appointments as any[]).filter((appointment: any) =>
+    appointment.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.customerPhone?.includes(searchTerm) ||
     appointment.timeSlot.includes(searchTerm)
   );
 
   // Statistics
   const stats = {
-    totalUsers: users.length,
-    totalAppointments: appointments.length,
-    totalOrders: orders.length,
-    todayAppointments: appointments.filter((apt: Appointment) => 
+    totalUsers: (users as any[]).length,
+    totalAppointments: (appointments as any[]).length,
+    totalOrders: (orders as any[]).length,
+    todayAppointments: (appointments as any[]).filter((apt: any) => 
       apt.appointmentDate === new Date().toISOString().split('T')[0]
     ).length
   };
@@ -390,23 +352,25 @@ export default function AdminPanel() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t('admin.customer')}</TableHead>
-                        <TableHead>{t('appointment.date')}</TableHead>
-                        <TableHead>{t('appointment.time')}</TableHead>
-                        <TableHead>{t('admin.status')}</TableHead>
-                        <TableHead>{t('admin.amount')}</TableHead>
-                        <TableHead>{t('admin.actions')}</TableHead>
+                        <TableHead>고객 정보</TableHead>
+                        <TableHead>예약 날짜</TableHead>
+                        <TableHead>예약 시간</TableHead>
+                        <TableHead>상태</TableHead>
+                        <TableHead>금액</TableHead>
+                        <TableHead>작업</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredAppointments.map((appointment: Appointment) => (
+                      {filteredAppointments.map((appointment: any) => (
                         <TableRow key={appointment.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium">
-                                {appointment.user?.firstName} {appointment.user?.lastName}
-                              </p>
-                              <p className="text-sm text-gray-500">{appointment.user?.email}</p>
+                              <p className="font-medium">{appointment.customerName}</p>
+                              <p className="text-sm text-gray-500">{appointment.customerPhone}</p>
+                              {appointment.customerEmail && (
+                                <p className="text-sm text-gray-500">{appointment.customerEmail}</p>
+                              )}
+                              <p className="text-xs text-blue-600">{appointment.visitReason}</p>
                             </div>
                           </TableCell>
                           <TableCell>{format(parseISO(appointment.appointmentDate), 'yyyy-MM-dd')}</TableCell>
@@ -416,7 +380,7 @@ export default function AdminPanel() {
                               {appointment.status}
                             </Badge>
                           </TableCell>
-                          <TableCell>${appointment.order?.totalAmount}</TableCell>
+                          <TableCell>-</TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
                               <Button
@@ -465,7 +429,7 @@ export default function AdminPanel() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredUsers.map((user: User) => (
+                      {filteredUsers.map((user: any) => (
                         <TableRow key={user.id}>
                           <TableCell>
                             <div className="flex items-center space-x-3">
@@ -529,7 +493,7 @@ export default function AdminPanel() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {orders.map((order: Order) => (
+                      {(orders as any[]).map((order: any) => (
                         <TableRow key={order.id}>
                           <TableCell>#{order.id}</TableCell>
                           <TableCell>

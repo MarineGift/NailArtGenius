@@ -147,6 +147,7 @@ export const appointments = pgTable("appointments", {
   appointmentDate: timestamp("appointment_date").notNull(),
   timeSlot: varchar("time_slot").notNull(), // "09:00", "09:30", "10:00", etc.
   status: varchar("status").default("scheduled"), // scheduled, completed, cancelled, no_show
+  visitReason: varchar("visit_reason").default("일반 방문"), // Visit reason with default
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

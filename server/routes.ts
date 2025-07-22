@@ -341,7 +341,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/appointments", async (req, res) => {
     try {
-      const { appointmentDate, timeSlot, customer, mailingList } = req.body;
+      const { appointmentDate, timeSlot, visitReason, customer, mailingList } = req.body;
       
       // Check if appointment slot is already booked
       const existingAppointment = await storage.getAppointmentByDateAndTime(
@@ -366,6 +366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerId: savedCustomer.id,
         appointmentDate: new Date(appointmentDate),
         timeSlot,
+        visitReason: visitReason || "일반 방문",
         status: "scheduled",
         notes: mailingList ? "메일링 리스트 가입" : null,
       });

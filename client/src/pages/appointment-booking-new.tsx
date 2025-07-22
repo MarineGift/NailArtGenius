@@ -23,11 +23,12 @@ import { z } from "zod";
 
 // Form validation schema
 const appointmentFormSchema = z.object({
-  firstName: z.string().min(1, "성명을 입력해 주세요"),
-  lastName: z.string().min(1, "성명을 입력해 주세요"),
-  phoneNumber: z.string().min(10, "전화번호를 입력해 주세요").regex(/^[0-9]+$/, "올바른 전화번호를 입력해 주세요"),
+  firstName: z.string().min(1, "성을 입력해 주세요"),
+  lastName: z.string().min(1, "이름을 입력해 주세요"),
+  phoneNumber: z.string().min(10, "전화번호를 입력해 주세요"),
   email: z.string().email("올바른 이메일을 입력해 주세요").optional().or(z.literal("")),
   visitType: z.enum(["방문예약", "최초방문", "인터넷예약"]),
+  visitReason: z.string().min(1, "방문 사유를 입력해 주세요"),
   mailingList: z.boolean().default(false),
 });
 
@@ -51,6 +52,7 @@ export default function AppointmentBooking() {
       phoneNumber: "",
       email: "",
       visitType: "방문예약",
+      visitReason: "",
       mailingList: false,
     },
   });
@@ -136,6 +138,7 @@ export default function AppointmentBooking() {
     const appointmentData = {
       appointmentDate: selectedDate,
       timeSlot: selectedTime,
+      visitReason: formData.visitReason,
       customer: {
         name: `${formData.firstName} ${formData.lastName}`,
         phoneNumber: formData.phoneNumber,
@@ -349,6 +352,20 @@ export default function AppointmentBooking() {
 
                   <FormField
                     control={form.control}
+                    name="visitReason"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>방문 사유 *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="네일아트, 네일케어, 상담 등" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="mailingList"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0">
@@ -418,6 +435,10 @@ export default function AppointmentBooking() {
                   <div className="flex justify-between">
                     <span>방문 유형:</span>
                     <span>{form.getValues("visitType")}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>방문 사유:</span>
+                    <span>{form.getValues("visitReason")}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>메일링 리스트:</span>

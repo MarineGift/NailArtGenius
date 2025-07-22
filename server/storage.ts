@@ -300,6 +300,7 @@ export class DatabaseStorage implements IStorage {
         appointmentDate: appointments.appointmentDate,
         timeSlot: appointments.timeSlot,
         status: appointments.status,
+        visitReason: appointments.visitReason,
         notes: appointments.notes,
         customerName: customers.name,
         customerPhone: customers.phoneNumber,
