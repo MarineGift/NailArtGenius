@@ -13,7 +13,7 @@ import AiProcessing from "@/pages/ai-processing";
 import DesignSelection from "@/pages/design-selection";
 import DesignPreview from "@/pages/design-preview";
 import Payment from "@/pages/payment";
-import AppointmentBooking from "@/pages/appointment-booking";
+import AppointmentBooking from "@/pages/appointment-booking-new";
 import AdminDashboard from "@/pages/admin-dashboard";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";

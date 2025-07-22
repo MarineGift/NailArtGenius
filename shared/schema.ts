@@ -33,10 +33,12 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  phoneNumber: varchar("phone_number"),
+  phoneNumber: varchar("phone_number").unique(),
+  password: varchar("password"),
   workplace: varchar("workplace"),
   region: varchar("region"),
   postalCode: varchar("postal_code"),
+  mailingList: boolean("mailing_list").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

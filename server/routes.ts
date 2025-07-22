@@ -295,7 +295,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Customer routes
+  app.get("/api/customers/check-phone", async (req, res) => {
+    try {
+      const phoneNumber = req.query.phone as string;
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      const customer = await storage.getCustomerByPhone(phoneNumber);
+      res.json({ exists: !!customer, customer });
+    } catch (error) {
+      console.error("Error checking phone number:", error);
+      res.status(500).json({ message: "Failed to check phone number" });
+    }
+  });
+
   // Appointment routes
+  app.get("/api/appointments/booked-slots/:date", async (req, res) => {
+    try {
+      const date = new Date(req.params.date);
+      const bookedSlots = await storage.getBookedSlotsByDate(date);
+      res.json(bookedSlots);
+    } catch (error) {
+      console.error("Error fetching booked slots:", error);
+      res.status(500).json({ message: "Failed to fetch booked slots" });
+    }
+  });
+
   app.get("/api/appointments/available-slots", isAuthenticated, async (req: any, res) => {
     try {
       const dateString = req.query.date as string;
@@ -312,40 +339,92 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/appointments", isAuthenticated, async (req: any, res) => {
+  app.post("/api/appointments", async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const appointmentData = { ...req.body, userId };
+      const { appointmentDate, timeSlot, customer, mailingList } = req.body;
       
-      const appointment = await storage.createAppointment(appointmentData);
-      res.status(201).json(appointment);
+      // Check if appointment slot is already booked
+      const existingAppointment = await storage.getAppointmentByDateAndTime(
+        appointmentDate, 
+        timeSlot
+      );
+      
+      if (existingAppointment) {
+        return res.status(400).json({ message: "시간대가 이미 예약되었습니다" });
+      }
+      
+      // Create or update customer
+      const savedCustomer = await storage.upsertCustomer({
+        name: customer.name,
+        phoneNumber: customer.phoneNumber,
+        email: customer.email || null,
+        visitType: customer.visitType,
+      });
+      
+      // Create appointment
+      const appointment = await storage.createAppointment({
+        customerId: savedCustomer.id,
+        appointmentDate: new Date(appointmentDate),
+        timeSlot,
+        status: "scheduled",
+        notes: mailingList ? "메일링 리스트 가입" : null,
+      });
+      
+      res.json({ appointment, customer: savedCustomer });
     } catch (error) {
       console.error("Error creating appointment:", error);
       res.status(500).json({ message: "Failed to create appointment" });
     }
   });
 
-  app.get("/api/appointments", isAuthenticated, async (req: any, res) => {
+  app.get("/api/appointments", async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const appointments = await storage.getUserAppointments(userId);
-      res.json(appointments);
+      const { period = "day", date, view = "appointments", status } = req.query;
+      const appointments = await storage.getAppointmentsByPeriod(
+        period as string,
+        date as string || new Date().toISOString(),
+        view as string
+      );
+      
+      let filteredAppointments = appointments;
+      if (status && status !== "all") {
+        filteredAppointments = appointments.filter(apt => apt.status === status);
+      }
+      
+      res.json(filteredAppointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
       res.status(500).json({ message: "Failed to fetch appointments" });
     }
   });
 
-  app.put("/api/appointments/:id", isAuthenticated, async (req: any, res) => {
+  // Admin appointment management
+  app.put("/api/admin/appointments/:id", isAuthenticated, async (req: any, res) => {
     try {
       const appointmentId = parseInt(req.params.id);
       const updates = req.body;
       
-      const appointment = await storage.updateAppointment(appointmentId, updates);
-      res.json(appointment);
+      const updatedAppointment = await storage.updateAppointment(appointmentId, updates);
+      res.json(updatedAppointment);
     } catch (error) {
       console.error("Error updating appointment:", error);
       res.status(500).json({ message: "Failed to update appointment" });
+    }
+  });
+
+  app.delete("/api/admin/appointments/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const appointmentId = parseInt(req.params.id);
+      
+      // Instead of deleting, mark as cancelled
+      const updatedAppointment = await storage.updateAppointment(appointmentId, {
+        status: "cancelled"
+      });
+      
+      res.json({ message: "Appointment cancelled", appointment: updatedAppointment });
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      res.status(500).json({ message: "Failed to cancel appointment" });
     }
   });
 
