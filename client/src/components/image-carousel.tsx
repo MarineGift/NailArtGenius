@@ -1,36 +1,38 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/lib/i18n';
 
 import store1 from "@assets/store_1753218028383.jpg";
 import nailart1 from "@assets/nailart1_1753154093464.jpg";
 import nailart2 from "@assets/nailart2_1753154093464.jpg";
 import nailart3 from "@assets/nailart3_1753154093464.jpg";
 
-const sampleImages = [
-  {
-    url: store1,
-    title: "Connie's Nail Salon",
-    description: '워싱턴 DC 프리미엄 네일 살롱'
-  },
-  {
-    url: nailart1,
-    title: '아름다운 네일아트',
-    description: '전문가의 세심한 디자인'
-  },
-  {
-    url: nailart2,
-    title: 'AI 맞춤 네일',
-    description: '혁신적인 AI 기술로 완성'
-  },
-  {
-    url: nailart3,
-    title: '프리미엄 케어',
-    description: '최고급 네일 서비스 경험'
-  }
-];
-
 export function ImageCarousel() {
+  const { t } = useTranslation();
+  
+  const sampleImages = [
+    {
+      url: store1,
+      title: t('carousel.salon.title', 'Connie\'s Nail Salon'),
+      description: t('carousel.salon.description', '워싱턴 DC 프리미엄 네일 살롱')
+    },
+    {
+      url: nailart1,
+      title: t('carousel.art1.title', '아름다운 네일아트'),
+      description: t('carousel.art1.description', '전문가의 세심한 디자인')
+    },
+    {
+      url: nailart2,
+      title: t('carousel.art2.title', 'AI 맞춤 네일'),
+      description: t('carousel.art2.description', '혁신적인 AI 기술로 완성')
+    },
+    {
+      url: nailart3,
+      title: t('carousel.art3.title', '프리미엄 케어'),
+      description: t('carousel.art3.description', '최고급 네일 서비스 경험')
+    }
+  ];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

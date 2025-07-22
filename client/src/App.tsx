@@ -39,42 +39,42 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/services" component={Services} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/signup" component={Signup} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/services" component={Services} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/upload" component={PhotoUpload} />
-          <Route path="/design-selection" component={DesignSelection} />
-          <Route path="/processing" component={AiProcessing} />
-          <Route path="/preview" component={DesignPreview} />
-          <Route path="/payment" component={Payment} />
-          <Route path="/booking" component={Booking} />
-          <Route path="/appointment-booking" component={AppointmentBooking} />
-          <Route path="/printing" component={PrintingStatus} />
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/admin-panel" component={AdminPanel} />
-          <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
-          <Route path="/gallery" component={Gallery} />
-          <Route path="/customer-management" component={CustomerManagementPage} />
-          <Route path="/style-preferences" component={StylePreferences} />
-          <Route path="/custom-design" component={CustomDesign} />
-          <Route path="/photo-measurement" component={PhotoMeasurement} />
-          <Route path="/design-generation" component={DesignGeneration} />
-          <Route path="/advanced-design-studio" component={AdvancedDesignStudio} />
-          <Route path="/analytics" component={AnalyticsDashboard} />
-          <Route path="/photo-guide" component={EnhancedPhotoGuide} />
-          <Route path="/test-guide" component={TestGuide} />
-          <Route path="/pdf-preview" component={PDFPreview} />
-        </>
-      )}
+      <>
+        {/* Public pages - accessible to everyone */}
+        <Route path="/" component={Home} />
+        <Route path="/services" component={Services} />
+        <Route path="/contact" component={Contact} />
+        <Route path="/gallery" component={Gallery} />
+        <Route path="/booking" component={Booking} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/landing" component={Landing} />
+        
+        {/* Protected pages - only for authenticated users */}
+        {isAuthenticated && (
+          <>
+            <Route path="/upload" component={PhotoUpload} />
+            <Route path="/design-selection" component={DesignSelection} />
+            <Route path="/processing" component={AiProcessing} />
+            <Route path="/preview" component={DesignPreview} />
+            <Route path="/payment" component={Payment} />
+            <Route path="/appointment-booking" component={AppointmentBooking} />
+            <Route path="/printing" component={PrintingStatus} />
+            <Route path="/admin" component={AdminDashboard} />
+            <Route path="/admin-panel" component={AdminPanel} />
+            <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
+            <Route path="/customer-management" component={CustomerManagementPage} />
+            <Route path="/style-preferences" component={StylePreferences} />
+            <Route path="/custom-design" component={CustomDesign} />
+            <Route path="/photo-measurement" component={PhotoMeasurement} />
+            <Route path="/design-generation" component={DesignGeneration} />
+            <Route path="/advanced-design-studio" component={AdvancedDesignStudio} />
+            <Route path="/analytics" component={AnalyticsDashboard} />
+            <Route path="/photo-guide" component={EnhancedPhotoGuide} />
+            <Route path="/test-guide" component={TestGuide} />
+            <Route path="/pdf-preview" component={PDFPreview} />
+          </>
+        )}
+      </>
       <Route component={NotFound} />
     </Switch>
   );
