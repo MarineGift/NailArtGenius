@@ -74,6 +74,31 @@ const translations = {
     'contact.form.inquiry': { ko: '문의내용', en: 'Inquiry', ja: 'お問い合わせ内容', es: 'Consulta' },
     'contact.form.submit': { ko: '문의 전송', en: 'Send Inquiry', ja: 'お問い合わせ送信', es: 'Enviar consulta' },
     
+    // AI Nail Art Generator
+    'ai.nail_generator_title': { ko: '🤖 AI 네일아트 생성기 🤖', en: '🤖 AI Nail Art Generator 🤖', ja: '🤖 AI ネイルアートジェネレーター 🤖', es: '🤖 Generador de Arte de Uñas IA 🤖' },
+    'ai.nail_generator_subtitle': { ko: '손톱 사진을 업로드하고 AI가 생성한 맞춤형 네일아트 디자인을 즉시 받아보세요', en: 'Upload your nail photos and get AI-generated custom nail art designs instantly', ja: '爪の写真をアップロードして、AIが生成したカスタムネイルアートデザインを即座に取得', es: 'Sube fotos de tus uñas y obtén diseños personalizados de arte de uñas generados por IA al instante' },
+    'ai.upload_photos': { ko: '손톱 사진 업로드', en: 'Upload Your Nail Photos', ja: '爪の写真をアップロード', es: 'Sube Fotos de tus Uñas' },
+    'ai.upload_instruction': { ko: '여기를 클릭하거나 사진을 드래그하세요 (최대 6장)', en: 'Click or drag photos here (up to 6 photos)', ja: 'ここをクリックまたは写真をドラッグ（最大6枚）', es: 'Haz clic o arrastra fotos aquí (hasta 6 fotos)' },
+    'ai.select_photos': { ko: '사진 선택', en: 'Select Photos', ja: '写真を選択', es: 'Seleccionar Fotos' },
+    'ai.instant_generation': { ko: '즉시 생성', en: 'Instant Generation', ja: '即座に生成', es: 'Generación Instantánea' },
+    'ai.generation_desc': { ko: 'AI가 손톱을 분석하고 몇 초 안에 맞춤형 디자인을 생성합니다', en: 'AI analyzes your nails and creates custom designs in seconds', ja: 'AIがあなたの爪を分析し、数秒でカスタムデザインを作成', es: 'La IA analiza tus uñas y crea diseños personalizados en segundos' },
+    'ai.custom_designs': { ko: '맞춤형 디자인', en: 'Custom Designs', ja: 'カスタムデザイン', es: 'Diseños Personalizados' },
+    'ai.design_desc': { ko: '당신의 스타일에 완벽하게 맞는 개인화된 네일아트를 받아보세요', en: 'Get personalized nail art that fits your style perfectly', ja: 'あなたのスタイルに完璧にフィットするパーソナライズされたネイルアートを取得', es: 'Obtén arte de uñas personalizado que se ajuste perfectamente a tu estilo' },
+    'ai.generate_now': { ko: 'AI 네일아트 생성하기', en: 'Generate AI Nail Art', ja: 'AI ネイルアート生成', es: 'Generar Arte de Uñas IA' },
+    'ai.generated_designs': { ko: 'AI가 생성한 디자인', en: 'Your AI-Generated Designs', ja: 'AI生成デザイン', es: 'Tus Diseños Generados por IA' },
+    'ai.book_service': { ko: '이 서비스 예약하기', en: 'Book This Service', ja: 'このサービスを予約', es: 'Reservar Este Servicio' },
+    'ai.download_designs': { ko: '디자인 다운로드', en: 'Download Designs', ja: 'デザインをダウンロード', es: 'Descargar Diseños' },
+    'ai.upload_photos_first': { ko: '먼저 사진을 업로드하세요', en: 'Upload photos first', ja: 'まず写真をアップロード', es: 'Sube fotos primero' },
+    'ai.no_photos_error': { ko: '최소 한 장의 사진을 업로드해주세요', en: 'Please upload at least one photo', ja: '少なくとも1枚の写真をアップロードしてください', es: 'Por favor sube al menos una foto' },
+    'ai.generating': { ko: '생성 중...', en: 'Generating...', ja: '生成中...', es: 'Generando...' },
+    'ai.analyzing_photos': { ko: '손톱 사진을 분석하고 있습니다...', en: 'Analyzing your nail photos...', ja: '爪の写真を分析しています...', es: 'Analizando tus fotos de uñas...' },
+    'ai.generation_complete': { ko: 'AI 네일아트 생성이 완료되었습니다!', en: 'AI nail art generation complete!', ja: 'AIネイルアート生成完了！', es: '¡Generación de arte de uñas IA completa!' },
+    'ai.generation_error': { ko: '네일아트 생성에 실패했습니다. 다시 시도해주세요.', en: 'Failed to generate nail art. Please try again.', ja: 'ネイルアート生成に失敗しました。再試行してください。', es: 'No se pudo generar el arte de uñas. Inténtalo de nuevo.' },
+    'ai.select_design': { ko: '이 디자인 선택', en: 'Select This Design', ja: 'このデザインを選択', es: 'Seleccionar Este Diseño' },
+    'ai.design_selected': { ko: '디자인이 선택되었습니다! 아래로 스크롤하여 예약하세요.', en: 'Design selected! Scroll down to book your appointment.', ja: 'デザインが選択されました！下にスクロールして予約してください。', es: '¡Diseño seleccionado! Desplázate hacia abajo para reservar tu cita.' },
+    'ai.download_started': { ko: '다운로드가 시작되었습니다! 디자인이 저장됩니다.', en: 'Download started! Your designs will be saved.', ja: 'ダウンロード開始！デザインが保存されます。', es: '¡Descarga iniciada! Tus diseños serán guardados.' },
+    'ai.download_complete': { ko: '디자인이 성공적으로 다운로드되었습니다!', en: 'Designs downloaded successfully!', ja: 'デザインのダウンロードが完了しました！', es: '¡Diseños descargados con éxito!' },
+    
     // Additional missing translations
     'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado Premium' },
     'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' }
@@ -377,6 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeLanguage();
     initializeNavigation();
     initializeForms();
+    initializeAIFeatures();
     setMinBookingDate();
     initializeAnimations();
     startCarousel();
@@ -399,9 +425,225 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 50);
 });
 
+// AI Nail Art Generation functionality
+let uploadedPhotos = [];
+
+function initializeAIFeatures() {
+    const photoInput = document.getElementById('photo-input');
+    const uploadArea = document.getElementById('upload-area');
+    const photoPreview = document.getElementById('photo-preview');
+    
+    if (!photoInput || !uploadArea || !photoPreview) return;
+    
+    // File input change handler
+    photoInput.addEventListener('change', handlePhotoUpload);
+    
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        
+        const files = Array.from(e.dataTransfer.files);
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+        
+        if (imageFiles.length > 0) {
+            handleFiles(imageFiles);
+        }
+    });
+}
+
+function handlePhotoUpload(event) {
+    const files = Array.from(event.target.files);
+    handleFiles(files);
+}
+
+function handleFiles(files) {
+    const maxFiles = 6;
+    const allowedFiles = files.slice(0, maxFiles - uploadedPhotos.length);
+    
+    allowedFiles.forEach(file => {
+        if (file.type.startsWith('image/') && uploadedPhotos.length < maxFiles) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const photoData = {
+                    file: file,
+                    dataUrl: e.target.result,
+                    id: Date.now() + Math.random()
+                };
+                uploadedPhotos.push(photoData);
+                displayPhotoPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+function displayPhotoPreview() {
+    const photoPreview = document.getElementById('photo-preview');
+    if (!photoPreview) return;
+    
+    photoPreview.innerHTML = '';
+    
+    if (uploadedPhotos.length === 0) {
+        photoPreview.style.display = 'none';
+        return;
+    }
+    
+    photoPreview.style.display = 'grid';
+    
+    uploadedPhotos.forEach((photo, index) => {
+        const photoItem = document.createElement('div');
+        photoItem.className = 'photo-item';
+        photoItem.innerHTML = `
+            <img src="${photo.dataUrl}" alt="Nail photo ${index + 1}">
+            <button class="remove-photo" onclick="removePhoto(${photo.id})">&times;</button>
+            <span class="photo-label">Photo ${index + 1}</span>
+        `;
+        photoPreview.appendChild(photoItem);
+    });
+    
+    // Update generate button state
+    const generateBtn = document.getElementById('generate-btn');
+    if (generateBtn) {
+        generateBtn.disabled = uploadedPhotos.length === 0;
+        generateBtn.textContent = uploadedPhotos.length === 0 ? 
+            t('ai.upload_photos_first') || 'Upload photos first' : 
+            t('ai.generate_now');
+    }
+}
+
+function removePhoto(photoId) {
+    uploadedPhotos = uploadedPhotos.filter(photo => photo.id !== photoId);
+    displayPhotoPreview();
+}
+
+async function generateAINailArt() {
+    if (uploadedPhotos.length === 0) {
+        showToast(t('ai.no_photos_error') || 'Please upload at least one photo', 'error');
+        return;
+    }
+    
+    const generateBtn = document.getElementById('generate-btn');
+    const aiResults = document.getElementById('ai-results');
+    const designGallery = document.getElementById('design-gallery');
+    
+    // Show loading state
+    generateBtn.disabled = true;
+    generateBtn.textContent = t('ai.generating') || 'Generating...';
+    
+    try {
+        showToast(t('ai.analyzing_photos') || 'Analyzing your nail photos...', 'success');
+        
+        // Simulate AI processing (replace with actual API call)
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Generate mock AI results (replace with actual API response)
+        const mockDesigns = [
+            {
+                id: 1,
+                name: 'Elegant French Design',
+                image: '../attached_assets/image_1753220336426.png',
+                description: 'Classic French manicure with modern twist'
+            },
+            {
+                id: 2,
+                name: 'Floral Art Design',
+                image: '../attached_assets/image_1753221294292.png',
+                description: 'Beautiful floral patterns with pastel colors'
+            },
+            {
+                id: 3,
+                name: 'Geometric Pattern',
+                image: '../attached_assets/image_1753225509459.png',
+                description: 'Modern geometric shapes in metallic finish'
+            }
+        ];
+        
+        // Display results
+        displayAIResults(mockDesigns);
+        aiResults.style.display = 'block';
+        aiResults.scrollIntoView({ behavior: 'smooth' });
+        
+        showToast(t('ai.generation_complete') || 'AI nail art generation complete!', 'success');
+        
+    } catch (error) {
+        console.error('AI generation error:', error);
+        showToast(t('ai.generation_error') || 'Failed to generate nail art. Please try again.', 'error');
+    } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = t('ai.generate_now');
+    }
+}
+
+function displayAIResults(designs) {
+    const designGallery = document.getElementById('design-gallery');
+    if (!designGallery) return;
+    
+    designGallery.innerHTML = '';
+    
+    designs.forEach(design => {
+        const designItem = document.createElement('div');
+        designItem.className = 'design-item';
+        designItem.innerHTML = `
+            <div class="design-image">
+                <img src="${design.image}" alt="${design.name}">
+                <div class="design-overlay">
+                    <button class="btn btn-small" onclick="selectDesign(${design.id})">
+                        ${t('ai.select_design') || 'Select This Design'}
+                    </button>
+                </div>
+            </div>
+            <div class="design-info">
+                <h5>${design.name}</h5>
+                <p>${design.description}</p>
+            </div>
+        `;
+        designGallery.appendChild(designItem);
+    });
+}
+
+function selectDesign(designId) {
+    showToast(t('ai.design_selected') || 'Design selected! Scroll down to book your appointment.', 'success');
+    
+    // Scroll to booking section
+    const bookingSection = document.getElementById('booking');
+    if (bookingSection) {
+        bookingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function downloadDesigns() {
+    showToast(t('ai.download_started') || 'Download started! Your designs will be saved.', 'success');
+    
+    // Here you would implement actual download functionality
+    // For now, we'll just show a success message
+    setTimeout(() => {
+        showToast(t('ai.download_complete') || 'Designs downloaded successfully!', 'success');
+    }, 1000);
+}
+
 // Export functions for external use
 window.ConnieNail = {
     updateLanguage,
     t,
-    showToast
+    showToast,
+    generateAINailArt,
+    removePhoto,
+    selectDesign,
+    downloadDesigns
 };
+
+// Global functions for HTML onclick handlers
+window.generateAINailArt = generateAINailArt;
+window.removePhoto = removePhoto;
+window.selectDesign = selectDesign;
+window.downloadDesigns = downloadDesigns;

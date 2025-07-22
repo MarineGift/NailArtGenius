@@ -99,29 +99,55 @@
             </div>
         </div>
         
-        <!-- AI Service Section -->
+        <!-- AI Nail Art Generator Section -->
         <div class="ai-service-section">
             <div class="container">
                 <div class="ai-service-card">
-                    <h3 data-key="ai.service_title">⭐ Premium Nail Service Booking ⭐</h3>
-                    <p data-key="ai.service_subtitle">Perfect nail care experience with expert touch and innovative AI technology</p>
-                    <div class="ai-features">
-                        <div class="ai-feature">
-                            <div class="feature-icon">⚡</div>
-                            <div class="feature-content">
-                                <h4 data-key="ai.instant_booking">Instant Booking</h4>
-                                <p data-key="ai.realtime_desc">Book online easily and receive exclusive booking discounts</p>
+                    <h3 data-key="ai.nail_generator_title">🤖 AI Nail Art Generator 🤖</h3>
+                    <p data-key="ai.nail_generator_subtitle">Upload your nail photos and get AI-generated custom nail art designs instantly</p>
+                    
+                    <!-- Photo Upload Section -->
+                    <div class="ai-photo-upload">
+                        <h4 data-key="ai.upload_photos">Upload Your Nail Photos</h4>
+                        <div class="upload-area" id="upload-area">
+                            <div class="upload-icon">📷</div>
+                            <p data-key="ai.upload_instruction">Click or drag photos here (up to 6 photos)</p>
+                            <input type="file" id="photo-input" multiple accept="image/*" style="display: none;">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('photo-input').click()" data-key="ai.select_photos">Select Photos</button>
+                        </div>
+                        <div id="photo-preview" class="photo-preview"></div>
+                    </div>
+                    
+                    <!-- AI Generation Controls -->
+                    <div class="ai-controls">
+                        <div class="ai-features">
+                            <div class="ai-feature">
+                                <div class="feature-icon">⚡</div>
+                                <div class="feature-content">
+                                    <h4 data-key="ai.instant_generation">Instant Generation</h4>
+                                    <p data-key="ai.generation_desc">AI analyzes your nails and creates custom designs in seconds</p>
+                                </div>
+                            </div>
+                            <div class="ai-feature">
+                                <div class="feature-icon">🎨</div>
+                                <div class="feature-content">
+                                    <h4 data-key="ai.custom_designs">Custom Designs</h4>
+                                    <p data-key="ai.design_desc">Get personalized nail art that fits your style perfectly</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="ai-feature">
-                            <div class="feature-icon">🎁</div>
-                            <div class="feature-content">
-                                <h4 data-key="ai.special_offer">Special Offer</h4>
-                                <p data-key="ai.special_desc">10% discount on online bookings</p>
-                            </div>
+                        <button id="generate-btn" class="btn btn-gradient" onclick="generateAINailArt()" data-key="ai.generate_now">Generate AI Nail Art</button>
+                    </div>
+                    
+                    <!-- AI Results -->
+                    <div id="ai-results" class="ai-results" style="display: none;">
+                        <h4 data-key="ai.generated_designs">Your AI-Generated Designs</h4>
+                        <div id="design-gallery" class="design-gallery"></div>
+                        <div class="ai-actions">
+                            <a href="#booking" class="btn btn-secondary" data-key="ai.book_service">Book This Service</a>
+                            <button class="btn btn-outline" onclick="downloadDesigns()" data-key="ai.download_designs">Download Designs</button>
                         </div>
                     </div>
-                    <a href="#booking" class="btn btn-gradient" data-key="ai.book_now">Book Now</a>
                 </div>
             </div>
         </div>
