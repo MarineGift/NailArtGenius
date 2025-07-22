@@ -161,24 +161,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "6장의 사진이 모두 필요합니다." });
       }
 
-      // Step 1: Analyze photos with precise nail measurements
-      const { analyzePreciseNailMeasurements } = await import("./preciseNailMeasurement");
-      console.log("Analyzing nail photos with precise measurements...");
-      const photosForAnalysis = photos.map(photo => ({
-        filePath: photo.filePath,
-        fingerType: photo.fingerType || 'unknown',
-        photoType: photo.photoType
-      }));
-      const analysisResult = await analyzePreciseNailMeasurements(sessionId, photosForAnalysis);
+      // Step 1: Try OpenAI analysis, fallback to demo mode if quota exceeded
+      let analysisResult;
+      let measurements;
       
-      if (!analysisResult.cardDetected) {
-        return res.status(400).json({ 
-          message: "카드를 감지할 수 없습니다. 카드가 선명하게 보이는 사진을 다시 업로드해주세요.",
-          recommendations: analysisResult.recommendations
-        });
+      try {
+        const { analyzePreciseNailMeasurements } = await import("./preciseNailMeasurement");
+        console.log("Attempting OpenAI analysis...");
+        const photosForAnalysis = photos.map(photo => ({
+          filePath: photo.filePath,
+          fingerType: photo.fingerType || 'unknown',
+          photoType: photo.photoType
+        }));
+        analysisResult = await analyzePreciseNailMeasurements(sessionId, photosForAnalysis);
+        measurements = analysisResult.fingerMeasurements;
+        
+        if (!analysisResult.cardDetected) {
+          return res.status(400).json({ 
+            message: "카드를 감지할 수 없습니다. 카드가 선명하게 보이는 사진을 다시 업로드해주세요.",
+            recommendations: analysisResult.recommendations
+          });
+        }
+      } catch (error: any) {
+        if (error.code === 'insufficient_quota' || error.status === 429) {
+          console.log("OpenAI quota exceeded, switching to demo mode...");
+          const { createDemoAnalysisResult } = await import("./demoMode");
+          analysisResult = createDemoAnalysisResult();
+          measurements = analysisResult.fingerMeasurements;
+          
+          // Add demo notice to recommendations
+          analysisResult.recommendations.unshift("데모 모드: OpenAI API 할당량 초과로 인해 시뮬레이션된 결과를 표시합니다");
+        } else {
+          throw error;
+        }
       }
-      
-      const measurements = analysisResult.fingerMeasurements;
       
       // Save measurements to database
       const savedMeasurements = [];
@@ -201,20 +217,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savedMeasurements.push(savedMeasurement);
       }
       
-      // Step 2: Generate precision nail art for all 10 fingers
-      const { generatePrecisionNailArt } = await import("./advancedNailArtGenerator");
-      console.log("Generating precision nail art for 10 fingers...");
+      // Step 2: Try OpenAI image generation, fallback to demo if quota exceeded
+      let nailArtResult;
       
-      const nailArtResult = await generatePrecisionNailArt(
-        sessionId,
-        measurements,
-        {
-          style: 'elegant',
-          colors: ['#FFB6C1', '#FFC0CB', '#FFFFFF'],
-          theme: 'classic',
-          complexity: 'medium'
+      try {
+        const { generatePrecisionNailArt } = await import("./advancedNailArtGenerator");
+        console.log("Attempting OpenAI image generation...");
+        
+        nailArtResult = await generatePrecisionNailArt(
+          sessionId,
+          measurements,
+          {
+            style: 'elegant',
+            colors: ['#FFB6C1', '#FFC0CB', '#FFFFFF'],
+            theme: 'classic',
+            complexity: 'medium'
+          }
+        );
+      } catch (error: any) {
+        if (error.code === 'insufficient_quota' || error.status === 429) {
+          console.log("OpenAI quota exceeded for image generation, using demo mode...");
+          const { generateDemoNailArt } = await import("./demoMode");
+          nailArtResult = generateDemoNailArt(measurements);
+        } else {
+          throw error;
         }
-      );
+      }
       
       // Step 3: Create PDF with all generated nail art images
       console.log("Creating PDF with nail art images...");
@@ -276,12 +304,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({
-        measurements: savedMeasurements,
-        nailArtImages: nailArtResult.generatedImages,
-        pdfUrl: pdfUrl,
+        message: analysisResult.recommendations.includes("데모 모드") 
+          ? "데모 모드: 네일아트 시뮬레이션이 완료되었습니다!" 
+          : "네일아트 생성이 완료되었습니다!",
         sessionId,
-        success: true,
-        message: "10개 손가락 네일아트 이미지가 생성되고 PDF로 저장되었습니다."
+        measurements: savedMeasurements,
+        generatedImages: nailArtResult.generatedImages,
+        descriptions: nailArtResult.descriptions,
+        designSpecs: nailArtResult.designSpecs || [],
+        pdfUrl: pdfUrl,
+        totalImages: 10,
+        analysisTime: `${Date.now() - startTime}ms`,
+        demoMode: analysisResult.recommendations.includes("데모 모드"),
+        recommendations: analysisResult.recommendations,
+        success: true
       });
     } catch (error: any) {
       console.error("Photo analysis and generation error:", error);
