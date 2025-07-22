@@ -274,6 +274,23 @@ export const timeSlotAvailability = pgTable("time_slot_availability", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Contact inquiries from customers
+export const contactInquiries = pgTable("contact_inquiries", {
+  id: serial("id").primaryKey(),
+  fullName: varchar("full_name").notNull(),
+  phoneNumber: varchar("phone_number").notNull(),
+  inquiry: text("inquiry").notNull(),
+  status: varchar("status").default("new"), // new, responded, resolved
+  adminResponse: text("admin_response"),
+  respondedAt: timestamp("responded_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Contact inquiry insert schema
+export const insertContactInquirySchema = createInsertSchema(contactInquiries);
+export type InsertContactInquiry = z.infer<typeof insertContactInquirySchema>;
+export type ContactInquiry = typeof contactInquiries.$inferSelect;
+
 // Admin users table
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),

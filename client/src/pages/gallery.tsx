@@ -29,17 +29,17 @@ export default function Gallery() {
   const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = useState<NailArtItem | null>(null);
 
-  // 네일아트 갤러리 데이터 (샘플 정보 완성)
+  // Gallery data
   const nailArtGallery = [
     {
       id: 1,
       title: "Classic French Manicure",
-      description: "전통적인 프렌치 매니큐어 스타일",
+      description: "Traditional French manicure style",
       category: "classic",
       image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
       price: "$45",
-      duration: "45분",
-      difficulty: "초급",
+      duration: "45 minutes",
+      difficulty: "Beginner",
       rating: 4.8,
       reviews: 127,
       techniques: ["베이스 코팅", "화이트 팁", "탑 코팅"],
@@ -190,7 +190,7 @@ export default function Gallery() {
         {/* 네일아트 갤러리 */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-            네일아트 디자인 갤러리
+            {t('gallery.design_gallery')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {nailArtGallery.map((item) => (

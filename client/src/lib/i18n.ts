@@ -209,6 +209,14 @@ const translations = {
   'contact.appointment_call': { ko: '예약은 전화로 부탁드립니다', en: 'Please call to make appointments', ja: 'ご予約はお電話でお願いします', es: 'Por favor llama para hacer citas' },
   'contact.open_maps': { ko: 'Google 지도에서 열기', en: 'Open in Google Maps', ja: 'Googleマップで開く', es: 'Abrir en Google Maps' },
   'contact.call_now': { ko: '지금 전화하기: 202.898.0826', en: 'Call Now: 202.898.0826', ja: '今すぐ電話: 202.898.0826', es: 'Llamar ahora: 202.898.0826' },
+  
+  // Contact Form
+  'contact.form.title': { ko: '문의하기', en: 'Contact Us', ja: 'お問い合わせ', es: 'Contáctanos' },
+  'contact.form.name': { ko: '성명', en: 'Full Name', ja: 'お名前', es: 'Nombre completo' },
+  'contact.form.phone': { ko: '전화번호', en: 'Phone Number', ja: '電話番号', es: 'Número de teléfono' },
+  'contact.form.inquiry': { ko: '문의내용', en: 'Inquiry', ja: 'お問い合わせ内容', es: 'Consulta' },
+  'contact.form.submit': { ko: '문의 전송', en: 'Send Inquiry', ja: 'お問い合わせ送信', es: 'Enviar consulta' },
+  'contact.form.success': { ko: '문의가 성공적으로 전송되었습니다', en: 'Inquiry sent successfully', ja: 'お問い合わせが正常に送信されました', es: 'Consulta enviada exitosamente' },
 
   // Landing page
   'landing.title': { ko: 'Connie\'s Nail에 오신 것을 환영합니다', en: 'Welcome to Connie\'s Nail', ja: 'Connie\'s Nailへようこそ', es: 'Bienvenido a Connie\'s Nail' },
@@ -241,10 +249,29 @@ const translations = {
   'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado premium' },
   'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' },
 
+  // Gallery page
+  'gallery.title': { ko: 'Nail Art Gallery', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', es: 'Galería de Arte de Uñas' },
+  'gallery.subtitle': { ko: 'Browse our professional nail art designs and choose your preferred style', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロのネイルアートデザインを閲覧し、お好みのスタイルをお選びください', es: 'Explora nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
+  'gallery.design_gallery': { ko: '네일아트 디자인 갤러리', en: 'Nail Art Design Gallery', ja: 'ネイルアートデザインギャラリー', es: 'Galería de Diseños de Arte de Uñas' },
+  'gallery.classic_french_desc': { ko: '전통적인 프렌치 매니큐어 스타일', en: 'Traditional French manicure style', ja: '伝統的なフレンチマニキュアスタイル', es: 'Estilo tradicional de manicura francesa' },
+  'gallery.duration_45min': { ko: '45분', en: '45 minutes', ja: '45分', es: '45 minutos' },
+  'gallery.difficulty_beginner': { ko: '초급', en: 'Beginner', ja: '初級', es: 'Principiante' },
+  'gallery.view_detail': { ko: '상세히 보기', en: 'View Detail', ja: '詳細を見る', es: 'Ver detalle' },
+  
+  // AI Service Section
+  'ai.service_title': { ko: '⭐ 프리미엄 네일 서비스 예약 ⭐', en: '⭐ Premium Nail Service Booking ⭐', ja: '⭐ プレミアムネイルサービス予約 ⭐', es: '⭐ Reserva de Servicio Premium de Uñas ⭐' },
+  'ai.service_subtitle': { ko: '전문가의 손길과 혁신적인 AI 기술로 완성된 완벽한 네일 케어 경험', en: 'Perfect nail care experience with expert touch and innovative AI technology', ja: '専門家の技と革新的なAI技術で完成された完璧なネイルケア体験', es: 'Experiencia perfecta de cuidado de uñas con toque experto y tecnología IA innovadora' },
+  'ai.book_now': { ko: '지금 예약하세요', en: 'Book Now', ja: '今すぐ予約', es: 'Reservar Ahora' },
+  'ai.instant_booking': { ko: '즉시 예약', en: 'Instant Booking', ja: 'インスタント予約', es: 'Reserva Instantánea' },
+  'ai.realtime_desc': { ko: '온라인으로 간편하게 예약하고 독점적인 예약 할인을 받으세요', en: 'Book online easily and receive exclusive booking discounts', ja: 'オンラインで簡単に予約し、独占的な予約割引を受けましょう', es: 'Reserve en línea fácilmente y reciba descuentos exclusivos de reserva' },
+  'ai.special_offer': { ko: '특별 혜택', en: 'Special Offer', ja: '特別オファー', es: 'Oferta Especial' },
+  'ai.special_desc': { ko: '온라인 예약 시 10% 할인 혜택', en: '10% discount on online bookings', ja: 'オンライン予約で10%割引', es: '10% de descuento en reservas en línea' },
+  'ai.book_appointment': { ko: '예약하기', en: 'Book Appointment', ja: '予約する', es: 'Reservar Cita' },
+  
   // Errors
   'error.upload_failed': { ko: '업로드에 실패했습니다', en: 'Upload failed', ja: 'アップロードに失敗しました', es: 'Error en la carga' },
   'error.analysis_failed': { ko: 'AI 분석에 실패했습니다', en: 'AI analysis failed', ja: 'AI分析に失敗しました', es: 'Análisis AI falló' },
-  'error.quota_exceeded': { ko: 'API 할당량이 초과되었습니다', en: 'API quota exceeded', ja: 'API割当量を超過しました', es: 'Cuota de API excedida' }
+  'error.quota_exceeded': { ko: 'API 할당량이 초과되었습니다', en: 'API quota exceeded', ja: 'API割当量을超過しました', es: 'Cuota de API excedida' }
 };
 
 // Translation function

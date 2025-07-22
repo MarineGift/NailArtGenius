@@ -14,7 +14,7 @@ interface LanguageContextType {
 }
 
 export const LanguageContext = createContext<LanguageContextType>({
-  language: 'ko',
+  language: 'en',
   setLanguage: () => {},
   t: (key: string) => key,
 });
@@ -32,7 +32,7 @@ export function useLanguage() {
 
 // Language provider hook for managing language state
 export function useLanguageProvider() {
-  const [language, setLanguageState] = useState<Language>('ko');
+  const [language, setLanguageState] = useState<Language>('en');
 
   // Initialize language from localStorage or browser
   useEffect(() => {

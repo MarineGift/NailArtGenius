@@ -14,6 +14,7 @@ import {
   customerPurchases,
   smsTemplates,
   smsHistory,
+  contactInquiries,
 } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import multer from "multer";
@@ -1979,6 +1980,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+  // Contact inquiries API
+  app.post('/api/contact-inquiries', async (req, res) => {
+    try {
+      const { fullName, phoneNumber, inquiry } = req.body;
+      
+      if (!fullName || !phoneNumber || !inquiry) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
+      
+      const contactInquiry = await db.insert(contactInquiries).values({
+        fullName,
+        phoneNumber,
+        inquiry
+      }).returning();
+      
+      res.status(201).json({ 
+        success: true, 
+        inquiry: contactInquiry[0] 
+      });
+    } catch (error) {
+      console.error('Error saving contact inquiry:', error);
+      res.status(500).json({ error: 'Failed to save inquiry' });
+    }
+  });
+
+  // Get contact inquiries (admin only)
+  app.get('/api/contact-inquiries', isAuthenticated, async (req: any, res) => {
+    try {
+      const inquiries = await db
+        .select()
+        .from(contactInquiries)
+        .orderBy(desc(contactInquiries.createdAt));
+      
+      res.json(inquiries);
+    } catch (error) {
+      console.error('Error fetching inquiries:', error);
+      res.status(500).json({ error: 'Failed to fetch inquiries' });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

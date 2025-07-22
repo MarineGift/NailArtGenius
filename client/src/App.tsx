@@ -1,4 +1,5 @@
 import { Switch, Route } from "wouter";
+import { Suspense, lazy } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -37,6 +38,9 @@ import PDFPreview from "@/pages/pdf-preview";
 import Services from "@/pages/services";
 import Contact from "@/pages/contact";
 
+// Lazy load AI Nail System
+const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
+
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -49,6 +53,11 @@ function Router() {
         <Route path="/contact" component={Contact} />
         <Route path="/gallery" component={Gallery} />
         <Route path="/ai-generator" component={AITailGenerator} />
+        <Route path="/ai-nail-system" component={() => (
+          <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+            <AINetworkSystem />
+          </Suspense>
+        )} />
         <Route path="/booking" component={Booking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/signup" component={Signup} />
