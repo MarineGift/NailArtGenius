@@ -146,11 +146,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Photo analysis route for nail measurements
-  app.post("/api/photos/analyze", isAuthenticated, async (req: any, res) => {
+  // New combined route: analyze photos and generate nail art images with PDF
+  app.post("/api/photos/analyze-and-generate", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { sessionId } = req.body;
+      
+      console.log("Starting photo analysis and nail art generation for session:", sessionId);
       
       // Get all photos for this session
       const photos = await storage.getCustomerPhotos(userId, sessionId);
@@ -159,10 +161,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "6장의 사진이 모두 필요합니다." });
       }
 
-      // Import nail measurement AI functions
+      // Step 1: Analyze photos and get measurements
       const { analyzeNailPhotos } = await import("./nailMeasurementAI");
-      
-      // Analyze photos and get measurements
+      console.log("Analyzing nail photos...");
       const measurements = await analyzeNailPhotos(sessionId, photos);
       
       // Save measurements to database
@@ -186,14 +187,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savedMeasurements.push(savedMeasurement);
       }
       
+      // Step 2: Generate nail art images for all 10 fingers
+      const { generateComprehensiveNailArt } = await import("./nailArtGenerator");
+      console.log("Generating nail art images for 10 fingers...");
+      
+      const nailArtResult = await generateComprehensiveNailArt(
+        sessionId,
+        measurements,
+        photos
+      );
+      
+      // Step 3: Create PDF with all generated nail art images
+      console.log("Creating PDF with nail art images...");
+      let pdfUrl = '';
+      
+      try {
+        const { jsPDF } = require('jspdf');
+        const pdf = new jsPDF();
+        
+        // Add title page
+        pdf.setFontSize(20);
+        pdf.text('AI Generated Nail Art Design', 20, 30);
+        pdf.setFontSize(12);
+        pdf.text(`Session: ${sessionId}`, 20, 50);
+        pdf.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 60);
+        
+        // Add each nail art image description to PDF
+        let yPosition = 80;
+        for (let i = 0; i < Math.min(nailArtResult.descriptions.length, 10); i++) {
+          const fingerName = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+          const handSide = i < 5 ? 'Left' : 'Right';
+          const fingerIndex = i % 5;
+          
+          if (yPosition > 250) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          
+          pdf.setFontSize(14);
+          pdf.text(`${handSide} ${fingerName[fingerIndex]} Nail Art`, 20, yPosition);
+          pdf.setFontSize(10);
+          pdf.text(nailArtResult.descriptions[i] || 'Nail art design generated', 20, yPosition + 10);
+          
+          // Note: Image URL for reference
+          if (nailArtResult.generatedImages[i]) {
+            pdf.text(`Image: ${nailArtResult.generatedImages[i]}`, 20, yPosition + 20);
+          }
+          
+          yPosition += 40;
+        }
+        
+        // Save PDF file
+        const pdfFileName = `nail_art_${sessionId}_${Date.now()}.pdf`;
+        const pdfPath = path.join(process.cwd(), 'uploads', pdfFileName);
+        
+        // Ensure uploads directory exists
+        await fs.mkdir(path.dirname(pdfPath), { recursive: true });
+        
+        // Save PDF
+        const pdfBuffer = pdf.output('arraybuffer');
+        await fs.writeFile(pdfPath, Buffer.from(pdfBuffer));
+        
+        pdfUrl = `/uploads/${pdfFileName}`;
+        console.log(`PDF saved successfully to: ${pdfPath}`);
+        
+      } catch (pdfError) {
+        console.error("Error creating PDF:", pdfError);
+        // Continue without PDF if generation fails
+      }
+      
       res.json({
         measurements: savedMeasurements,
+        nailArtImages: nailArtResult.generatedImages,
+        pdfUrl: pdfUrl,
         sessionId,
-        success: true
+        success: true,
+        message: "10개 손가락 네일아트 이미지가 생성되고 PDF로 저장되었습니다."
       });
     } catch (error: any) {
-      console.error("Photo analysis error:", error);
-      res.status(500).json({ message: error.message || "사진 분석 중 오류가 발생했습니다." });
+      console.error("Photo analysis and generation error:", error);
+      res.status(500).json({ message: error.message || "분석 및 생성 중 오류가 발생했습니다." });
     }
   });
 

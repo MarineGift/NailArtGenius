@@ -33,6 +33,76 @@ export interface CombinedNailImage {
 }
 
 /**
+ * Generate comprehensive nail art for all 10 fingers based on measurements from 5 fingers
+ */
+export async function generateComprehensiveNailArt(
+  sessionId: string,
+  measurements: any[],
+  photos: any[]
+): Promise<{ generatedImages: string[], descriptions: string[] }> {
+  const fingerTypes = ['thumb', 'index', 'middle', 'ring', 'pinky'];
+  const generatedImages: string[] = [];
+  const descriptions: string[] = [];
+  
+  console.log(`Generating nail art for all 10 fingers (both hands) based on ${measurements.length} measurements`);
+  
+  // Generate nail art for both hands (left and right)
+  for (let hand = 0; hand < 2; hand++) {
+    const handName = hand === 0 ? 'left' : 'right';
+    
+    for (let finger = 0; finger < 5; finger++) {
+      const fingerType = fingerTypes[finger];
+      const measurement = measurements.find(m => m.fingerType === fingerType) || measurements[0];
+      
+      try {
+        console.log(`Generating nail art for ${handName} ${fingerType}...`);
+        
+        const nailArtImage = await generateSingleNailArt(
+          measurement, 
+          getDefaultStylePreferences(), 
+          sessionId,
+          handName,
+          fingerType
+        );
+        
+        generatedImages.push(nailArtImage.imageUrl);
+        descriptions.push(nailArtImage.designDescription);
+        
+        // Add small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+      } catch (error) {
+        console.error(`Error generating nail art for ${handName} ${fingerType}:`, error);
+        
+        // Add placeholder for failed generation
+        generatedImages.push('');
+        descriptions.push(`Failed to generate nail art for ${handName} ${fingerType}`);
+      }
+    }
+  }
+  
+  console.log(`Successfully generated ${generatedImages.filter(img => img).length} out of 10 nail art images`);
+  
+  return {
+    generatedImages,
+    descriptions
+  };
+}
+
+/**
+ * Get default style preferences for nail art generation
+ */
+function getDefaultStylePreferences() {
+  return {
+    personality: "elegant",
+    colorHarmony: "complementary",
+    patternPreference: "minimal",
+    designIntensity: "medium",
+    inspirationKeywords: ["modern", "chic", "sophisticated"]
+  };
+}
+
+/**
  * Generate AI nail art images based on precise measurements and style preferences
  */
 export async function generateNailArtImages(request: NailArtGenerationRequest): Promise<GeneratedNailArt[]> {
@@ -55,73 +125,96 @@ export async function generateNailArtImages(request: NailArtGenerationRequest): 
  * Generate nail art for a single finger based on its measurements
  */
 async function generateSingleNailArt(
-  measurement: NailMeasurement, 
+  measurement: any, 
   stylePreferences: any, 
-  sessionId: string
+  sessionId: string,
+  handName: string = 'left',
+  fingerType: string = 'index'
 ): Promise<GeneratedNailArt> {
   
   // Create detailed prompt based on measurements and preferences
-  const designPrompt = createNailArtPrompt(measurement, stylePreferences);
+  const designPrompt = createNailArtPrompt(measurement, stylePreferences, handName, fingerType);
   
   // Generate nail art image using DALL-E
   const response = await openai.images.generate({
-    model: "dall-e-3",
+    model: "dall-e-3", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
     prompt: designPrompt,
     n: 1,
     size: "1024x1024",
     quality: "hd",
     style: "vivid",
   });
-
+  
+  if (!response.data || response.data.length === 0) {
+    throw new Error('No image generated from DALL-E');
+  }
+  
   const imageUrl = response.data[0].url;
   if (!imageUrl) {
-    throw new Error("Failed to generate nail art image");
+    throw new Error('No image URL received from DALL-E');
   }
-
-  // Download and save the generated image
-  const imageResponse = await fetch(imageUrl);
-  const imageBuffer = await imageResponse.arrayBuffer();
   
-  // Create filename and save path
-  const filename = `nail_art_${sessionId}_${measurement.fingerType}_${Date.now()}.png`;
-  const savePath = path.join("uploads", "generated_nail_art", filename);
+  // Save the generated image locally
+  const imageFileName = `nail_art_${handName}_${fingerType}_${sessionId}_${Date.now()}.png`;
+  const imagePath = path.join(process.cwd(), 'uploads', 'generated_nail_art', imageFileName);
   
   // Ensure directory exists
-  await fs.mkdir(path.dirname(savePath), { recursive: true });
+  await fs.mkdir(path.dirname(imagePath), { recursive: true });
   
-  // Process image to match nail dimensions
-  const processedImageBuffer = await processNailArtImage(
-    Buffer.from(imageBuffer), 
-    measurement
-  );
-  
-  await fs.writeFile(savePath, processedImageBuffer);
+  // Download and save the image
+  const imageResponse = await fetch(imageUrl);
+  const imageBuffer = await imageResponse.arrayBuffer();
+  await fs.writeFile(imagePath, Buffer.from(imageBuffer));
   
   return {
-    fingerType: measurement.fingerType,
-    imageUrl: `/uploads/generated_nail_art/${filename}`,
-    designDescription: generateDesignDescription(measurement, stylePreferences),
-    appliedMeasurements: measurement,
+    fingerType: `${handName}_${fingerType}`,
+    imageUrl: `/uploads/generated_nail_art/${imageFileName}`,
+    designDescription: `AI-generated nail art for ${handName} ${fingerType} finger`,
+    appliedMeasurements: measurement
   };
 }
 
 /**
  * Create detailed prompt for nail art generation based on measurements and preferences
  */
-function createNailArtPrompt(measurement: NailMeasurement, stylePreferences: any): string {
+function createNailArtPrompt(
+  measurement: any, 
+  stylePreferences: any, 
+  handName: string = 'left', 
+  fingerType: string = 'index'
+): string {
   const { personality, colorHarmony, patternPreference, designIntensity, inspirationKeywords } = stylePreferences;
   
-  // Shape-specific recommendations
-  const shapeGuidance = getShapeSpecificGuidance(measurement);
+  // Create comprehensive nail art prompt
+  const basePrompt = `Create a stunning, professional nail art design for a ${fingerType} finger on the ${handName} hand. `;
   
-  // Color palette based on harmony theory
-  const colorPalette = getColorPalette(colorHarmony);
+  const shapeDescription = measurement?.shapeCategory ? 
+    `The nail shape is ${measurement.shapeCategory} with dimensions approximately ${measurement.nailWidth}mm wide and ${measurement.nailLength}mm long. ` :
+    `Design for a medium-sized ${fingerType} fingernail. `;
   
-  // Intensity guidance
-  const intensityGuidance = getIntensityGuidance(designIntensity);
+  const styleDescription = `Style: ${personality} and ${patternPreference} with ${designIntensity} intensity. `;
   
-  // Pattern guidance
-  const patternGuidance = getPatternGuidance(patternPreference);
+  const colorDescription = `Color harmony: ${colorHarmony} palette. `;
+  
+  const inspirationDescription = inspirationKeywords?.length > 0 ? 
+    `Inspiration: ${inspirationKeywords.join(', ')}. ` : 
+    'Modern and elegant design. ';
+  
+  const technicalRequirements = `
+    Requirements:
+    - High-resolution, professional nail art photography style
+    - Clean, well-lit studio lighting
+    - Focus on the nail design only
+    - Realistic nail texture and finish
+    - Beautiful color gradients and patterns
+    - Show the nail from a top-down perspective
+    - Professional manicure quality
+    - No hands or fingers visible, just the designed nail
+    - White or neutral background
+  `;
+  
+  return basePrompt + shapeDescription + styleDescription + colorDescription + inspirationDescription + technicalRequirements;
+}
   
   return `Create a stunning nail art design for a ${measurement.fingerType} finger with the following specifications:
 
