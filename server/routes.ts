@@ -93,11 +93,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Photo upload routes for card-based measurement
   app.post('/api/photos/upload', isAuthenticated, upload.single('photo'), async (req: any, res) => {
     try {
+      console.log("Upload request received:", {
+        body: req.body,
+        file: req.file ? {
+          filename: req.file.filename,
+          size: req.file.size,
+          mimetype: req.file.mimetype
+        } : null
+      });
+
       const userId = req.user.claims.sub;
       const { sessionId, fingerType, photoType } = req.body;
       
       if (!req.file) {
+        console.log("No file in request");
         return res.status(400).json({ message: "사진 파일이 필요합니다." });
+      }
+
+      if (!sessionId || !fingerType) {
+        console.log("Missing required fields:", { sessionId, fingerType, photoType });
+        return res.status(400).json({ message: "세션 ID와 손가락 유형이 필요합니다." });
       }
 
       // Save photo information to database
@@ -106,22 +121,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         fileName: req.file.filename,
         filePath: req.file.path,
-        photoType,
+        photoType: photoType || 'finger_with_card',
         fingerType,
         cardDetected: false, // Will be updated during analysis
       };
 
+      console.log("Saving photo data:", photoData);
       const savedPhoto = await storage.saveCustomerPhoto(photoData);
+      console.log("Photo saved successfully:", savedPhoto.id);
       
       res.json({
         id: savedPhoto.id,
         imageUrl: `/uploads/${req.file.filename}`,
         fingerType,
-        photoType
+        photoType: photoData.photoType
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Photo upload error:", error);
-      res.status(500).json({ message: "사진 업로드 중 오류가 발생했습니다." });
+      res.status(500).json({ 
+        message: "사진 업로드 중 오류가 발생했습니다.",
+        error: error.message,
+        details: error.stack 
+      });
     }
   });
 
