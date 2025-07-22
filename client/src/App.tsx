@@ -21,6 +21,7 @@ import { EnhancedAdminPanel } from "@/components/enhanced-admin-panel";
 import Gallery from "@/pages/gallery";
 import AITailGenerator from "@/pages/ai-nail-generator";
 import GalleryAdmin from "@/pages/gallery-admin";
+import RealTimeBooking from "@/pages/real-time-booking";
 import CustomerManagementPage from "@/pages/customer-management";
 import Signup from "@/pages/signup";
 import Booking from "@/pages/booking";
@@ -49,6 +50,7 @@ function Router() {
         <Route path="/gallery" component={Gallery} />
         <Route path="/ai-generator" component={AITailGenerator} />
         <Route path="/booking" component={Booking} />
+        <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/signup" component={Signup} />
         <Route path="/landing" component={Landing} />
         

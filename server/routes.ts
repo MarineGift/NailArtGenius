@@ -919,6 +919,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Real-time booking routes
+  app.get("/api/real-time-availability/:date", async (req, res) => {
+    try {
+      const { date } = req.params;
+      
+      if (!date) {
+        return res.status(400).json({ message: "Date is required" });
+      }
+
+      // Generate time slots (10:00 AM to 7:00 PM, 30-minute intervals)
+      const timeSlots = [];
+      for (let hour = 10; hour <= 18; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          if (hour === 18 && minute > 0) break; // Stop at 6:30 PM
+          const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          timeSlots.push(timeString);
+        }
+      }
+
+      // Check which slots are booked
+      const bookedSlots = await storage.getBookedSlotsByDate(date);
+      const bookedTimes = bookedSlots.map(slot => slot.timeSlot);
+
+      const availableTimeSlots = timeSlots.map(time => ({
+        time,
+        available: !bookedTimes.includes(time),
+        booked: bookedTimes.includes(time)
+      }));
+
+      const totalSlots = timeSlots.length;
+      const bookedCount = bookedTimes.length;
+      const availableCount = totalSlots - bookedCount;
+
+      const availability = {
+        date,
+        totalSlots,
+        availableSlots: availableCount,
+        bookedSlots: bookedCount,
+        timeSlots: availableTimeSlots,
+        lastUpdated: new Date().toISOString()
+      };
+
+      res.json(availability);
+    } catch (error: any) {
+      console.error("Error fetching real-time availability:", error);
+      res.status(500).json({ message: "Failed to fetch availability" });
+    }
+  });
+
+  app.post("/api/real-time-appointments", async (req, res) => {
+    try {
+      const { appointmentDate, timeSlot, serviceId, serviceName, duration, price, customer, realTimeBooking } = req.body;
+      
+      // Double-check availability before booking (prevent race conditions)
+      const existingAppointment = await storage.getAppointmentByDateAndTime(
+        appointmentDate, 
+        timeSlot
+      );
+      
+      if (existingAppointment) {
+        return res.status(409).json({ 
+          message: "시간대가 이미 예약되었습니다. 다른 시간을 선택해 주세요.",
+          code: "SLOT_ALREADY_BOOKED"
+        });
+      }
+      
+      // Create or update customer
+      const savedCustomer = await storage.upsertCustomer({
+        name: customer.name,
+        phoneNumber: customer.phone,
+        email: customer.email || null,
+        visitType: customer.visitType,
+      });
+      
+      // Create appointment with real-time booking flag
+      const appointment = await storage.createAppointment({
+        customerId: savedCustomer.id,
+        appointmentDate: new Date(appointmentDate),
+        timeSlot,
+        visitReason: serviceName || "일반 방문",
+        status: "confirmed", // Real-time bookings are immediately confirmed
+        notes: customer.notes || null,
+        serviceId: serviceId || null,
+        duration: duration || 60,
+        price: price || 0,
+        realTimeBooking: true
+      });
+      
+      res.json({ 
+        appointment, 
+        customer: savedCustomer,
+        message: "실시간 예약이 완료되었습니다!",
+        realTimeConfirmation: true
+      });
+    } catch (error: any) {
+      console.error("Error creating real-time appointment:", error);
+      res.status(500).json({ 
+        message: "예약 처리 중 오류가 발생했습니다.",
+        code: "BOOKING_ERROR"
+      });
+    }
+  });
+
+  app.get("/api/services", async (req, res) => {
+    try {
+      // Return actual services from database
+      const services = await storage.getAllServices();
+      res.json(services);
+    } catch (error: any) {
+      console.error("Error fetching services:", error);
+      res.status(500).json({ message: "Failed to fetch services" });
+    }
+  });
+
   // Style preferences routes
   app.get("/api/style-preferences", isAuthenticated, async (req: any, res) => {
     try {

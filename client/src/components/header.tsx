@@ -35,6 +35,11 @@ export default function Header() {
                     {t('nav.booking')}
                   </Button>
                 </Link>
+                <Link href="/real-time-booking">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    실시간 예약
+                  </Button>
+                </Link>
                 <Link href="/gallery">
                   <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
                     {t('nav.gallery')}

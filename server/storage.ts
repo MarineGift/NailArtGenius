@@ -85,7 +85,7 @@ export interface IStorage {
   updateAppointment(id: number, updates: Partial<Appointment>): Promise<Appointment>;
   getAppointment(id: number): Promise<Appointment | undefined>;
   getAppointmentsByDate(date: Date): Promise<Appointment[]>;
-  getBookedSlotsByDate(date: Date): Promise<string[]>;
+  getBookedSlotsByDate(date: string): Promise<{ timeSlot: string; customerId: number }[]>;
   getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined>;
   getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]>;
   getUserAppointments(userId: string): Promise<Appointment[]>;
@@ -258,7 +258,28 @@ export class DatabaseStorage implements IStorage {
     return customer;
   }
 
-  async getBookedSlotsByDate(date: Date): Promise<string[]> {
+  async getBookedSlotsByDate(date: string): Promise<{ timeSlot: string; customerId: number }[]> {
+    const appointmentDate = new Date(date);
+    const nextDay = new Date(appointmentDate.getTime() + 24 * 60 * 60 * 1000);
+    
+    const bookings = await db
+      .select({
+        timeSlot: appointments.timeSlot,
+        customerId: appointments.customerId
+      })
+      .from(appointments)
+      .where(
+        and(
+          gte(appointments.appointmentDate, appointmentDate),
+          lte(appointments.appointmentDate, nextDay),
+          eq(appointments.status, "confirmed")
+        )
+      );
+    
+    return bookings;
+  }
+
+  async getBookedSlotsLegacy(date: Date): Promise<string[]> {
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
