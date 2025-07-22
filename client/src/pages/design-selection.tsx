@@ -191,11 +191,11 @@ export default function DesignSelection() {
         <div className="flex items-center mb-6">
           <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/processing")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            뒤로
+            {t('common.back')}
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">네일 디자인 선택</h1>
-            <p className="text-gray-600">마음에 드는 네일 디자인을 선택해주세요</p>
+            <h1 className="text-2xl font-bold text-gray-900">{t('designs.title')}</h1>
+            <p className="text-gray-600">{t('designs.subtitle')}</p>
           </div>
         </div>
 

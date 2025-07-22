@@ -120,13 +120,13 @@ export const translations: Translations = {
   },
 
   // Design Selection
-  'designs.title': {
+  'designs.titleLong': {
     en: 'Choose Nail Art Design',
     ko: '네일아트 디자인 선택',
     ja: 'ネイルアートデザインを選択',
     es: 'Elegir Diseño de Arte de Uñas'
   },
-  'designs.subtitle': {
+  'designs.subtitleOriginal': {
     en: 'Choose a beautiful design to apply to your generated nail shape',
     ko: '생성된 네일 모양에 적용할 아름다운 디자인을 선택하세요',
     ja: '生成された爪の形に適用する美しいデザインを選択してください',
@@ -693,6 +693,434 @@ export const translations: Translations = {
     ko: '다음',
     ja: '次へ',
     es: 'Siguiente'
+  },
+
+  // Design Selection - Shopping Mall Style
+  'designs.title': {
+    en: 'Choose Nail Design',
+    ko: '네일 디자인 선택',
+    ja: 'ネイルデザインを選択',
+    es: 'Elegir Diseño de Uñas'
+  },
+  'designs.subtitle': {
+    en: 'Choose your favorite nail design',
+    ko: '마음에 드는 네일 디자인을 선택해주세요',
+    ja: 'お気に入りのネイルデザインを選んでください',
+    es: 'Elige tu diseño de uñas favorito'
+  },
+  'designs.allCategories': {
+    en: 'All',
+    ko: '전체',
+    ja: 'すべて',
+    es: 'Todos'
+  },
+  'designs.classic': {
+    en: 'Classic',
+    ko: '클래식',
+    ja: 'クラシック',
+    es: 'Clásico'
+  },
+  'designs.french': {
+    en: 'French',
+    ko: '프렌치',
+    ja: 'フレンチ',
+    es: 'Francés'
+  },
+  'designs.gradient': {
+    en: 'Gradient',
+    ko: '그라데이션',
+    ja: 'グラデーション',
+    es: 'Gradiente'
+  },
+  'designs.glitter': {
+    en: 'Glitter',
+    ko: '글리터',
+    ja: 'グリッター',
+    es: 'Brillantina'
+  },
+  'designs.floral': {
+    en: 'Floral',
+    ko: '플로럴',
+    ja: 'フローラル',
+    es: 'Floral'
+  },
+  'designs.geometric': {
+    en: 'Geometric',
+    ko: '기하학',
+    ja: '幾何学',
+    es: 'Geométrico'
+  },
+  'designs.viewDetails': {
+    en: 'View Details',
+    ko: '상세보기',
+    ja: '詳細を見る',
+    es: 'Ver Detalles'
+  },
+  'designs.select': {
+    en: 'Select',
+    ko: '선택하기',
+    ja: '選択',
+    es: 'Seleccionar'
+  },
+  'designs.selected': {
+    en: 'Selected',
+    ko: '선택됨',
+    ja: '選択済み',
+    es: 'Seleccionado'
+  },
+  'designs.popular': {
+    en: 'HOT',
+    ko: 'HOT',
+    ja: 'HOT',
+    es: 'HOT'
+  },
+  'designs.new': {
+    en: 'NEW',
+    ko: 'NEW',
+    ja: 'NEW',
+    es: 'NEW'
+  },
+  'designs.selectedDesign': {
+    en: 'Selected Design',
+    ko: '선택된 디자인',
+    ja: '選択されたデザイン',
+    es: 'Diseño Seleccionado'
+  },
+  'designs.aiPreview': {
+    en: 'AI Preview',
+    ko: 'AI 미리보기',
+    ja: 'AIプレビュー',
+    es: 'Vista Previa IA'
+  },
+  'designs.proceed': {
+    en: 'Proceed to Payment',
+    ko: '결제하기',
+    ja: '支払いに進む',
+    es: 'Proceder al Pago'
+  },
+
+  // Design Detail Modal
+  'designDetail.features': {
+    en: 'Design Features',
+    ko: '디자인 특징',
+    ja: 'デザインの特徴',
+    es: 'Características del Diseño'
+  },
+  'designDetail.professionalDesign': {
+    en: '• Professional nail artist design',
+    ko: '• 전문 네일 아티스트 디자인',
+    ja: '• プロのネイルアーティストデザイン',
+    es: '• Diseño de artista profesional de uñas'
+  },
+  'designDetail.highQuality': {
+    en: '• High-quality nail printing material',
+    ko: '• 고품질 네일 프린팅 소재',
+    ja: '• 高品質ネイルプリンティング素材',
+    es: '• Material de impresión de uñas de alta calidad'
+  },
+  'designDetail.duration': {
+    en: '• Lasts approximately 7-10 days',
+    ko: '• 약 7-10일 지속',
+    ja: '• 約7-10日持続',
+    es: '• Dura aproximadamente 7-10 días'
+  },
+  'designDetail.naturalFinish': {
+    en: '• Natural finish',
+    ko: '• 자연스러운 마감',
+    ja: '• 自然な仕上がり',
+    es: '• Acabado natural'
+  },
+  'designDetail.treatmentInfo': {
+    en: 'Treatment Information',
+    ko: '시술 안내',
+    ja: '施術案内',
+    es: 'Información del Tratamiento'
+  },
+  'designDetail.treatmentTime': {
+    en: '• Treatment time: approximately 60 minutes',
+    ko: '• 시술 시간: 약 60분',
+    ja: '• 施術時間: 約60分',
+    es: '• Tiempo de tratamiento: aproximadamente 60 minutos'
+  },
+  'designDetail.process': {
+    en: '• Base coat + Design + Top coat',
+    ko: '• 베이스코트 + 디자인 + 탑코트',
+    ja: '• ベースコート + デザイン + トップコート',
+    es: '• Capa base + Diseño + Capa superior'
+  },
+  'designDetail.uvLamp': {
+    en: '• Professional UV lamp used',
+    ko: '• 전문 UV 램프 사용',
+    ja: '• 専用UVランプ使用',
+    es: '• Uso de lámpara UV profesional'
+  },
+  'designDetail.waterproof': {
+    en: '• 24-hour waterproof',
+    ko: '• 24시간 방수',
+    ja: '• 24時間防水',
+    es: '• Resistente al agua 24 horas'
+  },
+  'designDetail.selectThis': {
+    en: 'Select This Design',
+    ko: '이 디자인 선택하기',
+    ja: 'このデザインを選択',
+    es: 'Seleccionar Este Diseño'
+  },
+
+  // AI Preview Page
+  'preview.title': {
+    en: 'AI Design Preview',
+    ko: 'AI 디자인 미리보기',
+    ja: 'AIデザインプレビュー',
+    es: 'Vista Previa del Diseño IA'
+  },
+  'preview.subtitle': {
+    en: 'See how your selected design will look on your nails',
+    ko: '선택한 디자인이 회원님의 손톱에 어떻게 보일지 확인해보세요',
+    ja: '選択したデザインがあなたの爪にどのように見えるかを確認してください',
+    es: 'Ve cómo se verá tu diseño seleccionado en tus uñas'
+  },
+  'preview.generating': {
+    en: 'AI is generating your design',
+    ko: 'AI가 디자인을 생성하고 있습니다',
+    ja: 'AIがデザインを生成しています',
+    es: 'La IA está generando tu diseño'
+  },
+  'preview.progress': {
+    en: 'Progress',
+    ko: '진행상황',
+    ja: '進行状況',
+    es: 'Progreso'
+  },
+  'preview.analyzing': {
+    en: 'Analyzing uploaded nail images...',
+    ko: '업로드한 손톱 이미지를 분석하고 있습니다...',
+    ja: 'アップロードされた爪の画像を分析しています...',
+    es: 'Analizando las imágenes de uñas subidas...'
+  },
+  'preview.measuring': {
+    en: 'Measuring nail shape and size...',
+    ko: '손톱 형태와 크기를 측정하고 있습니다...',
+    ja: '爪の形とサイズを測定しています...',
+    es: 'Midiendo la forma y el tamaño de las uñas...'
+  },
+  'preview.applying': {
+    en: 'Applying your selected design...',
+    ko: '선택하신 디자인을 적용하고 있습니다...',
+    ja: '選択されたデザインを適用しています...',
+    es: 'Aplicando tu diseño seleccionado...'
+  },
+  'preview.finalizing': {
+    en: 'Finalizing the image...',
+    ko: '최종 이미지를 완성하고 있습니다...',
+    ja: '最終画像を完成しています...',
+    es: 'Finalizando la imagen...'
+  },
+  'preview.results': {
+    en: 'AI Generation Results',
+    ko: 'AI 생성 결과',
+    ja: 'AI生成結果',
+    es: 'Resultados de Generación IA'
+  },
+  'preview.regenerate': {
+    en: 'Regenerate',
+    ko: '다시 생성',
+    ja: '再生成',
+    es: 'Regenerar'
+  },
+  'preview.before': {
+    en: 'Before',
+    ko: '적용 전',
+    ja: '適用前',
+    es: 'Antes'
+  },
+  'preview.after': {
+    en: 'After',
+    ko: '적용 후',
+    ja: '適用後',
+    es: 'Después'
+  },
+  'preview.originalNails': {
+    en: 'Original nail image',
+    ko: '원본 손톱 이미지',
+    ja: '元の爪の画像',
+    es: 'Imagen original de uñas'
+  },
+  'preview.appliedDesign': {
+    en: 'Classic French Applied',
+    ko: '클래식 프렌치 적용',
+    ja: 'クラシックフレンチ適用',
+    es: 'Francés Clásico Aplicado'
+  },
+  'preview.disclaimer': {
+    en: '💡 Actual treatment results may differ. This is for reference only.',
+    ko: '💡 실제 시술 결과와 차이가 있을 수 있습니다. 참고용으로만 사용해주세요.',
+    ja: '💡 実際の施術結果と異なる場合があります。参考用としてご利用ください。',
+    es: '💡 Los resultados reales del tratamiento pueden diferir. Esto es solo de referencia.'
+  },
+  'preview.designInfo': {
+    en: 'Design Information',
+    ko: '디자인 정보',
+    ja: 'デザイン情報',
+    es: 'Información del Diseño'
+  },
+  'preview.designName': {
+    en: 'Design Name',
+    ko: '디자인명',
+    ja: 'デザイン名',
+    es: 'Nombre del Diseño'
+  },
+  'preview.estimatedTime': {
+    en: 'Estimated Time',
+    ko: '예상 소요시간',
+    ja: '予想所要時間',
+    es: 'Tiempo Estimado'
+  },
+  'preview.duration60': {
+    en: '60 minutes',
+    ko: '60분',
+    ja: '60分',
+    es: '60 minutos'
+  },
+  'preview.durability': {
+    en: 'Durability',
+    ko: '지속 기간',
+    ja: '持続期間',
+    es: 'Durabilidad'
+  },
+  'preview.durability710': {
+    en: '7-10 days',
+    ko: '7-10일',
+    ja: '7-10日',
+    es: '7-10 días'
+  },
+  'preview.price': {
+    en: 'Price',
+    ko: '가격',
+    ja: '価格',
+    es: 'Precio'
+  },
+  'preview.nextSteps': {
+    en: 'Next Steps',
+    ko: '다음 단계',
+    ja: '次のステップ',
+    es: 'Próximos Pasos'
+  },
+  'preview.proceedPayment': {
+    en: 'Proceed to Payment',
+    ko: '결제 진행하기',
+    ja: '支払いに進む',
+    es: 'Proceder al Pago'
+  },
+  'preview.chooseOther': {
+    en: 'Choose Different Design',
+    ko: '다른 디자인 선택',
+    ja: '別のデザインを選択',
+    es: 'Elegir Diseño Diferente'
+  },
+  'preview.savePdf': {
+    en: 'Save Preview PDF',
+    ko: '미리보기 PDF 저장',
+    ja: 'プレビューPDFを保存',
+    es: 'Guardar Vista Previa PDF'
+  },
+  'preview.saveSuccess': {
+    en: 'Preview Saved',
+    ko: '미리보기 저장 완료',
+    ja: 'プレビュー保存完了',
+    es: 'Vista Previa Guardada'
+  },
+  'preview.saveSuccessMsg': {
+    en: 'Design preview PDF has been downloaded.',
+    ko: '디자인 미리보기 PDF가 다운로드되었습니다.',
+    ja: 'デザインプレビューPDFがダウンロードされました。',
+    es: 'El PDF de vista previa del diseño ha sido descargado.'
+  },
+  'preview.saveFailed': {
+    en: 'Save Failed',
+    ko: '저장 실패',
+    ja: '保存失敗',
+    es: 'Error al Guardar'
+  },
+  'preview.saveFailedMsg': {
+    en: 'PDF save failed. Please try again.',
+    ko: 'PDF 저장 중 오류가 발생했습니다. 다시 시도해주세요.',
+    ja: 'PDF保存中にエラーが発生しました。再度お試しください。',
+    es: 'Error al guardar PDF. Por favor intenta de nuevo.'
+  },
+
+  // PDF and Printing
+  'printing.title': {
+    en: 'Treatment Progress',
+    ko: '시술 진행 상황',
+    ja: '施術進行状況',
+    es: 'Progreso del Tratamiento'
+  },
+  'printing.subtitle': {
+    en: 'Check your current order progress',
+    ko: '현재 주문의 진행 상황을 확인하세요',
+    ja: '現在のオーダーの進行状況を確認してください',
+    es: 'Verifica el progreso de tu pedido actual'
+  },
+  'printing.downloadGuide': {
+    en: 'Nail Design Guide Download',
+    ko: '네일 디자인 가이드 다운로드',
+    ja: 'ネイルデザインガイドダウンロード',
+    es: 'Descarga de Guía de Diseño de Uñas'
+  },
+  'printing.downloadDescription': {
+    en: 'Download a PDF nail design guide that can be referenced during treatment.',
+    ko: '시술 시 참고할 수 있는 네일 디자인 가이드를 PDF로 다운로드하세요.',
+    ja: '施術時に参考にできるネイルデザインガイドをPDFでダウンロードしてください。',
+    es: 'Descarga una guía de diseño de uñas en PDF que puede ser referenciada durante el tratamiento.'
+  },
+  'printing.downloadBtn': {
+    en: 'Download Treatment Guide PDF',
+    ko: '시술 가이드 PDF 다운로드',
+    ja: '施術ガイドPDFをダウンロード',
+    es: 'Descargar Guía de Tratamiento PDF'
+  },
+  'printing.downloadInfo': {
+    en: '• Includes order information, design preview, treatment instructions',
+    ko: '• 주문정보, 디자인 미리보기, 시술 안내사항 포함',
+    ja: '• 注文情報、デザインプレビュー、施術案内事項を含む',
+    es: '• Incluye información del pedido, vista previa del diseño, instrucciones de tratamiento'
+  },
+  'printing.contactStore': {
+    en: 'Contact Store',
+    ko: '매장에 연락하기',
+    ja: '店舗に連絡',
+    es: 'Contactar Tienda'
+  },
+  'printing.goHome': {
+    en: 'Go to Home',
+    ko: '홈으로 돌아가기',
+    ja: 'ホームに戻る',
+    es: 'Ir a Casa'
+  },
+  'printing.pdfDownloadSuccess': {
+    en: 'PDF Download Complete',
+    ko: 'PDF 다운로드 완료',
+    ja: 'PDFダウンロード完了',
+    es: 'Descarga de PDF Completa'
+  },
+  'printing.pdfDownloadSuccessMsg': {
+    en: 'Nail design guide PDF has been generated.',
+    ko: '네일 디자인 가이드 PDF가 생성되었습니다.',
+    ja: 'ネイルデザインガイドPDFが生成されました。',
+    es: 'Se ha generado la guía de diseño de uñas en PDF.'
+  },
+  'printing.pdfDownloadFailed': {
+    en: 'PDF Generation Failed',
+    ko: 'PDF 생성 실패',
+    ja: 'PDF生成失敗',
+    es: 'Error en Generación de PDF'
+  },
+  'printing.pdfDownloadFailedMsg': {
+    en: 'PDF generation failed. Please try again.',
+    ko: 'PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
+    ja: 'PDF生成中にエラーが発生しました。再度お試しください。',
+    es: 'Error en la generación de PDF. Por favor intenta de nuevo.'
   }
 };
 

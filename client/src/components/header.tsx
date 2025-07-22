@@ -3,7 +3,7 @@ import { useLanguage } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Palette, LogOut, Settings } from "lucide-react";
-import LanguageSelector from "./language-selector";
+import LanguageSwitcher from "./language-switcher";
 import { Link } from "wouter";
 
 export default function Header() {
@@ -22,7 +22,7 @@ export default function Header() {
           </div>
           
           <div className="flex items-center space-x-4">
-            <LanguageSelector />
+            <LanguageSwitcher size="sm" />
             
             {user && (
               <div className="flex items-center space-x-4">
