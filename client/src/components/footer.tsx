@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">AI 네일 스튜디오</h3>
+            <h3 className="text-xl font-bold mb-4">Connie's Nail</h3>
             <p className="text-gray-400 text-sm mb-4">
               {t('footer.company.description')}
             </p>
@@ -84,7 +84,7 @@ export default function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2025 AI 네일 스튜디오. {t('footer.copyright')}
+              © 2025 Connie's Nail. {t('footer.copyright')}
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
