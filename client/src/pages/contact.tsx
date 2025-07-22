@@ -89,7 +89,7 @@ export default function Contact() {
                 onClick={() => window.open('https://maps.google.com/?q=1300+Pennsylvania+Avenue+Washington+DC+20004', '_blank')}
               >
                 <MapPin className="mr-2 h-4 w-4" />
-                Open in Google Maps
+                {t('contact.open_maps')}
               </Button>
             </div>
           </ContactSection>
@@ -161,7 +161,7 @@ export default function Contact() {
                     onClick={() => window.location.href = 'tel:202-898-0826'}
                   >
                     <Phone className="mr-2 h-5 w-5" />
-                    Call Now: 202.898.0826
+                    {t('contact.call_now')}
                   </Button>
                 </div>
               </div>
