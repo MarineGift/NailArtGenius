@@ -1,6 +1,7 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { ServicesCarousel } from '@/components/services-carousel';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -92,7 +93,12 @@ export default function Services() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             {t('services.title')}
           </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-8"></div>
+        </div>
+
+        {/* Services Carousel */}
+        <div className="max-w-6xl mx-auto mb-12">
+          <ServicesCarousel />
         </div>
 
         <div className="max-w-4xl mx-auto">
