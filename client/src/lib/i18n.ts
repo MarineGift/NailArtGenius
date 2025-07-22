@@ -273,7 +273,12 @@ export function useTranslation() {
   });
 
   const t = (key: string, params?: { [key: string]: string | number }): string => {
-    let text = translate(key, currentLanguage);
+    const translation = translations[key];
+    if (!translation) {
+      return key;
+    }
+    
+    let text = translation[currentLanguage] || translation.en || key;
     
     if (params) {
       Object.entries(params).forEach(([param, value]) => {

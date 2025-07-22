@@ -704,3 +704,24 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+// Additional Customer Methods for Enhanced Admin Panel
+export class EnhancedDatabaseStorage extends DatabaseStorage {
+  async getAllCustomers(): Promise<Customer[]> {
+    return db.select().from(customers).orderBy(customers.createdAt);
+  }
+
+  async updateCustomerCategory(customerId: number, category: string): Promise<void> {
+    await db
+      .update(customers)
+      .set({ category, updatedAt: new Date() })
+      .where(eq(customers.id, customerId));
+  }
+
+  async getCustomersByIds(customerIds: number[]): Promise<Customer[]> {
+    return db.select().from(customers).where(inArray(customers.id, customerIds));
+  }
+}
+
+// Use enhanced storage
+export const enhancedStorage = new EnhancedDatabaseStorage();

@@ -65,6 +65,17 @@ export default function Header() {
                   </Button>
                 </Link>
                 
+                <Link href="/enhanced-admin">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-secondary"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span className="ml-1 hidden sm:inline">고객 관리</span>
+                  </Button>
+                </Link>
+                
                 <Link href="/admin-panel">
                   <Button
                     variant="ghost"

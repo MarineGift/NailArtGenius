@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, enhancedStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
@@ -1454,6 +1454,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching operating hours:", error);
       res.status(500).json({ message: "Failed to fetch operating hours" });
+    }
+  });
+
+  // Enhanced Customer Management Routes
+  app.get('/api/customers', isAuthenticated, async (req, res) => {
+    try {
+      const customers = await enhancedStorage.getAllCustomers();
+      res.json(customers);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      res.status(500).json({ message: "Failed to fetch customers" });
+    }
+  });
+
+  app.patch('/api/customers/:id/category', isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { category } = req.body;
+      
+      if (!['mailing', 'general', 'booking'].includes(category)) {
+        return res.status(400).json({ message: "Invalid category" });
+      }
+
+      await enhancedStorage.updateCustomerCategory(parseInt(id), category);
+      res.json({ message: "Customer category updated successfully" });
+    } catch (error) {
+      console.error("Error updating customer category:", error);
+      res.status(500).json({ message: "Failed to update customer category" });
+    }
+  });
+
+  // Email sending functionality
+  app.post('/api/admin/send-email', isAuthenticated, async (req, res) => {
+    try {
+      const { customerIds, subject, content } = req.body;
+      
+      if (!customerIds || !Array.isArray(customerIds) || customerIds.length === 0) {
+        return res.status(400).json({ message: "Customer IDs are required" });
+      }
+      
+      if (!subject || !content) {
+        return res.status(400).json({ message: "Subject and content are required" });
+      }
+
+      // Get customers with email addresses
+      const customers = await enhancedStorage.getCustomersByIds(customerIds);
+      const emailCustomers = customers.filter(c => c.email && c.mailingConsent);
+      
+      if (emailCustomers.length === 0) {
+        return res.status(400).json({ message: "No valid email recipients found" });
+      }
+
+      // Check if SENDGRID_API_KEY is available
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(503).json({ 
+          message: "이메일 서비스가 설정되지 않았습니다. SendGrid API 키를 설정해주세요.",
+          code: "EMAIL_SERVICE_NOT_CONFIGURED"
+        });
+      }
+
+      // Send emails using SendGrid
+      const { sendEmail } = await import('./sendgridEmail');
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const customer of emailCustomers) {
+        try {
+          await sendEmail({
+            to: customer.email!,
+            from: 'Sungimconniekim@gmail.com', // Your verified sender
+            subject,
+            html: content.replace(/\n/g, '<br>'),
+            text: content
+          });
+          successCount++;
+        } catch (emailError) {
+          console.error(`Failed to send email to ${customer.email}:`, emailError);
+          failCount++;
+        }
+      }
+
+      res.json({ 
+        message: `이메일 전송 완료: 성공 ${successCount}건, 실패 ${failCount}건`,
+        successCount,
+        failCount,
+        totalAttempted: emailCustomers.length
+      });
+    } catch (error) {
+      console.error("Error sending emails:", error);
+      res.status(500).json({ message: "Failed to send emails" });
     }
   });
 

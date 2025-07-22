@@ -148,6 +148,12 @@ export const customers = pgTable("customers", {
   phoneNumber: varchar("phone_number").notNull().unique(),
   email: varchar("email"),
   visitType: varchar("visit_type").notNull(), // "방문예약", "최초방문", "인터넷예약"
+  category: varchar("category").notNull().default("general"), // "mailing", "general", "booking"
+  mailingConsent: boolean("mailing_consent").default(false),
+  lastVisit: timestamp("last_visit"),
+  totalVisits: integer("total_visits").default(0),
+  totalSpent: varchar("total_spent").default("0.00"),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
