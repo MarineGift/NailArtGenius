@@ -27,6 +27,7 @@ import AnalyticsDashboard from "@/pages/analytics-dashboard";
 import EnhancedPhotoGuide from "@/pages/enhanced-photo-guide";
 import TestGuide from "@/pages/test-guide";
 import PDFPreview from "@/pages/pdf-preview";
+import Services from "@/pages/services";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,11 +37,13 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/services" component={Services} />
           <Route path="/signup" component={Signup} />
         </>
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/services" component={Services} />
           <Route path="/upload" component={PhotoUpload} />
           <Route path="/design-selection" component={DesignSelection} />
           <Route path="/processing" component={AiProcessing} />

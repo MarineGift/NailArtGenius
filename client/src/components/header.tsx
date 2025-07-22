@@ -18,6 +18,35 @@ export default function Header() {
               <Palette className="text-secondary text-2xl mr-2" />
               <span className="text-xl font-bold text-gray-900">{t('home.title')}</span>
             </div>
+            <div className="hidden md:block ml-10">
+              <div className="flex items-baseline space-x-4">
+                <Link href="/">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.home')}
+                  </Button>
+                </Link>
+                <Link href="/services">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.services')}
+                  </Button>
+                </Link>
+                <Link href="/booking">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.booking')}
+                  </Button>
+                </Link>
+                <Link href="/gallery">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.gallery')}
+                  </Button>
+                </Link>
+                <Link href="/contact">
+                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                    {t('nav.contact')}
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4">

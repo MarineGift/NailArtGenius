@@ -1,7 +1,7 @@
-# AI Nail Studio - Replit Project Guide
+# Connie's Nail - Replit Project Guide
 
 ## Overview
-AI Nail Studio is a full-stack web application that provides personalized nail art services using AI technology. Users can upload photos of their fingers, receive AI-powered nail shape analysis, select custom designs, and process payments for automated nail printing services. The application is built with a modern React frontend and Express.js backend, featuring Replit authentication and PayPal payment integration.
+Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. The application is built with a modern React frontend and Express.js backend, featuring Replit authentication.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -13,6 +13,13 @@ Preferred communication style: Simple, everyday language.
   - Added persistent language preference storage
   - Implemented browser language auto-detection
   - Fixed all import issues across components
+
+- **Rebranding to Connie's Nail**: Complete rebrand from AI Nail Studio
+  - Updated all branding elements and titles throughout the application
+  - Created comprehensive Services page with detailed pricing
+  - Added traditional nail salon services: spa treatments, nail care, waxing, massage
+  - Updated navigation with Services, Booking, Gallery, and Contact sections
+  - Restructured home page for traditional nail salon business model
 
 ## System Architecture
 

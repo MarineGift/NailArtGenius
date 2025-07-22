@@ -49,20 +49,20 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg"
-              onClick={() => setLocation('/upload')}
+              onClick={() => setLocation('/booking')}
               className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600 shadow-lg"
             >
-              <Camera className="mr-2 h-5 w-5" />
-{t('home.get_started')}
+              <Calendar className="mr-2 h-5 w-5" />
+              {t('home.book_appointment')}
             </Button>
             <Button 
               variant="outline" 
               size="lg"
               className="border-secondary text-secondary hover:bg-pink-50 px-8 py-4 text-lg"
-              onClick={() => setLocation("/advanced-design-studio")}
+              onClick={() => setLocation("/services")}
             >
-              <Wand2 className="mr-2 h-5 w-5" />
-              AI 디자인 스튜디오
+              <Sparkles className="mr-2 h-5 w-5" />
+              {t('home.view_services')}
             </Button>
           </div>
         </div>
