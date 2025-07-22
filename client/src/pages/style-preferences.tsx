@@ -18,8 +18,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Header from "@/components/header";
+import AdvancedStyleCustomizer from "@/components/AdvancedStyleCustomizer";
 
-// Style preferences form schema
+// Enhanced style preferences form schema
 const stylePreferencesSchema = z.object({
   preferredColors: z.array(z.string()).min(1, "최소 하나의 색상을 선택해주세요"),
   preferredStyles: z.array(z.string()).min(1, "최소 하나의 스타일을 선택해주세요"),
@@ -29,6 +30,13 @@ const stylePreferencesSchema = z.object({
   skinTone: z.enum(["fair", "medium", "tan", "deep"]).optional(),
   lifestyle: z.string().optional(),
   notes: z.string().optional(),
+  // Advanced customization options
+  finishType: z.array(z.string()).optional(),
+  intensity: z.enum(["subtle", "moderate", "bold", "dramatic"]).optional(),
+  patternPreference: z.enum(["solid", "gradient", "pattern", "mixed"]).optional(),
+  colorHarmony: z.enum(["monochromatic", "complementary", "triadic", "analogous"]).optional(),
+  personalityTraits: z.array(z.string()).optional(),
+  inspirationKeywords: z.string().optional(),
 });
 
 type StylePreferencesFormData = z.infer<typeof stylePreferencesSchema>;
@@ -50,28 +58,49 @@ const colorOptions = [
 ];
 
 const styleOptions = [
-  { id: "minimalist", name: "미니멀" },
-  { id: "floral", name: "플로럴" },
-  { id: "geometric", name: "기하학적" },
-  { id: "gradient", name: "그라데이션" },
-  { id: "glitter", name: "글리터" },
-  { id: "marble", name: "마블" },
-  { id: "animal_print", name: "애니멀 프린트" },
-  { id: "vintage", name: "빈티지" },
-  { id: "modern", name: "모던" },
-  { id: "cute", name: "큐트" },
-  { id: "elegant", name: "우아한" },
-  { id: "bold", name: "대담한" },
+  { id: "minimalist", name: "미니멀", description: "깔끔하고 단순한 디자인" },
+  { id: "floral", name: "플로럴", description: "꽃무늬와 자연 모티브" },
+  { id: "geometric", name: "기하학적", description: "선명한 도형과 패턴" },
+  { id: "gradient", name: "그라데이션", description: "자연스러운 색상 변화" },
+  { id: "glitter", name: "글리터", description: "반짝이는 포인트 효과" },
+  { id: "marble", name: "마블", description: "대리석 질감과 패턴" },
+  { id: "animal_print", name: "애니멀 프린트", description: "동물 무늬 패턴" },
+  { id: "vintage", name: "빈티지", description: "클래식하고 레트로한 스타일" },
+  { id: "modern", name: "모던", description: "현대적이고 세련된 디자인" },
+  { id: "cute", name: "큐트", description: "귀엽고 사랑스러운 느낌" },
+  { id: "elegant", name: "우아한", description: "고급스럽고 품격 있는 스타일" },
+  { id: "bold", name: "대담한", description: "강렬하고 인상적인 디자인" },
+  { id: "ombre", name: "옴브레", description: "점진적 색상 변화 효과" },
+  { id: "holographic", name: "홀로그램", description: "무지개빛 반사 효과" },
+  { id: "textured", name: "텍스처", description: "입체적인 질감 표현" },
+  { id: "seasonal", name: "시즌테마", description: "계절감 있는 디자인" },
 ];
 
 const occasionOptions = [
-  { id: "daily", name: "일상" },
-  { id: "work", name: "직장" },
-  { id: "party", name: "파티" },
-  { id: "wedding", name: "웨딩" },
-  { id: "date", name: "데이트" },
-  { id: "vacation", name: "휴가" },
-  { id: "special_event", name: "특별한 행사" },
+  { id: "daily", name: "일상", description: "매일 착용하기 좋은 실용적 디자인" },
+  { id: "work", name: "직장", description: "오피스룩에 어울리는 단정한 스타일" },
+  { id: "party", name: "파티", description: "화려하고 눈에 띄는 파티용 디자인" },
+  { id: "wedding", name: "웨딩", description: "결혼식에 적합한 우아한 스타일" },
+  { id: "date", name: "데이트", description: "로맨틱하고 매력적인 디자인" },
+  { id: "vacation", name: "휴가", description: "여행과 휴가에 어울리는 자유로운 스타일" },
+  { id: "special_event", name: "특별한 행사", description: "기념일과 특별한 순간을 위한 디자인" },
+  { id: "photoshoot", name: "촬영용", description: "사진 촬영에 최적화된 포토제닉 디자인" },
+];
+
+const finishOptions = [
+  { id: "matte", name: "매트", description: "부드럽고 은은한 무광 마감" },
+  { id: "glossy", name: "글로시", description: "윤기 있는 광택 마감" },
+  { id: "satin", name: "새틴", description: "은은한 광택의 중간 마감" },
+  { id: "holographic", name: "홀로그램", description: "각도에 따라 변하는 무지개빛" },
+  { id: "chrome", name: "크롬", description: "거울 같은 메탈릭 마감" },
+  { id: "velvet", name: "벨벳", description: "벨벳처럼 부드러운 질감" },
+];
+
+const intensityOptions = [
+  { id: "subtle", name: "은은함", description: "자연스럽고 절제된 디자인" },
+  { id: "moderate", name: "적당함", description: "균형 잡힌 중간 강도" },
+  { id: "bold", name: "강렬함", description: "눈에 띄고 임팩트 있는 디자인" },
+  { id: "dramatic", name: "드라마틱", description: "극적이고 화려한 효과" },
 ];
 
 export default function StylePreferences() {

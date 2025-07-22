@@ -573,6 +573,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Advanced design generation route
+  app.post("/api/designs/generate-advanced", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, customPrompt, advancedPreferences } = req.body;
+      
+      // Get measurements
+      const measurements = await storage.getAiGeneratedNails(userId, sessionId);
+      
+      if (!measurements || measurements.length === 0) {
+        return res.status(400).json({ message: "손톱 측정 데이터가 필요합니다." });
+      }
+
+      // Import advanced design generator
+      const { generateAdvancedNailDesign } = await import("./advancedDesignGenerator");
+      
+      // Convert database measurements to the expected format
+      const formattedMeasurements = measurements.map((m: any) => ({
+        fingerType: m.fingerType,
+        nailWidth: parseFloat(m.nailWidth),
+        nailLength: parseFloat(m.nailLength),
+        nailCurvature: parseFloat(m.nailCurvature),
+        fingerWidth: parseFloat(m.fingerWidth),
+        fingerLength: parseFloat(m.fingerLength),
+        shapeCategory: m.shapeCategory,
+        confidence: parseFloat(m.measurementConfidence)
+      }));
+      
+      const designUrl = await generateAdvancedNailDesign(
+        formattedMeasurements,
+        advancedPreferences,
+        customPrompt
+      );
+      
+      res.json({
+        designUrl,
+        sessionId,
+        measurements: formattedMeasurements,
+        preferences: advancedPreferences
+      });
+    } catch (error) {
+      console.error("Error generating advanced design:", error);
+      res.status(500).json({ message: error.message || "고급 디자인 생성 중 오류가 발생했습니다." });
+    }
+  });
+
+  // Generate design variations route
+  app.post("/api/designs/generate-variations", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, advancedPreferences, variationCount = 3 } = req.body;
+      
+      // Get measurements
+      const measurements = await storage.getAiGeneratedNails(userId, sessionId);
+      
+      if (!measurements || measurements.length === 0) {
+        return res.status(400).json({ message: "손톱 측정 데이터가 필요합니다." });
+      }
+
+      // Import advanced design generator
+      const { generateDesignVariations } = await import("./advancedDesignGenerator");
+      
+      // Convert database measurements to the expected format
+      const formattedMeasurements = measurements.map((m: any) => ({
+        fingerType: m.fingerType,
+        nailWidth: parseFloat(m.nailWidth),
+        nailLength: parseFloat(m.nailLength),
+        nailCurvature: parseFloat(m.nailCurvature),
+        fingerWidth: parseFloat(m.fingerWidth),
+        fingerLength: parseFloat(m.fingerLength),
+        shapeCategory: m.shapeCategory,
+        confidence: parseFloat(m.measurementConfidence)
+      }));
+      
+      const designUrls = await generateDesignVariations(
+        formattedMeasurements,
+        advancedPreferences,
+        variationCount
+      );
+      
+      res.json({
+        designUrls,
+        sessionId,
+        variationCount: designUrls.length
+      });
+    } catch (error) {
+      console.error("Error generating design variations:", error);
+      res.status(500).json({ message: error.message || "디자인 변형 생성 중 오류가 발생했습니다." });
+    }
+  });
+
+  // Analyze design recommendations route
+  app.post("/api/designs/analyze-recommendations", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, advancedPreferences } = req.body;
+      
+      // Get measurements
+      const measurements = await storage.getAiGeneratedNails(userId, sessionId);
+      
+      if (!measurements || measurements.length === 0) {
+        return res.status(400).json({ message: "손톱 측정 데이터가 필요합니다." });
+      }
+
+      // Import advanced design generator
+      const { analyzeDesignRecommendations } = await import("./advancedDesignGenerator");
+      
+      // Convert database measurements to the expected format
+      const formattedMeasurements = measurements.map((m: any) => ({
+        fingerType: m.fingerType,
+        nailWidth: parseFloat(m.nailWidth),
+        nailLength: parseFloat(m.nailLength),
+        nailCurvature: parseFloat(m.nailCurvature),
+        fingerWidth: parseFloat(m.fingerWidth),
+        fingerLength: parseFloat(m.fingerLength),
+        shapeCategory: m.shapeCategory,
+        confidence: parseFloat(m.measurementConfidence)
+      }));
+      
+      const analysis = await analyzeDesignRecommendations(formattedMeasurements, advancedPreferences);
+      
+      res.json({
+        analysis,
+        sessionId
+      });
+    } catch (error) {
+      console.error("Error analyzing design recommendations:", error);
+      res.status(500).json({ message: error.message || "디자인 분석 중 오류가 발생했습니다." });
+    }
+  });
+
   app.post("/api/custom-designs/generate", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

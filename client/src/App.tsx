@@ -22,6 +22,7 @@ import StylePreferences from "@/pages/style-preferences";
 import CustomDesign from "@/pages/custom-design";
 import PhotoMeasurement from "@/pages/photo-measurement";
 import DesignGeneration from "@/pages/design-generation";
+import AdvancedDesignStudio from "@/pages/advanced-design-studio";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -49,6 +50,7 @@ function Router() {
           <Route path="/custom-design" component={CustomDesign} />
           <Route path="/photo-measurement" component={PhotoMeasurement} />
           <Route path="/design-generation" component={DesignGeneration} />
+          <Route path="/advanced-design-studio" component={AdvancedDesignStudio} />
         </>
       )}
       <Route component={NotFound} />

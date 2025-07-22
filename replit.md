@@ -43,10 +43,13 @@ Preferred communication style: Simple, everyday language.
 - **Session Storage**: PostgreSQL-backed sessions with connect-pg-simple
 - **Route Protection**: Middleware-based authentication checks for protected endpoints
 
-### AI Integration
-- **Image Analysis**: OpenAI Vision API for analyzing uploaded nail photos
-- **Shape Detection**: Custom prompts for determining nail dimensions and curvature
-- **Design Generation**: AI-powered recommendations based on nail shape analysis
+### Advanced AI Integration
+- **Image Analysis**: OpenAI Vision API for analyzing uploaded nail photos with card-based scale reference
+- **Precise Measurement**: 6-photo nail measurement system using standard credit card dimensions (85.60mm x 53.98mm x 0.76mm)
+- **Advanced Design Generation**: Multi-layered AI system with comprehensive style preferences
+- **Personality-Based Customization**: AI considers user personality traits, lifestyle, and inspiration keywords
+- **Design Variations**: Automated generation of multiple design alternatives with different intensity levels
+- **Smart Recommendations**: AI analysis providing personalized suggestions based on nail measurements and preferences
 
 ## Data Flow
 

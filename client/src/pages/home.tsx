@@ -57,10 +57,10 @@ export default function Home() {
               variant="outline" 
               size="lg"
               className="border-secondary text-secondary hover:bg-pink-50 px-8 py-4 text-lg"
-              onClick={() => setLocation("/booking")}
+              onClick={() => setLocation("/advanced-design-studio")}
             >
-              <Calendar className="mr-2 h-5 w-5" />
-              방문 예약하기
+              <Wand2 className="mr-2 h-5 w-5" />
+              AI 디자인 스튜디오
             </Button>
           </div>
         </div>
