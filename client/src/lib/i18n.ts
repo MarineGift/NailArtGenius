@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 // Multi-language support for English, Korean, Japanese, and Spanish
-export type Language = 'en' | 'ko' | 'ja' | 'es';
+export type Language = 'ko' | 'en' | 'ja' | 'es';
 
 // Translation data structure
 const translations = {
@@ -66,14 +66,18 @@ const translations = {
   'booking.notes_placeholder': { ko: '특별한 요청사항이 있으시면 입력해 주세요', en: 'Any special requests', ja: '特別なご要望があれば入力してください', es: 'Cualquier solicitud especial' },
   'booking.selected_date': { ko: '선택된 날짜', en: 'Selected Date', ja: '選択された日付', es: 'Fecha seleccionada' },
   'booking.no_slots_available': { ko: '해당 날짜에 이용 가능한 시간이 없습니다', en: 'No time slots available for this date', ja: 'この日付には利用可能な時間がありません', es: 'No hay horarios disponibles para esta fecha' },
-  'booking.confirm_booking': { ko: '예약 확인', en: 'Confirm Booking', ja: '予約確認', zh: '确认预约' },
-  'booking.submitting': { ko: '예약 중...', en: 'Booking...', ja: '予約中...', zh: '预约中...' },
-  'booking.success_title': { ko: '예약 완료', en: 'Booking Confirmed', ja: '予約完了', zh: '预约确认' },
-  'booking.success_message': { ko: '예약이 성공적으로 완료되었습니다!', en: 'Your booking has been confirmed!', ja: 'ご予約が完了いたしました！', zh: '您的预约已确认！' },
-  'booking.error_title': { ko: '예약 오류', en: 'Booking Error', ja: '予約エラー', zh: '预约错误' },
-  'booking.error_message': { ko: '예약 중 오류가 발생했습니다.', en: 'An error occurred while booking.', ja: '予約中にエラーが発生しました。', zh: '预约时发生错误。' },
-  'booking.validation_error': { ko: '입력 오류', en: 'Validation Error', ja: '入力エラー', zh: '输入错误' },
-  'booking.required_fields': { ko: '필수 항목을 모두 입력해 주세요.', en: 'Please fill in all required fields.', ja: '必須項目をすべて入力してください。', zh: '请填写所有必填项目。' },
+  'booking.visit_type': { ko: '방문 유형', en: 'Visit Type', ja: '訪問タイプ', es: 'Tipo de visita' },
+  'booking.visit_types.first_time': { ko: '첫 방문', en: 'First Visit', ja: '初回訪問', es: 'Primera visita' },
+  'booking.visit_types.returning': { ko: '재방문', en: 'Returning', ja: '再訪問', es: 'Regreso' },
+  'booking.visit_types.regular': { ko: '단골 고객', en: 'Regular Customer', ja: '常連客', es: 'Cliente habitual' },
+  'booking.confirm_booking': { ko: '예약 확인', en: 'Confirm Booking', ja: '予約確認', es: 'Confirmar reserva' },
+  'booking.submitting': { ko: '예약 중...', en: 'Booking...', ja: '予約中...', es: 'Reservando...' },
+  'booking.success_title': { ko: '예약 완료', en: 'Booking Confirmed', ja: '予約完了', es: 'Reserva confirmada' },
+  'booking.success_message': { ko: '예약이 성공적으로 완료되었습니다!', en: 'Your booking has been confirmed!', ja: 'ご予約が完了いたしました！', es: '¡Tu reserva ha sido confirmada!' },
+  'booking.error_title': { ko: '예약 오류', en: 'Booking Error', ja: '予約エラー', es: 'Error de reserva' },
+  'booking.error_message': { ko: '예약 중 오류가 발생했습니다.', en: 'An error occurred while booking.', ja: '予約中にエラーが発生しました。', es: 'Ocurrió un error durante la reserva.' },
+  'booking.validation_error': { ko: '입력 오류', en: 'Validation Error', ja: '入力エラー', es: 'Error de validación' },
+  'booking.required_fields': { ko: '필수 항목을 모두 입력해 주세요.', en: 'Please fill in all required fields.', ja: '必須項目をすべて入力してください。', es: 'Por favor completa todos los campos requeridos.' },
   
   // Spa Specials
   'services.spa.title': { ko: 'Connie\'s Spa Specials', en: 'Connie\'s Spa Specials' },
@@ -126,8 +130,8 @@ const translations = {
   'services.design.dip_powder': { ko: '딥 파우더', en: 'DIP Powder' },
   
   // Gallery
-  'gallery.title': { ko: '네일아트 갤러리', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', zh: '美甲艺术画廊', es: 'Galería de Arte de Uñas' },
-  'gallery.subtitle': { ko: '프로페셔널한 네일아트 디자인을 확인하고 원하는 스타일을 선택하세요', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロフェッショナルなネイルアートデザインをご覧になり、お好みのスタイルをお選びください', zh: '浏览我们专业的美甲艺术设计，选择您喜欢的风格', es: 'Explore nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
+  'gallery.title': { ko: '네일아트 갤러리', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', es: 'Galería de Arte de Uñas' },
+  'gallery.subtitle': { ko: '프로페셔널한 네일아트 디자인을 확인하고 원하는 스타일을 선택하세요', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロフェッショナルなネイルアートデザインをご覧になり、お好みのスタイルをお選びください', es: 'Explore nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
   
   // Chair Massage
   'services.massage.title': { ko: '체어 마사지', en: 'Chair Massage' },
@@ -140,12 +144,36 @@ const translations = {
   'services.kids.finger_polish': { ko: '손톱 폴리시 체인지', en: 'Finger Polish Change' },
   'services.kids.toe_polish': { ko: '발톱 폴리시 체인지', en: 'Toe Polish Change' },
 
+  // Real-time booking
+  'realtime.title': { ko: '실시간 예약', en: 'Real-time Booking', ja: 'リアルタイム予約', es: 'Reserva en tiempo real' },
+  'realtime.subtitle': { ko: '실시간 예약 현황을 확인하고 즉시 예약하세요', en: 'Check real-time availability and book instantly', ja: 'リアルタイムの空き状況を確認してすぐに予約してください', es: 'Consulta la disponibilidad en tiempo real y reserva al instante' },
+  'realtime.availability_status': { ko: '예약 현황', en: 'Availability Status', ja: '予約状況', es: 'Estado de disponibilidad' },
+  'realtime.total_slots': { ko: '총 {count}개 슬롯', en: 'Total {count} slots', ja: '合計{count}スロット', es: 'Total {count} espacios' },
+  'realtime.available_slots': { ko: '예약 가능: {count}개', en: 'Available: {count}', ja: '予約可能: {count}', es: 'Disponible: {count}' },
+  'realtime.booked_slots': { ko: '예약됨: {count}개', en: 'Booked: {count}', ja: '予約済み: {count}', es: 'Reservado: {count}' },
+  'realtime.last_updated': { ko: '마지막 업데이트', en: 'Last Updated', ja: '最終更新', es: 'Última actualización' },
+  'realtime.auto_refresh': { ko: '자동 새로고침', en: 'Auto Refresh', ja: '自動更新', es: 'Actualización automática' },
+  'realtime.status.high': { ko: '예약 가능', en: 'Available', ja: '予約可能', es: 'Disponible' },
+  'realtime.status.medium': { ko: '일부 시간 예약 가능', en: 'Partially Available', ja: '一部時間予約可能', es: 'Parcialmente disponible' },
+  'realtime.status.low': { ko: '마감 임박', en: 'Almost Full', ja: '満席間近', es: 'Casi completo' },
+  'realtime.status.full': { ko: '예약 마감', en: 'Fully Booked', ja: '満席', es: 'Completamente reservado' },
+  'realtime.booked_label': { ko: '예약됨', en: 'Booked', ja: '予約済み', es: 'Reservado' },
+  'realtime.booking_summary': { ko: '예약 요약', en: 'Booking Summary', ja: '予約概要', es: 'Resumen de reserva' },
+  'realtime.service_label': { ko: '서비스', en: 'Service', ja: 'サービス', es: 'Servicio' },
+  'realtime.date_label': { ko: '날짜', en: 'Date', ja: '日付', es: 'Fecha' },
+  'realtime.time_label': { ko: '시간', en: 'Time', ja: '時間', es: 'Hora' },
+  'realtime.customer_label': { ko: '고객명', en: 'Customer', ja: 'お客様名', es: 'Cliente' },
+  'realtime.contact_label': { ko: '연락처', en: 'Contact', ja: '連絡先', es: 'Contacto' },
+  'realtime.not_selected': { ko: '선택되지 않음', en: 'Not selected', ja: '選択されていません', es: 'No seleccionado' },
+  'realtime.not_entered': { ko: '입력되지 않음', en: 'Not entered', ja: '入力されていません', es: 'No ingresado' },
+  'realtime.no_availability': { ko: '해당 날짜의 예약 시간을 불러올 수 없습니다.', en: 'Unable to load booking times for this date.', ja: 'この日付の予約時間を読み込めません。', es: 'No se pueden cargar los horarios de reserva para esta fecha.' },
+
   // Contact page
-  'contact.title': { ko: 'Connie\'s nail location', en: 'Connie\'s nail location', ja: 'Connie\'s nailの場所', zh: 'Connie\'s nail位置' },
-  'contact.salon_name': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', zh: 'Connie\'s Nail沙龙' },
-  'contact.call_us': { ko: '전화번호 @ 202.898.0826', en: 'Call us @ 202.898.0826', ja: 'お電話 @ 202.898.0826', zh: '致电 @ 202.898.0826' },
-  'contact.hours': { ko: '월요일 - 금요일 오전 10시부터 오후 7시까지 영업합니다', en: 'We are here Monday - Friday from 10:00am to 7:00pm', ja: '月曜日から金曜日の午前10時から午後7時まで営業しております', zh: '我们周一至周五上午10点到晚上7点营业' },
-  'contact.appointment_note': { ko: '전화로 예약해 주시기 바랍니다. 여러분을 만나뵙기를 기대합니다!', en: 'Kindly make your appointments by giving us a call. We look forward to seeing you!', ja: 'お電話でご予約をお願いいたします。皆様にお会いできることを楽しみにしております！', zh: '请致电预约。我们期待与您见面！' },
+  'contact.title': { ko: 'Connie\'s nail location', en: 'Connie\'s nail location', ja: 'Connie\'s nailの場所', es: 'Ubicación de Connie\'s nail' },
+  'contact.salon_name': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', es: 'Salón de Uñas Connie\'s' },
+  'contact.call_us': { ko: '전화번호 @ 202.898.0826', en: 'Call us @ 202.898.0826', ja: 'お電話 @ 202.898.0826', es: 'Llámanos @ 202.898.0826' },
+  'contact.hours': { ko: '월요일 - 금요일 오전 10시부터 오후 7시까지 영업합니다', en: 'We are here Monday - Friday from 10:00am to 7:00pm', ja: '月曜日から金曜日の午前10時から午後7時まで営業しております', es: 'Estamos aquí de lunes a viernes de 10:00am a 7:00pm' },
+  'contact.appointment_note': { ko: '전화로 예약해 주시기 바랍니다. 여러분을 만나뵙기를 기대합니다!', en: 'Kindly make your appointments by giving us a call. We look forward to seeing you!', ja: 'お電話でご予約をお願いいたします。皆様にお会いできることを楽しみにしております！', es: '¡Por favor hagan sus citas llamándonos. Esperamos conocerlos!' },
   'contact.where_title': { ko: '저희 위치는?', en: 'Where are we?', ja: '私たちはどこにいますか？', zh: '我们在哪里？' },
   'contact.building': { ko: 'The Ronald Reagan Building & International Trade Center', en: 'The Ronald Reagan Building & International Trade Center', ja: 'The Ronald Reagan Building & International Trade Center', zh: 'The Ronald Reagan Building & International Trade Center' },
   'contact.space': { ko: 'Space C-084', en: 'Space C-084', ja: 'Space C-084', zh: 'Space C-084' },

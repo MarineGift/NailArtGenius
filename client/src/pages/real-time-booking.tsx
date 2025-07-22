@@ -229,10 +229,10 @@ export default function RealTimeBookingPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {t('booking.title')} - 실시간 예약
+            {t('booking.title')} - {t('realtime.title')}
           </h1>
           <p className="text-gray-600">
-            실시간 예약 현황을 확인하고 즉시 예약하세요
+            {t('realtime.subtitle')}
           </p>
         </div>
 
@@ -248,7 +248,7 @@ export default function RealTimeBookingPage() {
             <CardContent>
               <Select value={selectedService?.toString() || ''} onValueChange={(value) => setSelectedService(parseInt(value))}>
                 <SelectTrigger>
-                  <SelectValue placeholder="서비스를 선택하세요" />
+                  <SelectValue placeholder={t('booking.select_service')} />
                 </SelectTrigger>
                 <SelectContent>
                   {services.map((service) => (
@@ -287,18 +287,18 @@ export default function RealTimeBookingPage() {
               {availability && (
                 <div className="mt-4 p-3 rounded-lg border">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">예약 현황</span>
+                    <span className="text-sm font-medium">{t('realtime.availability_status')}</span>
                     <Badge className={getStatusColor(getAvailabilityStatus())}>
                       {getStatusText(getAvailabilityStatus())}
                     </Badge>
                   </div>
                   <div className="text-sm text-gray-600">
-                    <div>총 {availability.totalSlots}개 슬롯</div>
-                    <div>예약 가능: {availability.availableSlots}개</div>
-                    <div>예약됨: {availability.bookedSlots}개</div>
+                    <div>{t('realtime.total_slots').replace('{count}', availability.totalSlots.toString())}</div>
+                    <div>{t('realtime.available_slots').replace('{count}', availability.availableSlots.toString())}</div>
+                    <div>{t('realtime.booked_slots').replace('{count}', availability.bookedSlots.toString())}</div>
                   </div>
                   <div className="mt-2 text-xs text-gray-500">
-                    마지막 업데이트: {format(new Date(availability.lastUpdated), 'HH:mm:ss')}
+                    {t('realtime.last_updated')}: {format(new Date(availability.lastUpdated), 'HH:mm:ss')}
                   </div>
                 </div>
               )}
@@ -326,7 +326,7 @@ export default function RealTimeBookingPage() {
                   size="sm"
                   onClick={() => setAutoRefresh(!autoRefresh)}
                 >
-                  자동 새로고침
+                  {t('realtime.auto_refresh')}
                 </Button>
               </div>
             </CardHeader>
@@ -360,7 +360,7 @@ export default function RealTimeBookingPage() {
                             <CheckCircle className="w-4 h-4 text-green-500" />
                           ) : (
                             <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
-                              예약됨
+                              {t('realtime.booked_label')}
                             </span>
                           )}
                         </div>
@@ -371,7 +371,7 @@ export default function RealTimeBookingPage() {
               ) : (
                 <Alert>
                   <AlertDescription>
-                    해당 날짜의 예약 시간을 불러올 수 없습니다.
+                    {t('realtime.no_availability')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -406,7 +406,7 @@ export default function RealTimeBookingPage() {
               <Input
                 value={customerInfo.phone}
                 onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="전화번호를 입력하세요"
+                placeholder={t('booking.phone')}
               />
             </div>
             
@@ -418,7 +418,7 @@ export default function RealTimeBookingPage() {
                 type="email"
                 value={customerInfo.email}
                 onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="이메일을 입력하세요 (선택사항)"
+                placeholder={t('booking.email')}
               />
             </div>
             
@@ -431,9 +431,9 @@ export default function RealTimeBookingPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="first-time">첫 방문</SelectItem>
-                  <SelectItem value="returning">재방문</SelectItem>
-                  <SelectItem value="regular">단골 고객</SelectItem>
+                  <SelectItem value="first-time">{t('booking.visit_types.first_time')}</SelectItem>
+                  <SelectItem value="returning">{t('booking.visit_types.returning')}</SelectItem>
+                  <SelectItem value="regular">{t('booking.visit_types.regular')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -459,13 +459,13 @@ export default function RealTimeBookingPage() {
           </CardHeader>
           <CardContent>
             <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <h4 className="font-medium mb-2">예약 요약</h4>
+              <h4 className="font-medium mb-2">{t('realtime.booking_summary')}</h4>
               <div className="space-y-1 text-sm">
-                <div>서비스: {services.find(s => s.id === selectedService)?.name || '선택되지 않음'}</div>
-                <div>날짜: {selectedDate ? format(selectedDate, 'yyyy년 MM월 dd일', { locale: ko }) : '선택되지 않음'}</div>
-                <div>시간: {selectedTimeSlot || '선택되지 않음'}</div>
-                <div>고객명: {customerInfo.name || '입력되지 않음'}</div>
-                <div>연락처: {customerInfo.phone || '입력되지 않음'}</div>
+                <div>{t('realtime.service_label')}: {services.find(s => s.id === selectedService)?.name || t('realtime.not_selected')}</div>
+                <div>{t('realtime.date_label')}: {selectedDate ? format(selectedDate, 'yyyy년 MM월 dd일', { locale: ko }) : t('realtime.not_selected')}</div>
+                <div>{t('realtime.time_label')}: {selectedTimeSlot || t('realtime.not_selected')}</div>
+                <div>{t('realtime.customer_label')}: {customerInfo.name || t('realtime.not_entered')}</div>
+                <div>{t('realtime.contact_label')}: {customerInfo.phone || t('realtime.not_entered')}</div>
               </div>
             </div>
             

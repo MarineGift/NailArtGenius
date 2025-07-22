@@ -37,7 +37,7 @@ export default function Header() {
                 </Link>
                 <Link href="/real-time-booking">
                   <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
-                    실시간 예약
+                    {t('realtime.title')}
                   </Button>
                 </Link>
                 <Link href="/gallery">
