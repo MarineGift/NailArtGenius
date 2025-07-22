@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // Multi-language support for Korean, English, Japanese, and Chinese
 export type Language = 'ko' | 'en' | 'ja' | 'zh';
 
@@ -47,6 +49,30 @@ const translations = {
 
   // Services page
   'services.title': { ko: 'Connie\'s Nail Services', en: 'Connie\'s Nail Services' },
+
+  // Booking page
+  'booking.title': { ko: '예약 시스템', en: 'Booking System', ja: '予約システム', zh: '预约系统' },
+  'booking.subtitle': { ko: '원하는 서비스와 시간을 선택해 주세요', en: 'Select your preferred service and time', ja: 'お好みのサービスと時間を選択してください', zh: '请选择您喜欢的服务和时间' },
+  'booking.select_service': { ko: '서비스 선택', en: 'Select Service', ja: 'サービス選択', zh: '选择服务' },
+  'booking.select_date': { ko: '날짜 선택', en: 'Select Date', ja: '日付選択', zh: '选择日期' },
+  'booking.select_time': { ko: '시간 선택', en: 'Select Time', ja: '時間選択', zh: '选择时间' },
+  'booking.customer_info': { ko: '고객 정보', en: 'Customer Information', ja: 'お客様情報', zh: '客户信息' },
+  'booking.name': { ko: '이름', en: 'Name', ja: '名前', zh: '姓名' },
+  'booking.phone': { ko: '전화번호', en: 'Phone', ja: '電話番号', zh: '电话' },
+  'booking.email': { ko: '이메일', en: 'Email', ja: 'メール', zh: '邮箱' },
+  'booking.notes': { ko: '요청사항', en: 'Notes', ja: 'ご要望', zh: '备注' },
+  'booking.name_placeholder': { ko: '성함을 입력해 주세요', en: 'Enter your name', ja: 'お名前を入力してください', zh: '请输入您的姓名' },
+  'booking.notes_placeholder': { ko: '특별한 요청사항이 있으시면 입력해 주세요', en: 'Any special requests', ja: '特別なご要望があれば入力してください', zh: '如有特殊要求请输入' },
+  'booking.selected_date': { ko: '선택된 날짜', en: 'Selected Date', ja: '選択された日付', zh: '选择的日期' },
+  'booking.no_slots_available': { ko: '해당 날짜에 이용 가능한 시간이 없습니다', en: 'No time slots available for this date', ja: 'この日付には利用可能な時間がありません', zh: '此日期没有可用时间段' },
+  'booking.confirm_booking': { ko: '예약 확인', en: 'Confirm Booking', ja: '予約確認', zh: '确认预约' },
+  'booking.submitting': { ko: '예약 중...', en: 'Booking...', ja: '予約中...', zh: '预约中...' },
+  'booking.success_title': { ko: '예약 완료', en: 'Booking Confirmed', ja: '予約完了', zh: '预约确认' },
+  'booking.success_message': { ko: '예약이 성공적으로 완료되었습니다!', en: 'Your booking has been confirmed!', ja: 'ご予約が完了いたしました！', zh: '您的预约已确认！' },
+  'booking.error_title': { ko: '예약 오류', en: 'Booking Error', ja: '予約エラー', zh: '预约错误' },
+  'booking.error_message': { ko: '예약 중 오류가 발생했습니다.', en: 'An error occurred while booking.', ja: '予約中にエラーが発生しました。', zh: '预约时发生错误。' },
+  'booking.validation_error': { ko: '입력 오류', en: 'Validation Error', ja: '入力エラー', zh: '输入错误' },
+  'booking.required_fields': { ko: '필수 항목을 모두 입력해 주세요.', en: 'Please fill in all required fields.', ja: '必須項目をすべて入力してください。', zh: '请填写所有必填项目。' },
   
   // Spa Specials
   'services.spa.title': { ko: 'Connie\'s Spa Specials', en: 'Connie\'s Spa Specials' },
@@ -229,10 +255,39 @@ export function loadLanguagePreference(): Language {
       return 'ko';
     } else if (browserLang.startsWith('ja')) {
       return 'ja';
-    } else if (browserLang.startsWith('es')) {
-      return 'es';
+    } else if (browserLang.startsWith('zh')) {
+      return 'zh';
     }
   }
   
   return 'en'; // Default to English
+}
+
+// Hook for using translations in components
+export function useTranslation() {
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      return loadLanguagePreference();
+    }
+    return 'ko';
+  });
+
+  const t = (key: string, params?: { [key: string]: string | number }): string => {
+    let text = translate(key, currentLanguage);
+    
+    if (params) {
+      Object.entries(params).forEach(([param, value]) => {
+        text = text.replace(`{${param}}`, String(value));
+      });
+    }
+    
+    return text;
+  };
+
+  const changeLanguage = (lang: Language) => {
+    setCurrentLanguage(lang);
+    saveLanguagePreference(lang);
+  };
+
+  return { t, currentLanguage, changeLanguage };
 }

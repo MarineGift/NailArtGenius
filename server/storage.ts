@@ -6,6 +6,9 @@ import {
   nailDesigns,
   orders,
   appointments,
+  services,
+  operatingHours,
+  timeSlotAvailability,
   adminUsers,
   userStylePreferences,
   customNailDesigns,
@@ -26,6 +29,12 @@ import {
   type InsertOrder,
   type Appointment,
   type InsertAppointment,
+  type Service,
+  type InsertService,
+  type OperatingHours,
+  type InsertOperatingHours,
+  type TimeSlotAvailability,
+  type InsertTimeSlotAvailability,
   type AdminUser,
   type InsertAdminUser,
   type UserStylePreferences,
@@ -79,6 +88,17 @@ export interface IStorage {
   getBookedSlotsByDate(date: Date): Promise<string[]>;
   getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined>;
   getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]>;
+  getUserAppointments(userId: string): Promise<Appointment[]>;
+  
+  // Services operations
+  getAllServices(): Promise<Service[]>;
+  getServicesByCategory(category: string): Promise<Service[]>;
+  getService(id: number): Promise<Service | undefined>;
+  
+  // Availability operations
+  getAvailableTimeSlots(date: Date, serviceId?: number): Promise<string[]>;
+  isTimeSlotAvailable(date: Date, timeSlot: string): Promise<boolean>;
+  getOperatingHours(dayOfWeek: number): Promise<OperatingHours | undefined>;
   
   // Admin operations
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
@@ -568,6 +588,118 @@ export class DatabaseStorage implements IStorage {
       behaviorAnalytics,
       recentActivities: activities.slice(0, 10),
     };
+  }
+
+  // Services operations
+  async getAllServices(): Promise<Service[]> {
+    return await db
+      .select()
+      .from(services)
+      .where(eq(services.isActive, true))
+      .orderBy(services.displayOrder);
+  }
+
+  async getServicesByCategory(category: string): Promise<Service[]> {
+    return await db
+      .select()
+      .from(services)
+      .where(and(eq(services.category, category), eq(services.isActive, true)))
+      .orderBy(services.displayOrder);
+  }
+
+  async getService(id: number): Promise<Service | undefined> {
+    const [service] = await db
+      .select()
+      .from(services)
+      .where(eq(services.id, id));
+    return service;
+  }
+
+  // Availability operations
+  async getAvailableTimeSlots(date: Date, serviceId?: number): Promise<string[]> {
+    const dayOfWeek = date.getDay();
+    
+    // Get operating hours for the day
+    const [operatingHour] = await db
+      .select()
+      .from(operatingHours)
+      .where(and(eq(operatingHours.dayOfWeek, dayOfWeek), eq(operatingHours.isOpen, true)));
+
+    if (!operatingHour) {
+      return []; // Salon is closed
+    }
+
+    // Generate time slots (30-minute intervals)
+    const timeSlots: string[] = [];
+    const openTime = operatingHour.openTime;
+    const closeTime = operatingHour.closeTime;
+    
+    // Convert time strings to minutes
+    const [openHour, openMin] = openTime.split(':').map(Number);
+    const [closeHour, closeMin] = closeTime.split(':').map(Number);
+    const openMinutes = openHour * 60 + openMin;
+    const closeMinutes = closeHour * 60 + closeMin;
+    
+    // Generate 30-minute slots
+    for (let minutes = openMinutes; minutes < closeMinutes; minutes += 30) {
+      const hour = Math.floor(minutes / 60);
+      const min = minutes % 60;
+      const timeSlot = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+      
+      // Skip lunch break if exists
+      if (operatingHour.breakStartTime && operatingHour.breakEndTime) {
+        const [breakStartHour, breakStartMin] = operatingHour.breakStartTime.split(':').map(Number);
+        const [breakEndHour, breakEndMin] = operatingHour.breakEndTime.split(':').map(Number);
+        const breakStartMinutes = breakStartHour * 60 + breakStartMin;
+        const breakEndMinutes = breakEndHour * 60 + breakEndMin;
+        
+        if (minutes >= breakStartMinutes && minutes < breakEndMinutes) {
+          continue;
+        }
+      }
+      
+      timeSlots.push(timeSlot);
+    }
+
+    // Get booked slots for this date
+    const bookedSlots = await this.getBookedSlotsByDate(date);
+    
+    // Filter out booked slots
+    return timeSlots.filter(slot => !bookedSlots.includes(slot));
+  }
+
+  async isTimeSlotAvailable(date: Date, timeSlot: string): Promise<boolean> {
+    const bookedSlots = await this.getBookedSlotsByDate(date);
+    return !bookedSlots.includes(timeSlot);
+  }
+
+  async getOperatingHours(dayOfWeek: number): Promise<OperatingHours | undefined> {
+    const [hours] = await db
+      .select()
+      .from(operatingHours)
+      .where(eq(operatingHours.dayOfWeek, dayOfWeek));
+    return hours;
+  }
+
+  async getUserAppointments(userId: string): Promise<Appointment[]> {
+    // First get user's customer records
+    const user = await this.getUser(userId);
+    if (!user) return [];
+
+    // Find customer by phone number if available
+    let customer;
+    if (user.phoneNumber) {
+      customer = await this.getCustomerByPhone(user.phoneNumber);
+    }
+
+    if (!customer) return [];
+
+    // Get appointments for this customer
+    return await db
+      .select()
+      .from(appointments)
+      .where(eq(appointments.customerId, customer.id))
+      .orderBy(desc(appointments.appointmentDate));
   }
 }
 

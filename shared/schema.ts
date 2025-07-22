@@ -152,15 +152,61 @@ export const customers = pgTable("customers", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Appointments for nail salon visits
+// Appointments for nail salon visits (Enhanced for real-time booking)
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   customerId: integer("customer_id").notNull().references(() => customers.id),
+  serviceId: integer("service_id").references(() => services.id),
   appointmentDate: timestamp("appointment_date").notNull(),
   timeSlot: varchar("time_slot").notNull(), // "09:00", "09:30", "10:00", etc.
-  status: varchar("status").default("scheduled"), // scheduled, completed, cancelled, no_show
+  duration: integer("duration").default(60), // minutes
+  status: varchar("status").default("scheduled"), // scheduled, confirmed, in_progress, completed, cancelled, no_show
   visitReason: varchar("visit_reason").default("일반 방문"), // Visit reason with default
+  serviceDetails: text("service_details"), // Specific service requirements
+  price: decimal("price", { precision: 10, scale: 2 }),
+  reminderSent: boolean("reminder_sent").default(false),
   notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Service types and pricing
+export const services = pgTable("services", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  category: varchar("category").notNull(), // spa, treatments, waxing, design, massage, kids
+  duration: integer("duration").notNull(), // minutes
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  isActive: boolean("is_active").default(true),
+  displayOrder: integer("display_order").default(0),
+  requiresConsultation: boolean("requires_consultation").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Salon operating hours and availability
+export const operatingHours = pgTable("operating_hours", {
+  id: serial("id").primaryKey(),
+  dayOfWeek: integer("day_of_week").notNull(), // 0=Sunday, 1=Monday, etc.
+  openTime: varchar("open_time").notNull(), // "10:00"
+  closeTime: varchar("close_time").notNull(), // "19:00"
+  isOpen: boolean("is_open").default(true),
+  maxConcurrentBookings: integer("max_concurrent_bookings").default(3),
+  breakStartTime: varchar("break_start_time"), // Optional lunch break
+  breakEndTime: varchar("break_end_time"),
+  specialNotes: text("special_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Time slot availability tracking
+export const timeSlotAvailability = pgTable("time_slot_availability", {
+  id: serial("id").primaryKey(),
+  date: timestamp("date").notNull(),
+  timeSlot: varchar("time_slot").notNull(), // "10:00", "10:30", etc.
+  isAvailable: boolean("is_available").default(true),
+  totalSlots: integer("total_slots").default(3), // How many concurrent appointments
+  bookedSlots: integer("booked_slots").default(0),
+  blockedReason: varchar("blocked_reason"), // holiday, maintenance, etc.
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -296,6 +342,18 @@ export type Customer = typeof customers.$inferSelect;
 export const insertAppointmentSchema = createInsertSchema(appointments).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
 export type Appointment = typeof appointments.$inferSelect;
+
+export const insertServiceSchema = createInsertSchema(services).omit({ id: true, createdAt: true });
+export type InsertService = z.infer<typeof insertServiceSchema>;
+export type Service = typeof services.$inferSelect;
+
+export const insertOperatingHoursSchema = createInsertSchema(operatingHours).omit({ id: true, createdAt: true });
+export type InsertOperatingHours = z.infer<typeof insertOperatingHoursSchema>;
+export type OperatingHours = typeof operatingHours.$inferSelect;
+
+export const insertTimeSlotAvailabilitySchema = createInsertSchema(timeSlotAvailability).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertTimeSlotAvailability = z.infer<typeof insertTimeSlotAvailabilitySchema>;
+export type TimeSlotAvailability = typeof timeSlotAvailability.$inferSelect;
 
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({ id: true, createdAt: true });
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;

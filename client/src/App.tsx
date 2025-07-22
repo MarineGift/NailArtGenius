@@ -18,6 +18,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import Signup from "@/pages/signup";
+import Booking from "@/pages/booking";
 import StylePreferences from "@/pages/style-preferences";
 import CustomDesign from "@/pages/custom-design";
 import PhotoMeasurement from "@/pages/photo-measurement";
@@ -52,7 +53,8 @@ function Router() {
           <Route path="/processing" component={AiProcessing} />
           <Route path="/preview" component={DesignPreview} />
           <Route path="/payment" component={Payment} />
-          <Route path="/booking" component={AppointmentBooking} />
+          <Route path="/booking" component={Booking} />
+          <Route path="/appointment-booking" component={AppointmentBooking} />
           <Route path="/printing" component={PrintingStatus} />
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin-panel" component={AdminPanel} />

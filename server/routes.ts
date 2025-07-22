@@ -1317,6 +1317,146 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
 
+  // Enhanced booking system routes
+  app.get('/api/services', async (req, res) => {
+    try {
+      const { category } = req.query;
+      let services;
+      
+      if (category && typeof category === 'string') {
+        services = await storage.getServicesByCategory(category);
+      } else {
+        services = await storage.getAllServices();
+      }
+      
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      res.status(500).json({ message: "Failed to fetch services" });
+    }
+  });
+
+  app.get('/api/availability/:date', async (req, res) => {
+    try {
+      const { date } = req.params;
+      const { serviceId } = req.query;
+      
+      const requestedDate = new Date(date);
+      if (isNaN(requestedDate.getTime())) {
+        return res.status(400).json({ message: "Invalid date format" });
+      }
+      
+      const availableSlots = await storage.getAvailableTimeSlots(
+        requestedDate, 
+        serviceId ? parseInt(serviceId as string) : undefined
+      );
+      
+      res.json({ 
+        date,
+        availableSlots,
+        totalSlots: availableSlots.length
+      });
+    } catch (error) {
+      console.error("Error fetching availability:", error);
+      res.status(500).json({ message: "Failed to fetch availability" });
+    }
+  });
+
+  app.post('/api/appointments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const appointmentData = req.body;
+      
+      // Validate appointment data (remove userId from validation since it's not in schema)
+      const validatedData = insertAppointmentSchema.parse({
+        ...appointmentData,
+      });
+      
+      // Check if time slot is still available
+      const isAvailable = await storage.isTimeSlotAvailable(
+        new Date(validatedData.appointmentDate),
+        validatedData.timeSlot
+      );
+      
+      if (!isAvailable) {
+        return res.status(409).json({ 
+          message: "선택한 시간은 이미 예약되어 있습니다. 다른 시간을 선택해 주세요.",
+          code: "TIME_SLOT_UNAVAILABLE" 
+        });
+      }
+
+      // Create customer if needed
+      let customer;
+      if (appointmentData.customerPhone) {
+        customer = await storage.getCustomerByPhone(appointmentData.customerPhone);
+        if (!customer) {
+          customer = await storage.upsertCustomer({
+            name: appointmentData.customerName,
+            phoneNumber: appointmentData.customerPhone,
+            email: appointmentData.customerEmail,
+            visitType: "인터넷예약"
+          });
+        }
+      }
+
+      // Create appointment (ensure customerId is provided)
+      if (!customer) {
+        return res.status(400).json({ 
+          message: "고객 정보 생성에 실패했습니다.",
+          code: "CUSTOMER_CREATION_FAILED" 
+        });
+      }
+
+      const appointment = await storage.createAppointment({
+        ...validatedData,
+        customerId: customer.id,
+      });
+      
+      res.json({
+        message: "예약이 성공적으로 완료되었습니다!",
+        appointment,
+        success: true
+      });
+    } catch (error: any) {
+      console.error("Error creating appointment:", error);
+      
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ 
+          message: "예약 정보가 올바르지 않습니다.",
+          errors: error.errors 
+        });
+      }
+      
+      res.status(500).json({ message: "예약 생성 중 오류가 발생했습니다." });
+    }
+  });
+
+  app.get('/api/appointments/my', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const appointments = await storage.getUserAppointments(userId);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching user appointments:", error);
+      res.status(500).json({ message: "Failed to fetch appointments" });
+    }
+  });
+
+  app.get('/api/operating-hours/:dayOfWeek', async (req, res) => {
+    try {
+      const dayOfWeek = parseInt(req.params.dayOfWeek);
+      if (isNaN(dayOfWeek) || dayOfWeek < 0 || dayOfWeek > 6) {
+        return res.status(400).json({ message: "Invalid day of week" });
+      }
+      
+      const hours = await storage.getOperatingHours(dayOfWeek);
+      res.json(hours || { isOpen: false });
+    } catch (error) {
+      console.error("Error fetching operating hours:", error);
+      res.status(500).json({ message: "Failed to fetch operating hours" });
+    }
+  });
+
   // Analytics routes
   app.get('/api/analytics/user', isAuthenticated, async (req: any, res) => {
     try {
