@@ -57,7 +57,7 @@ export default function Home() {
               variant="outline" 
               size="lg"
               className="border-secondary text-secondary hover:bg-pink-50 px-8 py-4 text-lg"
-              onClick={() => setLocation("/appointment-booking")}
+              onClick={() => setLocation("/booking")}
             >
               <Calendar className="mr-2 h-5 w-5" />
               방문 예약하기
