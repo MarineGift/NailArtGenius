@@ -174,8 +174,104 @@ export const adminUsers = pgTable("admin_users", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// User activity tracking for analytics
+export const userActivities = pgTable("user_activities", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  sessionId: varchar("session_id"), // Browser session ID
+  activityType: varchar("activity_type").notNull(), // login, photo_upload, design_view, design_select, payment, etc.
+  activityData: jsonb("activity_data"), // Additional data about the activity
+  pagePath: varchar("page_path"), // URL path where activity occurred
+  deviceInfo: jsonb("device_info"), // Browser, OS, device type
+  ipAddress: varchar("ip_address"),
+  duration: integer("duration"), // Time spent on activity (seconds)
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Design interaction tracking
+export const designInteractions = pgTable("design_interactions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  designId: integer("design_id").references(() => nailDesigns.id),
+  customDesignId: integer("custom_design_id").references(() => customNailDesigns.id),
+  interactionType: varchar("interaction_type").notNull(), // view, like, save, share, purchase, rate
+  rating: integer("rating"), // 1-5 stars for rating interactions
+  timeSpent: integer("time_spent"), // Seconds spent viewing/interacting
+  interactionData: jsonb("interaction_data"), // Additional interaction details
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User preferences learning and analytics
+export const userBehaviorAnalytics = pgTable("user_behavior_analytics", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  preferredCategories: text("preferred_categories").array(), // Most viewed design categories
+  preferredColors: text("preferred_colors").array(), // Most selected colors
+  preferredStyles: text("preferred_styles").array(), // Most liked styles
+  avgSessionDuration: integer("avg_session_duration"), // Average session length
+  totalPhotosUploaded: integer("total_photos_uploaded").default(0),
+  totalDesignsViewed: integer("total_designs_viewed").default(0),
+  totalDesignsPurchased: integer("total_designs_purchased").default(0),
+  averageOrderValue: decimal("average_order_value", { precision: 10, scale: 2 }),
+  lastActive: timestamp("last_active"),
+  devicePreference: varchar("device_preference"), // mobile, desktop, tablet
+  peakUsageHours: integer("peak_usage_hours").array(), // Hours when user is most active
+  conversionRate: decimal("conversion_rate", { precision: 5, scale: 2 }), // Views to purchase ratio
+  loyaltyScore: integer("loyalty_score").default(0), // Calculated loyalty metric
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Design performance analytics
+export const designAnalytics = pgTable("design_analytics", {
+  id: serial("id").primaryKey(),
+  designId: integer("design_id").references(() => nailDesigns.id),
+  customDesignId: integer("custom_design_id").references(() => customNailDesigns.id),
+  totalViews: integer("total_views").default(0),
+  totalLikes: integer("total_likes").default(0),
+  totalShares: integer("total_shares").default(0),
+  totalPurchases: integer("total_purchases").default(0),
+  averageRating: decimal("average_rating", { precision: 3, scale: 2 }),
+  averageViewTime: integer("average_view_time"), // Seconds
+  conversionRate: decimal("conversion_rate", { precision: 5, scale: 2 }),
+  popularityScore: integer("popularity_score").default(0), // Calculated popularity metric
+  seasonalTrends: jsonb("seasonal_trends"), // Performance by season/month
+  demographicPerformance: jsonb("demographic_performance"), // Performance by user segments
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User journey tracking
+export const userJourneys = pgTable("user_journeys", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  sessionId: varchar("session_id").notNull(),
+  journeySteps: jsonb("journey_steps").notNull(), // Array of journey steps with timestamps
+  startPage: varchar("start_page"),
+  endPage: varchar("end_page"),
+  goalAchieved: boolean("goal_achieved").default(false), // Did user complete desired action
+  goalType: varchar("goal_type"), // photo_upload, design_purchase, appointment_book
+  totalDuration: integer("total_duration"), // Total session duration
+  pageViews: integer("page_views").default(1),
+  exitPoint: varchar("exit_point"), // Where user left the journey
+  dropoffReason: varchar("dropoff_reason"), // technical_issue, price_concern, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// Analytics types
+export type UserActivity = typeof userActivities.$inferSelect;
+export type InsertUserActivity = typeof userActivities.$inferInsert;
+export type DesignInteraction = typeof designInteractions.$inferSelect;
+export type InsertDesignInteraction = typeof designInteractions.$inferInsert;
+export type UserBehaviorAnalytics = typeof userBehaviorAnalytics.$inferSelect;
+export type InsertUserBehaviorAnalytics = typeof userBehaviorAnalytics.$inferInsert;
+export type DesignAnalytics = typeof designAnalytics.$inferSelect;
+export type InsertDesignAnalytics = typeof designAnalytics.$inferInsert;
+export type UserJourney = typeof userJourneys.$inferSelect;
+export type InsertUserJourney = typeof userJourneys.$inferInsert;
 
 export const insertCustomerPhotoSchema = createInsertSchema(customerPhotos).omit({ id: true, uploadedAt: true });
 export type InsertCustomerPhoto = z.infer<typeof insertCustomerPhotoSchema>;

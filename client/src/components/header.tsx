@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Palette, LogOut, Settings } from "lucide-react";
+import { Palette, LogOut, Settings, BarChart3 } from "lucide-react";
 import LanguageSwitcher from "./language-switcher";
 import { Link } from "wouter";
 
@@ -26,6 +26,17 @@ export default function Header() {
             
             {user && (
               <div className="flex items-center space-x-4">
+                <Link href="/analytics">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-secondary"
+                  >
+                    <BarChart3 className="h-4 w-4" />
+                    <span className="ml-1 hidden sm:inline">Analytics</span>
+                  </Button>
+                </Link>
+                
                 <Link href="/admin-panel">
                   <Button
                     variant="ghost"

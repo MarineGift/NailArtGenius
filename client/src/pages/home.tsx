@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { Camera, Palette, Printer, CreditCard, Calendar, Sparkles, Wand2 } from "lucide-react";
+import { Camera, Palette, Printer, CreditCard, Calendar, Sparkles, Wand2, BarChart3 } from "lucide-react";
 
 export default function Home() {
   const { toast } = useToast();

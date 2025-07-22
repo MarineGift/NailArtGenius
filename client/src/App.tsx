@@ -23,6 +23,7 @@ import CustomDesign from "@/pages/custom-design";
 import PhotoMeasurement from "@/pages/photo-measurement";
 import DesignGeneration from "@/pages/design-generation";
 import AdvancedDesignStudio from "@/pages/advanced-design-studio";
+import AnalyticsDashboard from "@/pages/analytics-dashboard";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -51,6 +52,7 @@ function Router() {
           <Route path="/photo-measurement" component={PhotoMeasurement} />
           <Route path="/design-generation" component={DesignGeneration} />
           <Route path="/advanced-design-studio" component={AdvancedDesignStudio} />
+          <Route path="/analytics" component={AnalyticsDashboard} />
         </>
       )}
       <Route component={NotFound} />

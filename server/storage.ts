@@ -9,6 +9,9 @@ import {
   adminUsers,
   userStylePreferences,
   customNailDesigns,
+  userActivities,
+  designInteractions,
+  userBehaviorAnalytics,
   type User,
   type UpsertUser,
   type Customer,
@@ -29,6 +32,12 @@ import {
   type InsertUserStylePreferences,
   type CustomNailDesign,
   type InsertCustomNailDesign,
+  type UserActivity,
+  type InsertUserActivity,
+  type DesignInteraction,
+  type InsertDesignInteraction,
+  type UserBehaviorAnalytics,
+  type InsertUserBehaviorAnalytics,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -497,6 +506,68 @@ export class DatabaseStorage implements IStorage {
       .where(eq(customNailDesigns.id, id))
       .returning();
     return updatedDesign;
+  }
+
+  // Analytics operations
+  async trackUserActivity(activity: InsertUserActivity): Promise<UserActivity> {
+    const [result] = await db
+      .insert(userActivities)
+      .values(activity)
+      .returning();
+    return result;
+  }
+
+  async trackDesignInteraction(interaction: InsertDesignInteraction): Promise<DesignInteraction> {
+    const [result] = await db
+      .insert(designInteractions)
+      .values(interaction)
+      .returning();
+    return result;
+  }
+
+  async getUserBehaviorAnalytics(userId: string): Promise<UserBehaviorAnalytics | undefined> {
+    const [result] = await db
+      .select()
+      .from(userBehaviorAnalytics)
+      .where(eq(userBehaviorAnalytics.userId, userId));
+    return result;
+  }
+
+  async getUserActivities(userId: string, limit: number = 50): Promise<UserActivity[]> {
+    return await db
+      .select()
+      .from(userActivities)
+      .where(eq(userActivities.userId, userId))
+      .orderBy(desc(userActivities.createdAt))
+      .limit(limit);
+  }
+
+  async getDesignInteractions(userId: string, designId?: number, customDesignId?: number): Promise<DesignInteraction[]> {
+    let whereClause = eq(designInteractions.userId, userId);
+    
+    if (designId) {
+      whereClause = and(whereClause, eq(designInteractions.designId, designId));
+    }
+    if (customDesignId) {
+      whereClause = and(whereClause, eq(designInteractions.customDesignId, customDesignId));
+    }
+
+    return await db
+      .select()
+      .from(designInteractions)
+      .where(whereClause)
+      .orderBy(desc(designInteractions.createdAt));
+  }
+
+  async getUserEngagementMetrics(userId: string) {
+    const activities = await this.getUserActivities(userId, 100);
+    const behaviorAnalytics = await this.getUserBehaviorAnalytics(userId);
+    
+    return {
+      totalActivities: activities.length,
+      behaviorAnalytics,
+      recentActivities: activities.slice(0, 10),
+    };
   }
 }
 
