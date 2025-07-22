@@ -13,6 +13,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### HTML/CSS/JavaScript Conversion (July 22, 2025)
+- **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
+  - Created fully functional HTML version in `html-version/` directory
+  - Implemented proper English-default language system with Korean/Japanese/Spanish support
+  - Fixed language switching functionality - English now displays correctly when selected
+  - No external dependencies except Font Awesome and Google Fonts via CDN
+  - Responsive design with mobile-first approach
+  - Complete carousel functionality with auto-advance and manual controls
+  - Working booking and contact forms with validation and toast notifications
+  - All original features preserved in vanilla JavaScript implementation
+
 ### Real-Time Booking System Implementation (July 22, 2025)
 - **Advanced Real-Time Booking Platform**: Live appointment management system
   - Real-time availability checking with automatic 30-second refresh
