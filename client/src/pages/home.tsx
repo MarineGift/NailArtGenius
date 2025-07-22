@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Header from "@/components/header";
-import { Camera, Palette, Printer, CreditCard } from "lucide-react";
+import { Camera, Palette, Printer, CreditCard, Calendar } from "lucide-react";
 
 export default function Home() {
   const { toast } = useToast();
@@ -147,15 +147,59 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <div className="text-center">
-          <Button 
-            size="lg"
-            onClick={() => setLocation('/upload')}
-            className="bg-secondary text-white px-8 py-4 text-lg font-semibold hover:bg-pink-600"
-          >
-            사진 촬영 시작하기
-            <span className="ml-2">→</span>
-          </Button>
+        {/* Recent Bookings */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Calendar className="mr-2 h-5 w-5 text-secondary" />
+              최근 예약 내역
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8 text-gray-500">
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-lg mb-2">예약 내역이 없습니다</p>
+              <p className="text-sm">첫 번째 방문 예약을 만들어보세요!</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card className="border-pink-200 bg-pink-50">
+            <CardHeader>
+              <CardTitle className="text-center text-pink-800">새 네일아트 주문</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-pink-700 mb-4">AI 분석부터 시작하세요</p>
+              <Button 
+                size="lg"
+                onClick={() => setLocation('/upload')}
+                className="bg-secondary text-white px-6 py-3 font-semibold hover:bg-pink-600"
+              >
+                사진 촬영 시작하기
+                <Camera className="ml-2 h-5 w-5" />
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-blue-200 bg-blue-50">
+            <CardHeader>
+              <CardTitle className="text-center text-blue-800">방문 예약</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-blue-700 mb-4">매장 방문 일정을 예약하세요</p>
+              <Button 
+                size="lg"
+                onClick={() => setLocation('/booking')}
+                variant="outline"
+                className="border-blue-500 text-blue-600 px-6 py-3 font-semibold hover:bg-blue-100"
+              >
+                방문 예약하기
+                <span className="ml-2">📅</span>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

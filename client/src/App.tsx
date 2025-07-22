@@ -32,8 +32,8 @@ function Router() {
         <>
           <Route path="/" component={Home} />
           <Route path="/upload" component={PhotoUpload} />
+          <Route path="/design-selection" component={DesignSelection} />
           <Route path="/processing" component={AiProcessing} />
-          <Route path="/designs" component={DesignSelection} />
           <Route path="/preview" component={DesignPreview} />
           <Route path="/payment" component={Payment} />
           <Route path="/booking" component={AppointmentBooking} />

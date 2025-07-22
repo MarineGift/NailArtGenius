@@ -32,8 +32,8 @@ export default function AppointmentBooking() {
       return;
     }
     
-    alert("예약이 완료되었습니다!");
-    setLocation("/printing");
+    alert("방문 예약이 완료되었습니다!");
+    setLocation("/");
   };
 
   const isSlotAvailable = (time: string) => {
@@ -62,7 +62,7 @@ export default function AppointmentBooking() {
       
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center mb-6">
-          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/payment")}>
+          <Button variant="ghost" size="sm" className="mr-4" onClick={() => setLocation("/")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             뒤로
           </Button>
@@ -71,6 +71,21 @@ export default function AppointmentBooking() {
             <p className="text-gray-600">네일 아트 시술을 위한 방문 일정을 예약하세요</p>
           </div>
         </div>
+
+        {/* Store Information */}
+        <Card className="mb-8 bg-blue-50 border-blue-200">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <MapPin className="h-6 w-6 text-blue-600 mt-1" />
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-2">AI 네일 스튜디오 강남점</h3>
+                <p className="text-blue-700 text-sm mb-1">📍 서울특별시 강남구 테헤란로 123, 2층</p>
+                <p className="text-blue-700 text-sm mb-1">📞 02-1234-5678</p>
+                <p className="text-blue-700 text-sm">⏰ 영업시간: 월-일 09:00-18:00</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Calendar Selection */}
