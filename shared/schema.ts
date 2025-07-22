@@ -89,14 +89,24 @@ export const orders = pgTable("orders", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Customer information for visits
+export const customers = pgTable("customers", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  phoneNumber: varchar("phone_number").notNull().unique(),
+  email: varchar("email"),
+  visitType: varchar("visit_type").notNull(), // "방문예약", "최초방문", "인터넷예약"
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Appointments for nail salon visits
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  orderId: integer("order_id").references(() => orders.id),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
   appointmentDate: timestamp("appointment_date").notNull(),
   timeSlot: varchar("time_slot").notNull(), // "09:00", "09:30", "10:00", etc.
-  status: varchar("status").default("scheduled"), // scheduled, completed, cancelled
+  status: varchar("status").default("scheduled"), // scheduled, completed, cancelled, no_show
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -129,6 +139,10 @@ export type NailDesign = typeof nailDesigns.$inferSelect;
 export const insertOrderSchema = createInsertSchema(orders).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
+export type Customer = typeof customers.$inferSelect;
 
 export const insertAppointmentSchema = createInsertSchema(appointments).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;

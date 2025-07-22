@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
+import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
@@ -434,6 +435,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating admin user:", error);
       res.status(500).json({ message: "Failed to create admin user" });
+    }
+  });
+
+  // Appointment routes
+  app.post("/api/appointments", async (req, res) => {
+    try {
+      const { customerName, phoneNumber, email, visitType, appointmentDate, timeSlot } = req.body;
+      
+      // Validate required fields
+      if (!customerName || !phoneNumber || !visitType || !appointmentDate || !timeSlot) {
+        return res.status(400).json({ message: "필수 정보가 누락되었습니다." });
+      }
+
+      // Check if time slot is already booked
+      const existingAppointment = await storage.getAppointmentByDateAndTime(appointmentDate, timeSlot);
+      if (existingAppointment) {
+        return res.status(409).json({ message: "선택한 시간대가 이미 예약되었습니다." });
+      }
+
+      // Create or update customer
+      const customer = await storage.upsertCustomer({
+        name: customerName,
+        phoneNumber,
+        email: email || null,
+        visitType,
+      });
+
+      // Create appointment
+      const appointment = await storage.createAppointment({
+        customerId: customer.id,
+        appointmentDate: new Date(appointmentDate),
+        timeSlot,
+        status: "scheduled",
+      });
+
+      res.status(201).json({ appointment, customer });
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ message: "예약 생성 중 오류가 발생했습니다." });
+    }
+  });
+
+  app.get("/api/appointments/booked-slots", async (req, res) => {
+    try {
+      const { date } = req.query;
+      if (!date) {
+        return res.status(400).json({ message: "날짜를 지정해주세요." });
+      }
+
+      const bookedSlots = await storage.getBookedSlotsByDate(new Date(date as string));
+      res.json(bookedSlots);
+    } catch (error) {
+      console.error("Error fetching booked slots:", error);
+      res.status(500).json({ message: "예약된 시간대 조회 중 오류가 발생했습니다." });
+    }
+  });
+
+  app.get("/api/appointments", async (req, res) => {
+    try {
+      const { period, date, view } = req.query;
+      const appointments = await storage.getAppointmentsByPeriod(
+        period as string,
+        date as string,
+        view as string
+      );
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ message: "예약 조회 중 오류가 발생했습니다." });
     }
   });
 

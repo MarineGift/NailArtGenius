@@ -14,6 +14,7 @@ import DesignSelection from "@/pages/design-selection";
 import DesignPreview from "@/pages/design-preview";
 import Payment from "@/pages/payment";
 import AppointmentBooking from "@/pages/appointment-booking";
+import AdminDashboard from "@/pages/admin-dashboard";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import Signup from "@/pages/signup";
@@ -38,6 +39,7 @@ function Router() {
           <Route path="/payment" component={Payment} />
           <Route path="/booking" component={AppointmentBooking} />
           <Route path="/printing" component={PrintingStatus} />
+          <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin-panel" component={AdminPanel} />
         </>
       )}

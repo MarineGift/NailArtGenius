@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar as CalendarIcon, Clock, MapPin, User } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { ArrowLeft, Calendar as CalendarIcon, Clock, MapPin, User, UserPlus } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
@@ -13,8 +19,15 @@ import { ko } from "date-fns/locale";
 export default function AppointmentBooking() {
   const { t } = useLanguage();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedTime, setSelectedTime] = useState<string>("");
+  
+  // Customer form state
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [visitType, setVisitType] = useState("방문예약");
+  const [email, setEmail] = useState("");
 
   // Available time slots (30-minute intervals)
   const timeSlots = [
@@ -23,17 +36,57 @@ export default function AppointmentBooking() {
     "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
   ];
 
-  // Mock booked slots - in real app this would come from API
-  const bookedSlots = ["10:00", "14:00", "15:30"];
+  // Fetch booked slots for selected date
+  const { data: bookedSlots = [] } = useQuery({
+    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString()],
+    enabled: !!selectedDate,
+  });
+
+  // Create appointment mutation
+  const createAppointmentMutation = useMutation({
+    mutationFn: async (appointmentData: any) => {
+      return await apiRequest("/api/appointments", {
+        method: "POST",
+        body: JSON.stringify(appointmentData),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "예약 완료",
+        description: "방문 예약이 성공적으로 완료되었습니다.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
+      setLocation("/");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "예약 실패",
+        description: error.message || "예약 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleBooking = () => {
-    if (!selectedDate || !selectedTime) {
-      alert("날짜와 시간을 선택해주세요");
+    if (!selectedDate || !selectedTime || !customerName || !phoneNumber) {
+      toast({
+        title: "입력 오류",
+        description: "모든 필수 정보를 입력해주세요.",
+        variant: "destructive",
+      });
       return;
     }
     
-    alert("방문 예약이 완료되었습니다!");
-    setLocation("/");
+    const appointmentData = {
+      customerName,
+      phoneNumber,
+      email: email || null,
+      visitType,
+      appointmentDate: selectedDate.toISOString(),
+      timeSlot: selectedTime,
+    };
+
+    createAppointmentMutation.mutate(appointmentData);
   };
 
   const isSlotAvailable = (time: string) => {
@@ -166,6 +219,80 @@ export default function AppointmentBooking() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Customer Information Form */}
+            {selectedDate && selectedTime && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <UserPlus className="h-5 w-5 mr-2" />
+                    방문자 정보
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="customerName">성명 *</Label>
+                    <Input
+                      id="customerName"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="성명을 입력하세요"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber">전화번호 *</Label>
+                    <Input
+                      id="phoneNumber"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="010-1234-5678"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">이메일 (선택)</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="example@email.com"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label>방문 유형 *</Label>
+                    <RadioGroup value={visitType} onValueChange={setVisitType}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="방문예약" id="visit-booking" />
+                        <Label htmlFor="visit-booking">방문예약</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="최초방문" id="first-visit" />
+                        <Label htmlFor="first-visit">최초방문</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="인터넷예약" id="internet-booking" />
+                        <Label htmlFor="internet-booking">인터넷예약</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="text-xs text-gray-500 bg-blue-50 p-3 rounded">
+                    <p>💡 고객 정보 안내</p>
+                    <ul className="mt-1 space-y-1">
+                      <li>• 동일한 전화번호로 재방문 시 기존 정보가 업데이트됩니다</li>
+                      <li>• 개인정보는 예약 관리 목적으로만 사용됩니다</li>
+                      <li>• 예약 확인 및 변경 시 전화번호로 확인됩니다</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Booking Summary */}
@@ -241,9 +368,9 @@ export default function AppointmentBooking() {
                   <Button 
                     className="w-full bg-pink-600 hover:bg-pink-700"
                     onClick={handleBooking}
-                    disabled={!selectedDate || !selectedTime}
+                    disabled={!selectedDate || !selectedTime || !customerName || !phoneNumber || createAppointmentMutation.isPending}
                   >
-                    예약 확정하기
+                    {createAppointmentMutation.isPending ? "예약 진행 중..." : "예약 확정하기"}
                   </Button>
                 </CardContent>
               </Card>

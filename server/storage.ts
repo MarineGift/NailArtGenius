@@ -1,5 +1,6 @@
 import {
   users,
+  customers,
   customerPhotos,
   aiGeneratedNails,
   nailDesigns,
@@ -8,6 +9,8 @@ import {
   adminUsers,
   type User,
   type UpsertUser,
+  type Customer,
+  type InsertCustomer,
   type CustomerPhoto,
   type InsertCustomerPhoto,
   type AiGeneratedNail,
@@ -49,13 +52,18 @@ export interface IStorage {
   getUserOrders(userId: string): Promise<Order[]>;
   getOrder(id: number): Promise<Order | undefined>;
   
+  // Customer operations
+  upsertCustomer(customer: InsertCustomer): Promise<Customer>;
+  getCustomerByPhone(phoneNumber: string): Promise<Customer | undefined>;
+  
   // Appointments operations
   createAppointment(appointment: InsertAppointment): Promise<Appointment>;
   updateAppointment(id: number, updates: Partial<Appointment>): Promise<Appointment>;
-  getUserAppointments(userId: string): Promise<Appointment[]>;
   getAppointment(id: number): Promise<Appointment | undefined>;
   getAppointmentsByDate(date: Date): Promise<Appointment[]>;
-  getAvailableTimeSlots(date: Date): Promise<string[]>;
+  getBookedSlotsByDate(date: Date): Promise<string[]>;
+  getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined>;
+  getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]>;
   
   // Admin operations
   createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
@@ -177,6 +185,107 @@ export class DatabaseStorage implements IStorage {
   async getOrder(id: number): Promise<Order | undefined> {
     const [order] = await db.select().from(orders).where(eq(orders.id, id));
     return order;
+  }
+
+  // Customer operations
+  async upsertCustomer(customer: InsertCustomer): Promise<Customer> {
+    const [upsertedCustomer] = await db
+      .insert(customers)
+      .values(customer)
+      .onConflictDoUpdate({
+        target: customers.phoneNumber,
+        set: {
+          name: customer.name,
+          email: customer.email,
+          visitType: customer.visitType,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return upsertedCustomer;
+  }
+
+  async getCustomerByPhone(phoneNumber: string): Promise<Customer | undefined> {
+    const [customer] = await db
+      .select()
+      .from(customers)
+      .where(eq(customers.phoneNumber, phoneNumber));
+    return customer;
+  }
+
+  async getBookedSlotsByDate(date: Date): Promise<string[]> {
+    const bookedAppointments = await this.getAppointmentsByDate(date);
+    return bookedAppointments.map(app => app.timeSlot);
+  }
+
+  async getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const [appointment] = await db
+      .select()
+      .from(appointments)
+      .where(
+        and(
+          gte(appointments.appointmentDate, startOfDay),
+          lte(appointments.appointmentDate, endOfDay),
+          eq(appointments.timeSlot, timeSlot)
+        )
+      );
+    return appointment;
+  }
+
+  async getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]> {
+    const targetDate = new Date(date);
+    let startDate: Date;
+    let endDate: Date;
+
+    switch (period) {
+      case 'month':
+        startDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+        endDate = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
+        break;
+      case 'week':
+        startDate = new Date(targetDate);
+        startDate.setDate(targetDate.getDate() - targetDate.getDay());
+        endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+        break;
+      case 'day':
+      default:
+        startDate = new Date(targetDate);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(targetDate);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+    }
+
+    const appointmentsWithCustomers = await db
+      .select({
+        id: appointments.id,
+        appointmentDate: appointments.appointmentDate,
+        timeSlot: appointments.timeSlot,
+        status: appointments.status,
+        notes: appointments.notes,
+        customerName: customers.name,
+        customerPhone: customers.phoneNumber,
+        customerEmail: customers.email,
+        visitType: customers.visitType,
+      })
+      .from(appointments)
+      .innerJoin(customers, eq(appointments.customerId, customers.id))
+      .where(
+        and(
+          gte(appointments.appointmentDate, startDate),
+          lte(appointments.appointmentDate, endDate)
+        )
+      )
+      .orderBy(appointments.appointmentDate, appointments.timeSlot);
+
+    return appointmentsWithCustomers;
   }
 
   // Appointments operations
