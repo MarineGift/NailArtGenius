@@ -170,7 +170,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sessionId,
         success: true
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Photo analysis error:", error);
       res.status(500).json({ message: error.message || "사진 분석 중 오류가 발생했습니다." });
     }
@@ -246,6 +246,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error analyzing nails:", error);
       res.status(500).json({ message: "Failed to analyze nails" });
+    }
+  });
+
+  // Nail art generation routes
+  app.post('/api/ai/generate-nail-art', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, stylePreferences } = req.body;
+
+      if (!sessionId || !stylePreferences) {
+        return res.status(400).json({ message: "Session ID and style preferences are required" });
+      }
+
+      // Get measurements from the session
+      const aiNails = await storage.getAiGeneratedNails(userId, sessionId);
+      if (!aiNails || aiNails.length === 0) {
+        return res.status(400).json({ message: "No nail measurements found. Please complete photo analysis first." });
+      }
+
+      // Extract measurements from stored AI results
+      const measurements = aiNails.map(nail => ({
+        fingerType: nail.fingerType,
+        nailWidth: parseFloat(nail.nailWidth || "10") || 10,
+        nailLength: parseFloat(nail.nailLength || "12") || 12,
+        nailCurvature: parseFloat(nail.nailCurvature || "5") || 5,
+        fingerWidth: parseFloat(nail.fingerWidth || "15") || 15,
+        fingerLength: parseFloat(nail.fingerLength || "25") || 25,
+        shapeCategory: nail.shapeCategory || 'oval',
+        confidence: parseFloat(nail.measurementConfidence || "0.8") || 0.8,
+      }));
+
+      // Generate nail art images
+      const { generateNailArtImages } = await import('./nailArtGenerator');
+      const generatedArt = await generateNailArtImages({
+        measurements,
+        stylePreferences,
+        sessionId,
+      });
+
+      res.json({
+        message: "Nail art generated successfully",
+        generatedArt,
+        sessionId,
+      });
+
+    } catch (error: any) {
+      console.error("Error generating nail art:", error);
+      res.status(500).json({ message: error.message || "네일아트 생성 중 오류가 발생했습니다." });
+    }
+  });
+
+  app.post('/api/ai/combine-design', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { sessionId, fingerType, designImagePath } = req.body;
+
+      if (!sessionId || !fingerType || !designImagePath) {
+        return res.status(400).json({ message: "Session ID, finger type, and design image path are required" });
+      }
+
+      // Get original photo and measurements
+      const photos = await storage.getCustomerPhotos(userId);
+      const originalPhoto = photos.find(p => p.fingerType === fingerType);
+      
+      if (!originalPhoto) {
+        return res.status(404).json({ message: "Original nail photo not found" });
+      }
+
+      // Get measurements
+      const aiNails = await storage.getAiGeneratedNails(userId, sessionId);
+      const nailData = aiNails.find(n => n.fingerType === fingerType);
+      
+      if (!nailData) {
+        return res.status(404).json({ message: "Nail measurements not found" });
+      }
+
+      const measurement = {
+        fingerType: nailData.fingerType,
+        nailWidth: parseFloat(nailData.nailWidth || "10") || 10,
+        nailLength: parseFloat(nailData.nailLength || "12") || 12,
+        nailCurvature: parseFloat(nailData.nailCurvature || "5") || 5,
+        fingerWidth: parseFloat(nailData.fingerWidth || "15") || 15,
+        fingerLength: parseFloat(nailData.fingerLength || "25") || 25,
+        shapeCategory: nailData.shapeCategory || 'oval',
+        confidence: parseFloat(nailData.measurementConfidence || "0.8") || 0.8,
+      };
+
+      // Combine images
+      const { combineNailWithDesign } = await import('./nailArtGenerator');
+      const combinedImage = await combineNailWithDesign(
+        originalPhoto.filePath,
+        designImagePath,
+        measurement,
+        sessionId
+      );
+
+      res.json({
+        message: "Images combined successfully",
+        combinedImage,
+      });
+
+    } catch (error: any) {
+      console.error("Error combining images:", error);
+      res.status(500).json({ message: error.message || "이미지 결합 중 오류가 발생했습니다." });
     }
   });
 

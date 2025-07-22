@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import Header from "@/components/header";
 import AdvancedStyleCustomizer from "@/components/AdvancedStyleCustomizer";
+import NailArtGenerator from "@/components/NailArtGenerator";
 import { useForm } from "react-hook-form";
 
 interface DesignRecommendation {
@@ -367,6 +368,21 @@ export default function AdvancedDesignStudio() {
 
           {/* Right Panel - Results */}
           <div className="lg:col-span-2 space-y-6">
+            {/* AI Nail Art Generator */}
+            {currentSessionId && (
+              <NailArtGenerator
+                sessionId={currentSessionId}
+                stylePreferences={form.getValues()}
+                onArtGenerated={(generatedArt) => {
+                  console.log("Generated nail art:", generatedArt);
+                  toast({
+                    title: "네일아트 생성 완료",
+                    description: `${generatedArt.length}개의 맞춤형 네일아트가 생성되었습니다.`,
+                  });
+                }}
+              />
+            )}
+
             {/* AI Recommendations */}
             {designRecommendations && (
               <Card>
