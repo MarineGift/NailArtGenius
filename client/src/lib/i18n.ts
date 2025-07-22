@@ -304,7 +304,7 @@ export function loadLanguagePreference(): Language {
     // Silent fail for environments without localStorage
   }
   
-  // For Connie's Nail, default to English
+  // FORCE English as absolute default - no Korean fallback
   return 'en';
 }
 

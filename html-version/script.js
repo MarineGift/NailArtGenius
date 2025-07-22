@@ -72,7 +72,11 @@ const translations = {
     'contact.form.name': { ko: '성명', en: 'Full Name', ja: 'お名前', es: 'Nombre completo' },
     'contact.form.phone': { ko: '전화번호', en: 'Phone Number', ja: '電話番号', es: 'Número de teléfono' },
     'contact.form.inquiry': { ko: '문의내용', en: 'Inquiry', ja: 'お問い合わせ内容', es: 'Consulta' },
-    'contact.form.submit': { ko: '문의 전송', en: 'Send Inquiry', ja: 'お問い合わせ送信', es: 'Enviar consulta' }
+    'contact.form.submit': { ko: '문의 전송', en: 'Send Inquiry', ja: 'お問い合わせ送信', es: 'Enviar consulta' },
+    
+    // Additional missing translations
+    'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado Premium' },
+    'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' }
 };
 
 // Current language (default to English)
@@ -140,8 +144,23 @@ function updateLanguage(lang) {
 
 // Initialize language system
 function initializeLanguage() {
-    currentLanguage = loadLanguage();
-    updateLanguage(currentLanguage);
+    // Force English as default regardless of saved preference initially
+    currentLanguage = 'en';
+    const savedLang = loadLanguage();
+    
+    // Clear any existing Korean preferences and force English
+    localStorage.removeItem('preferred-language');
+    localStorage.setItem('preferred-language', 'en');
+    
+    // Update to English first
+    updateLanguage('en');
+    
+    // If user had a different preference, respect it after initial load
+    if (savedLang && savedLang !== 'en') {
+        setTimeout(() => {
+            updateLanguage(savedLang);
+        }, 100);
+    }
 }
 
 // Carousel functionality
@@ -350,6 +369,11 @@ function initializeAnimations() {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Force immediate English initialization
+    currentLanguage = 'en';
+    localStorage.setItem('preferred-language', 'en');
+    
+    // Initialize all components
     initializeLanguage();
     initializeNavigation();
     initializeForms();
@@ -359,6 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Language selector event listener
     const languageSelect = document.getElementById('language-select');
+    languageSelect.value = 'en'; // Force English selection
     languageSelect.addEventListener('change', (e) => {
         updateLanguage(e.target.value);
     });
@@ -367,6 +392,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.nextSlide = nextSlide;
     window.previousSlide = previousSlide;
     window.currentSlide = currentSlideIndex;
+    
+    // Force update all text elements to English immediately
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 50);
 });
 
 // Export functions for external use
