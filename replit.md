@@ -7,9 +7,9 @@ Connie's Nail is a full-stack web application for a traditional nail salon featu
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (January 2025)
-- **Multi-Language Support Implementation**: Complete Korean/English i18n system implemented
+- **Multi-Language Support Implementation**: Complete 4-language i18n system implemented
   - Created comprehensive translation system with 70+ translation keys
-  - Built language switcher component with flag indicators  
+  - Built language switcher with Korean 🇰🇷, English 🇺🇸, Japanese 🇯🇵, Chinese 🇨🇳 support
   - Added persistent language preference storage
   - Implemented browser language auto-detection
   - Fixed all import issues across components
