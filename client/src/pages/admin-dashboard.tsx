@@ -207,6 +207,7 @@ export default function AdminDashboard() {
   };
 
   const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
+    console.log('Metric clicked:', metricType, title, totalCount);
     let data: any[] = [];
     
     switch (metricType) {
@@ -238,6 +239,14 @@ export default function AdminDashboard() {
       title,
       data,
       totalCount
+    });
+    
+    console.log('Modal state set:', { 
+      isOpen: true, 
+      metricType, 
+      title, 
+      dataLength: data.length, 
+      totalCount 
     });
   };
 
