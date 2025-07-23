@@ -66,7 +66,7 @@ export default function AdminLogin() {
               <Lock className="h-12 w-12 text-purple-600" />
             </div>
             <CardTitle className="text-2xl font-bold text-gray-800">
-              Admin Login
+              Log In
             </CardTitle>
             <p className="text-gray-600 mt-2">
               Please login with your admin account
@@ -86,7 +86,7 @@ export default function AdminLogin() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-gray-700">
-                  Username
+                  ID
                 </Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -135,7 +135,7 @@ export default function AdminLogin() {
                     Logging in...
                   </div>
                 ) : (
-                  'Login'
+                  'Log In'
                 )}
               </Button>
             </form>
