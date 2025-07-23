@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedBookingData } from "./seedData";
+import { seedTestCustomersAndReservations } from "./test-data-seeder";
 
 const app = express();
 app.use(express.json());
@@ -40,6 +41,13 @@ app.use((req, res, next) => {
 (async () => {
   // Initialize booking system data
   await seedBookingData();
+  
+  // Seed test customers and reservations
+  try {
+    await seedTestCustomersAndReservations();
+  } catch (error) {
+    console.log('Note: Test data seeding skipped (already exists or error occurred)');
+  }
   
   const server = await registerRoutes(app);
 

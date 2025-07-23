@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Users, Calendar, DollarSign, Send, Filter, Edit, Trash2, UserPlus } from 'lucide-react';
+import { Mail, Users, Calendar, DollarSign, Send, Filter, Edit, Trash2, UserPlus, Image } from 'lucide-react';
+import { CustomerNailImageManagement } from './customer-nail-image-management';
 
 interface Customer {
   id: number;
@@ -205,8 +206,9 @@ export function EnhancedAdminPanel() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="customers" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="customers">고객 관리</TabsTrigger>
+          <TabsTrigger value="nail-images">네일 이미지</TabsTrigger>
           <TabsTrigger value="email">이메일 발송</TabsTrigger>
           <TabsTrigger value="analytics">분석</TabsTrigger>
         </TabsList>
@@ -442,6 +444,11 @@ export function EnhancedAdminPanel() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Customer Nail Images Tab */}
+        <TabsContent value="nail-images">
+          <CustomerNailImageManagement />
         </TabsContent>
       </Tabs>
     </div>

@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Camera, Upload, Download, CreditCard, AlertCircle, CheckCircle } from 'lucide-react';
+import { NailArtDesignSelection } from '@/components/nail-art-design-selection';
+import { CustomerReservationForm } from '@/components/customer-reservation-form';
 
 interface UploadedPhoto {
   file: File;
@@ -33,6 +35,25 @@ export default function AITailGenerator() {
   const [showResults, setShowResults] = useState(false);
   const [fingerMeasurements, setFingerMeasurements] = useState<FingerMeasurement[]>([]);
   const [showDesigns, setShowDesigns] = useState(false);
+  const [selectedDesign, setSelectedDesign] = useState<any>(null);
+
+  // Handle design selection
+  const handleDesignSelect = (design: any) => {
+    setSelectedDesign(design);
+    toast({
+      title: "디자인 선택됨",
+      description: `${design.name} 디자인이 선택되었습니다.`,
+    });
+  };
+
+  // Handle reservation submission
+  const handleReservationSubmit = (reservationData: any) => {
+    toast({
+      title: "예약 완료",
+      description: "예약이 성공적으로 접수되었습니다.",
+    });
+    console.log('Reservation data:', reservationData);
+  };
 
   // Handle photo upload
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -478,6 +499,34 @@ export default function AITailGenerator() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Nail Art Design Selection */}
+        {showDesigns && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                🎨 네일아트 디자인 선택
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <NailArtDesignSelection onDesignSelect={handleDesignSelect} />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Customer Phone and Reservation */}
+        {showDesigns && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                📞 예약 정보 입력
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CustomerReservationForm onReservationSubmit={handleReservationSubmit} />
             </CardContent>
           </Card>
         )}

@@ -7,7 +7,7 @@ import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToke
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
-import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema } from "@shared/schema";
+import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema, insertCustomerNailImageSchema, insertCustomerReservationSchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
 import {
@@ -16,6 +16,8 @@ import {
   smsTemplates,
   smsHistory,
   contactInquiries,
+  customerNailImages,
+  customerReservations,
 } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import multer from "multer";
@@ -2263,6 +2265,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching inquiries:', error);
       res.status(500).json({ error: 'Failed to fetch inquiries' });
+    }
+  });
+
+  // Customer nail images API routes
+  app.get('/api/customer-nail-images/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const images = await db.select().from(customerNailImages).where(eq(customerNailImages.userId, userId));
+      res.json(images);
+    } catch (error) {
+      console.error('Error fetching customer nail images:', error);
+      res.status(500).json({ message: 'Failed to fetch customer nail images' });
+    }
+  });
+
+  app.post('/api/customer-nail-images/upload', upload.array('images', 12), async (req, res) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      const userId = req.body.userId;
+
+      if (!files || files.length === 0) {
+        return res.status(400).json({ message: 'No images uploaded' });
+      }
+
+      const insertData = files.map((file, index) => ({
+        userId,
+        imageIndex: index + 1,
+        fileName: file.filename,
+        filePath: file.path,
+        fingerType: req.body[`fingerType_${index}`] || 'index',
+        handType: req.body[`handType_${index}`] || 'right',
+        imageUrl: `/uploads/${file.filename}`,
+        notes: req.body[`notes_${index}`] || ''
+      }));
+
+      const results = await db.insert(customerNailImages).values(insertData).returning();
+      res.json(results);
+    } catch (error) {
+      console.error('Error uploading customer nail images:', error);
+      res.status(500).json({ message: 'Failed to upload customer nail images' });
+    }
+  });
+
+  app.patch('/api/customer-nail-images/:imageId', async (req, res) => {
+    try {
+      const imageId = parseInt(req.params.imageId);
+      const { notes } = req.body;
+      
+      const result = await db.update(customerNailImages)
+        .set({ notes })
+        .where(eq(customerNailImages.id, imageId))
+        .returning();
+      
+      if (result.length === 0) {
+        return res.status(404).json({ message: 'Image not found' });
+      }
+
+      res.json(result[0]);
+    } catch (error) {
+      console.error('Error updating customer nail image:', error);
+      res.status(500).json({ message: 'Failed to update customer nail image' });
+    }
+  });
+
+  app.delete('/api/customer-nail-images/:imageId', async (req, res) => {
+    try {
+      const imageId = parseInt(req.params.imageId);
+      
+      const result = await db.delete(customerNailImages)
+        .where(eq(customerNailImages.id, imageId))
+        .returning();
+      
+      if (result.length === 0) {
+        return res.status(404).json({ message: 'Image not found' });
+      }
+
+      res.json({ message: 'Image deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting customer nail image:', error);
+      res.status(500).json({ message: 'Failed to delete customer nail image' });
+    }
+  });
+
+  // Customer reservations API routes
+  app.get('/api/customer-reservations', async (req, res) => {
+    try {
+      const reservations = await db.select().from(customerReservations).orderBy(desc(customerReservations.createdAt));
+      res.json(reservations);
+    } catch (error) {
+      console.error('Error fetching customer reservations:', error);
+      res.status(500).json({ message: 'Failed to fetch customer reservations' });
+    }
+  });
+
+  app.post('/api/customer-reservations', async (req, res) => {
+    try {
+      const reservation = insertCustomerReservationSchema.parse(req.body);
+      const newReservation = await db.insert(customerReservations).values(reservation).returning();
+      res.status(201).json(newReservation[0]);
+    } catch (error) {
+      console.error('Error creating customer reservation:', error);
+      res.status(500).json({ message: 'Failed to create customer reservation' });
+    }
+  });
+
+  app.patch('/api/customer-reservations/:reservationId', async (req, res) => {
+    try {
+      const reservationId = parseInt(req.params.reservationId);
+      const updates = req.body;
+      
+      const result = await db.update(customerReservations)
+        .set(updates)
+        .where(eq(customerReservations.id, reservationId))
+        .returning();
+      
+      if (result.length === 0) {
+        return res.status(404).json({ message: 'Reservation not found' });
+      }
+
+      res.json(result[0]);
+    } catch (error) {
+      console.error('Error updating customer reservation:', error);
+      res.status(500).json({ message: 'Failed to update customer reservation' });
     }
   });
 

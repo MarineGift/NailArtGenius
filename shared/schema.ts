@@ -61,6 +61,38 @@ export const customerPhotos = pgTable("customer_photos", {
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
+// Customer nail images (12 images per customer)
+export const customerNailImages = pgTable("customer_nail_images", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  imageIndex: integer("image_index").notNull(), // 1-12 for the 12 nail images
+  fileName: varchar("file_name").notNull(),
+  filePath: varchar("file_path").notNull(),
+  fingerType: varchar("finger_type"), // 'thumb', 'index', 'middle', 'ring', 'pinky'
+  handType: varchar("hand_type"), // 'left', 'right'
+  imageUrl: varchar("image_url"),
+  notes: text("notes"),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+});
+
+// Customer reservations for AI nail art
+export const customerReservations = pgTable("customer_reservations", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  customerPhone: varchar("customer_phone").notNull(),
+  designId: integer("design_id").references(() => nailDesigns.id),
+  selectedDesignName: varchar("selected_design_name"),
+  appointmentDate: timestamp("appointment_date").notNull(),
+  timeSlot: varchar("time_slot").notNull(),
+  visitDate: timestamp("visit_date"),
+  paymentStatus: varchar("payment_status").default("pending"), // pending, paid, cancelled
+  paymentAmount: decimal("payment_amount", { precision: 10, scale: 2 }),
+  reservationStatus: varchar("reservation_status").default("confirmed"), // confirmed, completed, cancelled
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // AI generated nail analysis with precise measurements
 export const aiGeneratedNails = pgTable("ai_generated_nails", {
   id: serial("id").primaryKey(),
@@ -467,6 +499,14 @@ export type Service = typeof services.$inferSelect;
 export const insertOperatingHoursSchema = createInsertSchema(operatingHours).omit({ id: true, createdAt: true });
 export type InsertOperatingHours = z.infer<typeof insertOperatingHoursSchema>;
 export type OperatingHours = typeof operatingHours.$inferSelect;
+
+export const insertCustomerNailImageSchema = createInsertSchema(customerNailImages).omit({ id: true, uploadedAt: true });
+export type InsertCustomerNailImage = z.infer<typeof insertCustomerNailImageSchema>;
+export type CustomerNailImage = typeof customerNailImages.$inferSelect;
+
+export const insertCustomerReservationSchema = createInsertSchema(customerReservations).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCustomerReservation = z.infer<typeof insertCustomerReservationSchema>;
+export type CustomerReservation = typeof customerReservations.$inferSelect;
 
 export const insertTimeSlotAvailabilitySchema = createInsertSchema(timeSlotAvailability).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertTimeSlotAvailability = z.infer<typeof insertTimeSlotAvailabilitySchema>;
