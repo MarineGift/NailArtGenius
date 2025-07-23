@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedBookingData } from "./seedData";
 import { seedTestCustomersAndReservations } from "./test-data-seeder";
+import { seedComprehensiveData } from "./comprehensive-seed-data";
 
 const app = express();
 app.use(express.json());
@@ -47,6 +48,13 @@ app.use((req, res, next) => {
     await seedTestCustomersAndReservations();
   } catch (error) {
     console.log('Note: Test data seeding skipped (already exists or error occurred)');
+  }
+  
+  // Seed comprehensive data (carousel, gallery, AI nail art)
+  try {
+    await seedComprehensiveData();
+  } catch (error) {
+    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
   }
   
   const server = await registerRoutes(app);

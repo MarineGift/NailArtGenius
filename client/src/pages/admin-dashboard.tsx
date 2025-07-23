@@ -847,7 +847,7 @@ export default function AdminDashboard() {
                     {stats?.recentAppointments?.slice(0, 5).map((appointment, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">예약 #{appointment.id}</p>
+                          <p className="font-medium">Appointment #{appointment.id}</p>
                           <p className="text-sm text-gray-600">
                             {new Date(appointment.appointmentDate).toLocaleDateString()} {appointment.timeSlot}
                           </p>
@@ -867,17 +867,17 @@ export default function AdminDashboard() {
 
           <TabsContent value="customers" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">고객 관리</h2>
+              <h2 className="text-2xl font-bold">Customer</h2>
               <div className="flex space-x-2">
                 <Button onClick={() => loadCustomers()} variant="outline">
                   <RefreshCw className="h-4 w-4 mr-2" />
-                  새로고침
+                  Refresh
                 </Button>
                 <Button onClick={() => loadCustomers('mailing')} variant="outline">
-                  메일링 고객
+                  Mailing Customers
                 </Button>
                 <Button onClick={() => loadCustomers('booking')} variant="outline">
-                  예약 고객
+                  Booking Customers
                 </Button>
               </div>
             </div>
@@ -888,13 +888,13 @@ export default function AdminDashboard() {
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">이름</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">연락처</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">이메일</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">카테고리</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">방문횟수</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">총 지출</th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">작업</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Phone</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Email</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Category</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Visit Count</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Total Spent</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -938,10 +938,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="appointments" className="space-y-6">
-            <h2 className="text-2xl font-bold">예약 관리</h2>
+            <h2 className="text-2xl font-bold">Appointment</h2>
             <Card>
               <CardContent>
-                <p className="text-center text-gray-600 py-8">예약 관리 기능을 준비 중입니다.</p>
+                <p className="text-center text-gray-600 py-8">Appointment management features are being prepared.</p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -951,10 +951,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="emails" className="space-y-6">
-            <h2 className="text-2xl font-bold">메일링 관리</h2>
+            <h2 className="text-2xl font-bold">Email</h2>
             <Card>
               <CardContent>
-                <p className="text-center text-gray-600 py-8">메일링 기능을 준비 중입니다.</p>
+                <p className="text-center text-gray-600 py-8">Email management features are being prepared.</p>
               </CardContent>
             </Card>
           </TabsContent>
@@ -1145,8 +1145,8 @@ export default function AdminDashboard() {
                     <Button variant="outline" onClick={() => setShowCreateGalleryForm(false)}>
                       Cancel
                     </Button>
-                    <Button onClick={handleCreateGalleryItem}>
-                      Add Gallery Item
+                    <Button onClick={handleCreateGallery}>
+                      Create Gallery Item
                     </Button>
                   </div>
                 </CardContent>
@@ -1399,28 +1399,28 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <h2 className="text-2xl font-bold">관리자 설정</h2>
+            <h2 className="text-2xl font-bold">Settings</h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>관리자 정보</CardTitle>
+                  <CardTitle>Admin Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label>사용자명</Label>
+                    <Label>Username</Label>
                     <Input value={adminUser?.username || ''} disabled />
                   </div>
                   <div>
-                    <Label>이름</Label>
+                    <Label>Name</Label>
                     <Input value={adminUser?.name || ''} disabled />
                   </div>
                   <div>
-                    <Label>이메일</Label>
+                    <Label>Email</Label>
                     <Input value={adminUser?.email || ''} disabled />
                   </div>
                   <div>
-                    <Label>역할</Label>
+                    <Label>Role</Label>
                     <Input value={adminUser?.role || ''} disabled />
                   </div>
                 </CardContent>
@@ -1428,12 +1428,12 @@ export default function AdminDashboard() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>비밀번호 변경</CardTitle>
+                  <CardTitle>Change Password</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <div>
-                      <Label htmlFor="currentPassword">현재 비밀번호</Label>
+                      <Label htmlFor="currentPassword">Current Password</Label>
                       <Input
                         id="currentPassword"
                         type="password"
@@ -1446,7 +1446,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="newPassword">새 비밀번호</Label>
+                      <Label htmlFor="newPassword">New Password</Label>
                       <Input
                         id="newPassword"
                         type="password"
@@ -1459,7 +1459,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="confirmPassword">새 비밀번호 확인</Label>
+                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
                       <Input
                         id="confirmPassword"
                         type="password"
@@ -1472,7 +1472,7 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <Button type="submit" className="w-full">
-                      비밀번호 변경
+                      Change Password
                     </Button>
                   </form>
                 </CardContent>

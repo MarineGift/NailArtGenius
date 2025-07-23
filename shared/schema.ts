@@ -182,7 +182,7 @@ export const customers = pgTable("customers", {
   name: varchar("name", { length: 100 }).notNull(),
   email: varchar("email", { length: 100 }),
   phoneNumber: varchar("phone_number", { length: 20 }),
-  visitType: varchar("visit_type").default("일반 방문"), // "방문예약", "최초방문", "인터넷예약"
+  visitType: varchar("visit_type").default("general_visit"), // "appointment_visit", "first_visit", "online_booking"
   category: varchar("category", { length: 20 }).default("general").notNull(), // mailing, general, booking
   mailingConsent: boolean("mailing_consent").default(false),
   totalVisits: integer("total_visits").default(0),
@@ -250,6 +250,22 @@ export const gallery = pgTable("gallery", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Gallery detailed descriptions table for modal views
+export const galleryDesc = pgTable("gallery_desc", {
+  id: serial("id").primaryKey(),
+  galleryId: integer("gallery_id").notNull().references(() => gallery.id),
+  detailTitle: varchar("detail_title").notNull(), // Detailed title for modal
+  detailDescription: text("detail_description").notNull(), // Full description
+  technicalDetails: text("technical_details"), // Technical specifications
+  duration: varchar("duration"), // Service duration if applicable
+  price: varchar("price"), // Price information
+  beforeAfterImages: text("before_after_images").array(), // Before/after image paths
+  additionalImages: text("additional_images").array(), // Additional detail images
+  tips: text("tips"), // Care tips or recommendations
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // AI Nail Art images table - stores customer nail images and AI generated designs
 export const aiNailArtImages = pgTable("ai_nail_art_images", {
   id: serial("id").primaryKey(),
@@ -303,7 +319,7 @@ export const appointments = pgTable("appointments", {
   timeSlot: varchar("time_slot").notNull(), // "09:00", "09:30", "10:00", etc.
   duration: integer("duration").default(60), // minutes
   status: varchar("status").default("scheduled"), // scheduled, confirmed, in_progress, completed, cancelled, no_show
-  visitReason: varchar("visit_reason").default("일반 방문"), // Visit reason with default
+  visitReason: varchar("visit_reason").default("general_visit"), // Visit reason with default
   serviceDetails: text("service_details"), // Specific service requirements
   price: decimal("price", { precision: 10, scale: 2 }),
   reminderSent: boolean("reminder_sent").default(false),

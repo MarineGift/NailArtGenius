@@ -29,6 +29,7 @@ import {
   customerReservations,
   carouselImages,
   gallery,
+  galleryDesc,
   aiNailArtImages,
 } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
@@ -2795,6 +2796,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching public gallery:', error);
       res.status(500).json({ message: 'Failed to fetch gallery' });
+    }
+  });
+
+  // Gallery Description Routes
+  app.get('/api/gallery/:id/description', async (req, res) => {
+    try {
+      const galleryId = parseInt(req.params.id);
+      const description = await db.select().from(galleryDesc).where(eq(galleryDesc.galleryId, galleryId));
+      
+      if (description.length === 0) {
+        return res.status(404).json({ message: 'Gallery description not found' });
+      }
+      
+      res.json(description[0]);
+    } catch (error) {
+      console.error('Error fetching gallery description:', error);
+      res.status(500).json({ message: 'Failed to fetch gallery description' });
+    }
+  });
+
+  app.post('/api/admin/gallery/:id/description', authenticateAdmin, async (req: any, res) => {
+    try {
+      const galleryId = parseInt(req.params.id);
+      const descriptionData = {
+        galleryId,
+        ...req.body
+      };
+      
+      const [newDescription] = await db.insert(galleryDesc).values(descriptionData).returning();
+      res.json({ message: 'Gallery description created successfully', description: newDescription });
+    } catch (error) {
+      console.error('Error creating gallery description:', error);
+      res.status(500).json({ message: 'Failed to create gallery description' });
+    }
+  });
+
+  app.put('/api/admin/gallery/:id/description', authenticateAdmin, async (req: any, res) => {
+    try {
+      const galleryId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const [updatedDescription] = await db.update(galleryDesc)
+        .set(updates)
+        .where(eq(galleryDesc.galleryId, galleryId))
+        .returning();
+        
+      res.json({ message: 'Gallery description updated successfully', description: updatedDescription });
+    } catch (error) {
+      console.error('Error updating gallery description:', error);
+      res.status(500).json({ message: 'Failed to update gallery description' });
     }
   });
 
