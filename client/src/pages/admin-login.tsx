@@ -140,10 +140,7 @@ export default function AdminLogin() {
               </Button>
             </form>
             
-            <div className="text-center mt-6 text-sm text-gray-500">
-              <p>Default admin account</p>
-              <p>ID: admin / PW: 1111</p>
-            </div>
+
           </CardContent>
         </Card>
       </main>

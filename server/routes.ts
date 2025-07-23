@@ -839,7 +839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       
       if (existingAppointment) {
-        return res.status(400).json({ message: "시간대가 이미 예약되었습니다" });
+        return res.status(400).json({ message: "Time slot is already booked" });
       }
       
       // Create or update customer
@@ -855,9 +855,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerId: savedCustomer.id,
         appointmentDate: new Date(appointmentDate),
         timeSlot,
-        visitReason: visitReason || "일반 방문",
+        visitReason: visitReason || "General visit",
         status: "scheduled",
-        notes: mailingList ? "메일링 리스트 가입" : null,
+        notes: mailingList ? "Mailing list subscription" : null,
       });
       
       res.json({ appointment, customer: savedCustomer });

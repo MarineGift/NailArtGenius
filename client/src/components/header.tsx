@@ -127,16 +127,16 @@ export default function Header() {
                 
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.profileImageUrl || undefined} />
+                    <AvatarImage src={user?.profileImageUrl || undefined} />
                     <AvatarFallback className="bg-secondary/10 text-secondary">
-                      {user.firstName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                      {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden sm:block">
                     <p className="text-sm font-medium text-gray-900">
-                      {user.firstName || user.email}
+                      {user?.firstName || user?.email}
                     </p>
-                    <p className="text-xs text-gray-600">{user.email}</p>
+                    <p className="text-xs text-gray-600">{user?.email}</p>
                   </div>
                 </div>
                 

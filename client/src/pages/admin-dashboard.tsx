@@ -115,10 +115,10 @@ export default function AdminDashboard() {
         const data = await response.json();
         setStats(data);
       } else {
-        setError('대시보드 데이터를 불러오는데 실패했습니다.');
+        setError('Failed to load dashboard data.');
       }
     } catch (error) {
-      setError('서버 연결에 실패했습니다.');
+      setError('Server connection failed.');
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setError('새 비밀번호가 일치하지 않습니다.');
+      setError('New passwords do not match.');
       return;
     }
 
@@ -176,13 +176,13 @@ export default function AdminDashboard() {
       if (response.ok) {
         setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
         setError('');
-        alert('비밀번호가 성공적으로 변경되었습니다.');
+        alert('Password changed successfully.');
       } else {
         const errorData = await response.json();
-        setError(errorData.message || '비밀번호 변경에 실패했습니다.');
+        setError(errorData.message || 'Failed to change password.');
       }
     } catch (error) {
-      setError('서버 연결에 실패했습니다.');
+      setError('Server connection failed.');
     }
   };
 
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
         <main className="flex items-center justify-center px-4 py-16">
           <div className="flex items-center space-x-2">
             <RefreshCw className="h-6 w-6 animate-spin text-purple-600" />
-            <p className="text-lg text-gray-600">관리자 패널 로딩 중...</p>
+            <p className="text-lg text-gray-600">Loading admin panel...</p>
           </div>
         </main>
         <Footer />
@@ -208,14 +208,14 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">관리자 대시보드</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600 mt-2">
-              환영합니다, {adminUser?.name || adminUser?.username}님
+              Welcome, {adminUser?.name || adminUser?.username}
             </p>
           </div>
           <Button onClick={handleLogout} variant="outline" className="flex items-center space-x-2">
             <LogOut className="h-4 w-4" />
-            <span>로그아웃</span>
+            <span>Logout</span>
           </Button>
         </div>
 
@@ -230,23 +230,23 @@ export default function AdminDashboard() {
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <Activity className="h-4 w-4" />
-              <span>대시보드</span>
+              <span>Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="customers" className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
-              <span>고객관리</span>
+              <span>Customer Management</span>
             </TabsTrigger>
             <TabsTrigger value="appointments" className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
-              <span>예약관리</span>
+              <span>Appointment Management</span>
             </TabsTrigger>
             <TabsTrigger value="emails" className="flex items-center space-x-2">
               <Mail className="h-4 w-4" />
-              <span>메일링</span>
+              <span>Mailing</span>
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
-              <span>설정</span>
+              <span>Settings</span>
             </TabsTrigger>
           </TabsList>
 
@@ -254,45 +254,45 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 고객 수</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalCustomers || 0}</div>
-                  <p className="text-xs text-muted-foreground">전체 등록 고객</p>
+                  <p className="text-xs text-muted-foreground">All registered customers</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 예약 수</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalAppointments || 0}</div>
-                  <p className="text-xs text-muted-foreground">전체 예약 건수</p>
+                  <p className="text-xs text-muted-foreground">All appointment bookings</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">오늘 예약</CardTitle>
+                  <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
                   <Clock className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.todayAppointments || 0}</div>
-                  <p className="text-xs text-muted-foreground">오늘 예약된 건수</p>
+                  <p className="text-xs text-muted-foreground">Today's scheduled appointments</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">총 주문 수</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                   <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
-                  <p className="text-xs text-muted-foreground">전체 주문 건수</p>
+                  <p className="text-xs text-muted-foreground">All order transactions</p>
                 </CardContent>
               </Card>
             </div>
@@ -300,7 +300,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>최근 고객</CardTitle>
+                  <CardTitle>Recent Customers</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>최근 예약</CardTitle>
+                  <CardTitle>Recent Appointments</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">

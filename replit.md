@@ -13,6 +13,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### Complete Korean to English Text Conversion (July 23, 2025)
+- **Comprehensive Text Translation**: Completed full conversion of all Korean text to English
+  - Updated admin dashboard interface: 관리자 대시보드 → Admin Dashboard, 고객관리 → Customer Management
+  - Converted all navigation elements: 로그인 → Log In, 예약관리 → Appointment Management
+  - Fixed all error messages and status text throughout the application
+  - Updated form labels, buttons, and system messages across client and server files
+  - Maintained proper authentication flow with admin/1111 credentials
+  - Resolved Header component TypeScript errors for better stability
+
 ### HTML/CSS/JavaScript Conversion (July 22, 2025)
 - **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
   - Created fully functional HTML version in `html-version/` directory
