@@ -1145,7 +1145,7 @@ export default function AdminDashboard() {
                     <Button variant="outline" onClick={() => setShowCreateGalleryForm(false)}>
                       Cancel
                     </Button>
-                    <Button onClick={handleCreateGallery}>
+                    <Button onClick={handleCreateGalleryItem}>
                       Create Gallery Item
                     </Button>
                   </div>
