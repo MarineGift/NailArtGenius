@@ -171,7 +171,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newAdmin = await storage.createAdmin({
         name,
         email,
-        phoneNumber,
         username,
         password: hashedPassword,
         role: 'admin',
@@ -319,13 +318,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Transform appointments to include customer information
       const appointmentsWithCustomers = appointments.map(apt => ({
         id: apt.id,
-        customerName: apt.customerName || 'Unknown',
-        customerPhone: apt.customerPhone || 'N/A',
-        service: apt.service || apt.visitReason || 'General Service',
+        customerName: 'Unknown', // Will be populated from join
+        customerPhone: 'N/A', // Will be populated from join
+        service: apt.visitReason || 'General Service',
         appointmentDate: apt.appointmentDate,
         timeSlot: apt.timeSlot,
         status: apt.status || 'confirmed',
-        totalAmount: apt.finalPrice || 0,
+        totalAmount: parseFloat(apt.price || '0') || 0,
         createdAt: apt.createdAt || new Date(),
         notes: apt.notes || ''
       }));
@@ -346,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-06-20",
+      apiVersion: "2024-06-20" as any,
     });
 
     try {
@@ -1095,9 +1094,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           hour12: true
         });
         
-        const smsMessage = `[Connie's Nail] ${savedCustomer.phoneNumber}님, ${formattedDate} ${formattedTime}에 예약이 완료되었습니다. 문의: 02-1234-5678`;
+        const smsMessage = `[Connie's Nail] ${savedCustomer.name}님, ${formattedDate} ${timeSlot}에 예약이 완료되었습니다. 문의: 02-1234-5678`;
         
-        await smsService.sendSMS(savedCustomer.phoneNumber, smsMessage);
+        await smsService.sendSMS(savedCustomer.phoneNumber || '', smsMessage);
         console.log(`SMS sent successfully to ${savedCustomer.phoneNumber}`);
       } catch (smsError) {
         console.error('Failed to send SMS:', smsError);
@@ -1347,7 +1346,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         serviceId: serviceId || null,
         duration: duration || 60,
         price: price || 0,
-        realTimeBooking: true
+        // realTimeBooking: true // This field doesn't exist in schema
       });
       
       res.json({ 
@@ -1794,7 +1793,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/users", isAuthenticated, async (req: any, res) => {
     try {
       const adminData = req.body;
-      const admin = await storage.createAdminUser(adminData);
+      const admin = await storage.createAdmin(adminData);
       res.status(201).json(admin);
     } catch (error) {
       console.error("Error creating admin user:", error);
@@ -2027,7 +2026,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enhanced Customer Management Routes
   app.get('/api/customers', isAuthenticated, async (req, res) => {
     try {
-      const customers = await enhancedStorage.getAllCustomers();
+      const customers = await storage.getAllCustomers();
       res.json(customers);
     } catch (error) {
       console.error("Error fetching customers:", error);
@@ -2044,7 +2043,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid category" });
       }
 
-      await enhancedStorage.updateCustomerCategory(parseInt(id), category);
+      await storage.updateCustomerCategory(parseInt(id), category);
       res.json({ message: "Customer category updated successfully" });
     } catch (error) {
       console.error("Error updating customer category:", error);
@@ -2066,7 +2065,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get customers with email addresses
-      const customers = await enhancedStorage.getCustomersByIds(customerIds);
+      const customers = await storage.getCustomersByIds(customerIds);
       const emailCustomers = customers.filter(c => c.email && c.mailingConsent);
       
       if (emailCustomers.length === 0) {
@@ -2230,7 +2229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update customer total spent
       const [customer] = await db.select().from(customers).where(eq(customers.id, purchase.customerId));
       if (customer) {
-        const currentTotal = parseFloat(customer.totalSpent);
+        const currentTotal = parseFloat(customer.totalSpent || '0');
         const newTotal = currentTotal + parseFloat(purchase.amount);
         
         await db.update(customers)
