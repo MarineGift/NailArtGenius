@@ -4,14 +4,12 @@ const urlsToCache = [
   '/booking',
   '/services',
   '/admin',
-  '/checkout',
-  '/manifest.json',
-  '/icons/icon.svg',
-  '/offline.html'
+  '/checkout'
 ];
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
+  console.log('Service Worker: Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -30,6 +28,7 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -49,6 +48,16 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve cached content when offline
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  // Skip API requests
+  if (event.request.url.includes('/api/')) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -74,10 +83,11 @@ self.addEventListener('fetch', (event) => {
 
           return response;
         }).catch(() => {
-          // If both cache and network fail, show offline page for navigation requests
-          if (event.request.destination === 'document') {
-            return caches.match('/offline.html');
-          }
+          // If both cache and network fail, show offline message
+          return new Response('Offline - Please check your connection', {
+            status: 503,
+            statusText: 'Service Unavailable'
+          });
         });
       })
   );
@@ -85,10 +95,11 @@ self.addEventListener('fetch', (event) => {
 
 // Push notification event
 self.addEventListener('push', (event) => {
+  console.log('Service Worker: Push received');
   const options = {
     body: event.data ? event.data.text() : 'New appointment notification',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/badge-72x72.png',
+    icon: '/icons/icon.svg',
+    badge: '/icons/icon.svg',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
@@ -98,12 +109,12 @@ self.addEventListener('push', (event) => {
       {
         action: 'explore',
         title: 'View Details',
-        icon: '/icons/checkmark.png'
+        icon: '/icons/icon.svg'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: '/icons/xmark.png'
+        icon: '/icons/icon.svg'
       }
     ]
   };
@@ -115,6 +126,7 @@ self.addEventListener('push', (event) => {
 
 // Notification click event
 self.addEventListener('notificationclick', (event) => {
+  console.log('Service Worker: Notification clicked');
   event.notification.close();
 
   if (event.action === 'explore') {
@@ -133,21 +145,4 @@ self.addEventListener('notificationclick', (event) => {
   }
 });
 
-// Background sync event
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
-  }
-});
-
-function doBackgroundSync() {
-  // Perform background sync operations
-  return fetch('/api/sync')
-    .then((response) => {
-      console.log('Background sync completed');
-      return response;
-    })
-    .catch((error) => {
-      console.error('Background sync failed', error);
-    });
-}
+console.log('Service Worker: Script loaded');

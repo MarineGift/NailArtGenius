@@ -2,12 +2,26 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { registerServiceWorker, trackPWAUsage, enableOfflineMode } from "./utils/pwa";
 
 // Initialize PWA functionality
-registerServiceWorker();
-trackPWAUsage();
-enableOfflineMode();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
+// Track PWA usage
+if (window.matchMedia('(display-mode: standalone)').matches || 
+    (window.navigator as any).standalone || 
+    document.referrer.includes('android-app://')) {
+  console.log('App is running as PWA');
+}
 
 // Add viewport meta tag for mobile devices
 const viewport = document.querySelector('meta[name="viewport"]');

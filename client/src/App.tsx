@@ -44,6 +44,8 @@ import SignUp from "@/pages/signup";
 import PasswordReset from "@/pages/password-reset";
 import Checkout from "@/pages/checkout";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import PWATestPage from "@/pages/pwa-test";
+import PWAStatus from "@/components/PWAStatus";
 
 // Lazy load AI Nail System
 const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
@@ -69,6 +71,7 @@ function Router() {
         <Route path="/checkout" component={Checkout} />
         <Route path="/appointment-booking-new" component={AppointmentBooking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
+        <Route path="/pwa-test" component={PWATestPage} />
         <Route path="/signup" component={Signup} />
         <Route path="/landing" component={Landing} />
         
@@ -119,6 +122,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <PWAInstallPrompt />
+            <PWAStatus />
             <Router />
           </TooltipProvider>
         </AdminAuthProvider>
