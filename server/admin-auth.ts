@@ -29,7 +29,7 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 export function generateToken(adminUser: AdminUser): string {
   return jwt.sign(
     { 
-      id: adminUser.id, 
+      id: adminUser.id.toString(), // Convert to string for consistency
       username: adminUser.username, 
       role: adminUser.role 
     },
@@ -59,7 +59,12 @@ export async function authenticateAdmin(req: Request, res: Response, next: NextF
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    const admin = await storage.getAdminById(parseInt(decoded.id));
+    const adminId = parseInt(decoded.id);
+    if (isNaN(adminId)) {
+      return res.status(401).json({ message: 'Invalid admin ID in token' });
+    }
+    
+    const admin = await storage.getAdminById(adminId);
     if (!admin || !admin.isActive) {
       return res.status(401).json({ message: 'Admin not found or inactive' });
     }

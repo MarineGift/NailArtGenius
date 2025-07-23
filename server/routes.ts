@@ -103,28 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Username and password are required.' });
       }
 
-      // Check if it's the simple admin login
-      if (username === 'admin' && password === '1111') {
-        const adminUser = await storage.getUser('admin');
-        if (adminUser && adminUser.level === 'admin') {
-          // Generate JWT token for admin user
-          const token = generateToken({ id: adminUser.id, username: adminUser.username, role: 'admin' });
-          
-          res.json({
-            token,
-            admin: {
-              id: adminUser.id,
-              username: adminUser.username,
-              name: `${adminUser.firstName} ${adminUser.lastName}`,
-              email: adminUser.email,
-              role: 'admin'
-            }
-          });
-          return;
-        }
-      }
-
-      // For other admin accounts, use admin_users table if it exists
+      // Use admin_users table for all admin authentication
       const admin = await storage.getAdminByUsername(username);
       if (!admin) {
         return res.status(401).json({ message: 'Invalid username or password.' });

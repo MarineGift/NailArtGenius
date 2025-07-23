@@ -103,11 +103,12 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => window.location.href = "/api/logout"}
+                  onClick={() => logoutMutation.mutate()}
                   className="text-gray-400 hover:text-gray-600"
+                  disabled={logoutMutation.isPending}
                 >
                   <LogOut className="h-4 w-4" />
-                  <span className="ml-1 hidden sm:inline">{t('nav.logout')}</span>
+                  <span className="ml-1 hidden sm:inline">{logoutMutation.isPending ? 'Logging out...' : t('nav.logout')}</span>
                 </Button>
               </div>
             )}
