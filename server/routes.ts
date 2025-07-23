@@ -955,7 +955,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/appointments", async (req, res) => {
     try {
-      const { appointmentDate, timeSlot, visitReason, customer, mailingList } = req.body;
+      const { 
+        appointmentDate, 
+        timeSlot, 
+        visitReason, 
+        customerName, 
+        customerPhone, 
+        customerEmail, 
+        notes,
+        serviceId,
+        isOnlinePayment,
+        finalPrice,
+        customer, 
+        mailingList 
+      } = req.body;
       
       // Check if appointment slot is already booked
       const existingAppointment = await storage.getAppointmentByDateAndTime(
@@ -967,22 +980,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Time slot is already booked" });
       }
       
-      // Create or update customer
-      const savedCustomer = await storage.upsertCustomer({
+      // Create or update customer - handle both old format (customer object) and new format (individual fields)
+      const customerData = customer ? {
         name: customer.name,
         phoneNumber: customer.phoneNumber,
         email: customer.email || null,
         visitType: customer.visitType,
-      });
+      } : {
+        name: customerName || customerPhone, // Use phone as name if name not provided
+        phoneNumber: customerPhone,
+        email: customerEmail || null,
+        visitType: "appointment",
+      };
+      
+      const savedCustomer = await storage.upsertCustomer(customerData);
       
       // Create appointment
+      const appointmentNotes = [
+        notes,
+        mailingList ? "Mailing list subscription" : null,
+        isOnlinePayment ? `Online payment: $${finalPrice}` : null
+      ].filter(Boolean).join("; ");
+
       const appointment = await storage.createAppointment({
         customerId: savedCustomer.id,
         appointmentDate: new Date(appointmentDate),
         timeSlot,
         visitReason: visitReason || "General visit",
         status: "scheduled",
-        notes: mailingList ? "Mailing list subscription" : null,
+        notes: appointmentNotes || null,
       });
       
       res.json({ appointment, customer: savedCustomer });
