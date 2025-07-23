@@ -44,6 +44,13 @@ export default function BookingPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
 
+  // Reset booking completed state when form changes
+  const resetBookingState = () => {
+    if (bookingCompleted) {
+      setBookingCompleted(false);
+    }
+  };
+
   // Fetch services
   const { data: services = [] } = useQuery({
     queryKey: ['/api/services'],
@@ -100,10 +107,20 @@ export default function BookingPage() {
       refetchAvailability();
     },
     onError: (error: any) => {
+      console.error('Booking error:', error);
+      let errorMessage = "Failed to book appointment. Please try again.";
+      
+      if (error.message && error.message.includes("already booked")) {
+        errorMessage = "This time slot is already taken. Please select a different time.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Booking Failed",
-        description: error.message || "Failed to book appointment. Please try again.",
+        description: errorMessage,
         variant: 'destructive',
+        duration: 5000,
       });
     }
   });
@@ -509,8 +526,8 @@ export default function BookingPage() {
                 <div className="space-y-3">
                   <Button
                     onClick={handleSubmit}
-                    disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone || bookingCompleted}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone.trim() || bookingCompleted}
+                    className={`w-full ${!selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone.trim() || bookingCompleted ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
                     size="lg"
                   >
                     {createAppointmentMutation.isPending ? (
@@ -527,8 +544,8 @@ export default function BookingPage() {
                   
                   <Button
                     onClick={handleOnlinePayment}
-                    disabled={!bookingCompleted || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
-                    className="w-full bg-green-600 hover:bg-green-700"
+                    disabled={!bookingCompleted || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone.trim()}
+                    className={`w-full ${bookingCompleted ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
                     {bookingCompleted ? 'Online Payment (10% Discount Applied)' : 'Complete Booking First'}
