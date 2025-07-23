@@ -106,14 +106,9 @@ export default function AdminDashboard() {
     totalCount: 0
   });
   
-  // Test modal state
-  const [testModalOpen, setTestModalOpen] = useState(false);
+
   
-  // Debug: Force modal to show for testing
-  const [forceShowModal, setForceShowModal] = useState(false);
-  
-  // Add debug console log for modal state changes
-  console.log('🔍 Current detailModal state:', detailModal);
+
 
   useEffect(() => {
     checkAdminAuth();
@@ -289,7 +284,6 @@ export default function AdminDashboard() {
       data: [],
       totalCount: 0
     });
-    setForceShowModal(false);
   };
 
   const handleLogout = async () => {
@@ -544,35 +538,7 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
-            {/* Test buttons to verify modal works */}
-            <div className="mb-4 flex gap-2">
-              <Button 
-                onClick={() => {
-                  console.log('🚀 Test button clicked - opening modal directly');
-                  alert('테스트 버튼 클릭됨!');
-                  setDetailModal({
-                    isOpen: true,
-                    metricType: 'customers',
-                    title: 'Test Modal',
-                    data: [
-                      { name: 'Test Customer 1', phoneNumber: '010-1111-1111', email: 'test1@test.com' },
-                      { name: 'Test Customer 2', phoneNumber: '010-2222-2222', email: 'test2@test.com' }
-                    ],
-                    totalCount: 2
-                  });
-                }}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                TEST MODAL (임시 테스트)
-              </Button>
-              
-              <Button 
-                onClick={() => handleMetricClick('customers', 'Real Customer Data', 23)}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                실제 고객 데이터 테스트
-              </Button>
-            </div>
+
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <DirectMetricCard
@@ -1111,82 +1077,7 @@ export default function AdminDashboard() {
       
       <Footer />
       
-      {/* Test Modal */}
-      {testModalOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            maxWidth: '500px'
-          }}>
-            <h2>Emergency Test Modal</h2>
-            <p>If you can see this, React is working!</p>
-            <button 
-              onClick={() => setTestModalOpen(false)}
-              style={{ marginTop: '10px', padding: '10px', backgroundColor: '#dc2626', color: 'white' }}
-            >
-              Close Test Modal
-            </button>
-          </div>
-        </div>
-      )}
-      
-      {/* Force Show Modal for Testing */}
-      {forceShowModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.8)',
-          zIndex: 50000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '8px',
-            maxWidth: '500px',
-            textAlign: 'center'
-          }}>
-            <h2>Test Modal Working!</h2>
-            <p>Metric: {detailModal.title}</p>
-            <p>Count: {detailModal.totalCount}</p>
-            <button 
-              onClick={() => {
-                setForceShowModal(false);
-                closeDetailModal();
-              }}
-              style={{ 
-                marginTop: '10px', 
-                padding: '10px 20px', 
-                backgroundColor: '#dc2626', 
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Close Modal
-            </button>
-          </div>
-        </div>
-      )}
+
 
       {/* Admin Metric Modal */}
       <AdminModal
