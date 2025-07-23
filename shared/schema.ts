@@ -226,12 +226,41 @@ export const smsTemplates = pgTable("sms_templates", {
 // Carousel Images table for managing images displayed on the website
 export const carouselImages = pgTable("carousel_images", {
   id: serial("id").primaryKey(),
-  page: varchar("page").notNull(), // Which page/section this image belongs to
+  page: varchar("page").notNull(), // Which page/section this image belongs to ("main", "service")
   imagePath: varchar("image_path").notNull(), // Path to the image file
   headerText: varchar("header_text").notNull(), // Header/title text for the image
   detailedDescription: text("detailed_description"), // Detailed description of the image
   displayOrder: integer("display_order").default(0), // Order in which to display images
   isActive: boolean("is_active").default(true), // Whether the image is currently active
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Gallery table for managing gallery data and images
+export const gallery = pgTable("gallery", {
+  id: serial("id").primaryKey(),
+  title: varchar("title").notNull(), // Gallery item title
+  description: text("description"), // Gallery item description
+  imagePath: varchar("image_path").notNull(), // Path to the gallery image
+  category: varchar("category").notNull(), // Category: "nail_art", "spa", "treatment", "before_after"
+  tags: text("tags").array(), // Array of tags for filtering
+  displayOrder: integer("display_order").default(0), // Order in gallery display
+  isActive: boolean("is_active").default(true), // Whether item is active
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Nail Art images table - stores customer nail images and AI generated designs
+export const aiNailArtImages = pgTable("ai_nail_art_images", {
+  id: serial("id").primaryKey(),
+  customerPhone: varchar("customer_phone").notNull(), // Customer phone number as key
+  nailPosition: varchar("nail_position").notNull(), // "left_thumb", "left_index", "left_middle", "left_ring", "left_pinky", "right_thumb", "right_index", "right_middle", "right_ring", "right_pinky"
+  direction: varchar("direction").notNull(), // "front", "side", "top" - nail direction/angle
+  originalImagePath: varchar("original_image_path"), // Path to original nail photo
+  aiGeneratedImagePath: varchar("ai_generated_image_path"), // Path to AI generated design
+  designPrompt: text("design_prompt"), // AI prompt used for generation
+  nailName: varchar("nail_name"), // Custom name for this nail (e.g., "Elegant Rose Design")
+  sessionId: varchar("session_id"), // Groups related nail art session
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -535,6 +564,16 @@ export type EmailCampaign = typeof emailCampaigns.$inferSelect;
 // Carousel images type definitions
 export const insertCarouselImageSchema = createInsertSchema(carouselImages).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertCarouselImage = z.infer<typeof insertCarouselImageSchema>;
+
+// Gallery schema and types
+export const insertGallerySchema = createInsertSchema(gallery).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertGallery = z.infer<typeof insertGallerySchema>;
+export type Gallery = typeof gallery.$inferSelect;
+
+// AI Nail Art Images schema and types
+export const insertAiNailArtImageSchema = createInsertSchema(aiNailArtImages).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertAiNailArtImage = z.infer<typeof insertAiNailArtImageSchema>;
+export type AiNailArtImage = typeof aiNailArtImages.$inferSelect;
 export type CarouselImage = typeof carouselImages.$inferSelect;
 
 

@@ -16,6 +16,8 @@ import {
   designInteractions,
   userBehaviorAnalytics,
   carouselImages,
+  gallery,
+  aiNailArtImages,
   type User,
   type UpsertUser,
   type Customer,
@@ -53,6 +55,10 @@ import {
   type InsertUserBehaviorAnalytics,
   type CarouselImage,
   type InsertCarouselImage,
+  type Gallery,
+  type InsertGallery,
+  type AiNailArtImage,
+  type InsertAiNailArtImage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -145,6 +151,22 @@ export interface IStorage {
   getCarouselImage(id: number): Promise<CarouselImage | undefined>;
   updateCarouselImage(id: number, updates: Partial<CarouselImage>): Promise<CarouselImage>;
   deleteCarouselImage(id: number): Promise<void>;
+  
+  // Gallery operations
+  createGallery(galleryItem: InsertGallery): Promise<Gallery>;
+  getAllGallery(): Promise<Gallery[]>;
+  getGalleryByCategory(category: string): Promise<Gallery[]>;
+  getGallery(id: number): Promise<Gallery | undefined>;
+  updateGallery(id: number, updates: Partial<Gallery>): Promise<Gallery>;
+  deleteGallery(id: number): Promise<void>;
+  
+  // AI Nail Art Images operations
+  createAiNailArtImage(image: InsertAiNailArtImage): Promise<AiNailArtImage>;
+  getAiNailArtImagesByPhone(customerPhone: string): Promise<AiNailArtImage[]>;
+  getAiNailArtImagesBySession(customerPhone: string, sessionId: string): Promise<AiNailArtImage[]>;
+  getAiNailArtImage(id: number): Promise<AiNailArtImage | undefined>;
+  updateAiNailArtImage(id: number, updates: Partial<AiNailArtImage>): Promise<AiNailArtImage>;
+  deleteAiNailArtImage(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -900,6 +922,95 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
     await db
       .delete(carouselImages)
       .where(eq(carouselImages.id, id));
+  }
+
+  // Gallery operations
+  async createGallery(galleryItem: InsertGallery): Promise<Gallery> {
+    const [savedGallery] = await db
+      .insert(gallery)
+      .values(galleryItem)
+      .returning();
+    return savedGallery;
+  }
+
+  async getAllGallery(): Promise<Gallery[]> {
+    return await db
+      .select()
+      .from(gallery)
+      .where(eq(gallery.isActive, true))
+      .orderBy(gallery.displayOrder, desc(gallery.createdAt));
+  }
+
+  async getGalleryByCategory(category: string): Promise<Gallery[]> {
+    return await db
+      .select()
+      .from(gallery)
+      .where(and(eq(gallery.category, category), eq(gallery.isActive, true)))
+      .orderBy(gallery.displayOrder, desc(gallery.createdAt));
+  }
+
+  async getGallery(id: number): Promise<Gallery | undefined> {
+    const [galleryItem] = await db.select().from(gallery).where(eq(gallery.id, id));
+    return galleryItem;
+  }
+
+  async updateGallery(id: number, updates: Partial<Gallery>): Promise<Gallery> {
+    const [updatedGallery] = await db
+      .update(gallery)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(gallery.id, id))
+      .returning();
+    return updatedGallery;
+  }
+
+  async deleteGallery(id: number): Promise<void> {
+    await db.delete(gallery).where(eq(gallery.id, id));
+  }
+
+  // AI Nail Art Images operations
+  async createAiNailArtImage(image: InsertAiNailArtImage): Promise<AiNailArtImage> {
+    const [savedImage] = await db
+      .insert(aiNailArtImages)
+      .values(image)
+      .returning();
+    return savedImage;
+  }
+
+  async getAiNailArtImagesByPhone(customerPhone: string): Promise<AiNailArtImage[]> {
+    return await db
+      .select()
+      .from(aiNailArtImages)
+      .where(eq(aiNailArtImages.customerPhone, customerPhone))
+      .orderBy(desc(aiNailArtImages.createdAt));
+  }
+
+  async getAiNailArtImagesBySession(customerPhone: string, sessionId: string): Promise<AiNailArtImage[]> {
+    return await db
+      .select()
+      .from(aiNailArtImages)
+      .where(and(
+        eq(aiNailArtImages.customerPhone, customerPhone),
+        eq(aiNailArtImages.sessionId, sessionId)
+      ))
+      .orderBy(aiNailArtImages.nailPosition, desc(aiNailArtImages.createdAt));
+  }
+
+  async getAiNailArtImage(id: number): Promise<AiNailArtImage | undefined> {
+    const [image] = await db.select().from(aiNailArtImages).where(eq(aiNailArtImages.id, id));
+    return image;
+  }
+
+  async updateAiNailArtImage(id: number, updates: Partial<AiNailArtImage>): Promise<AiNailArtImage> {
+    const [updatedImage] = await db
+      .update(aiNailArtImages)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(aiNailArtImages.id, id))
+      .returning();
+    return updatedImage;
+  }
+
+  async deleteAiNailArtImage(id: number): Promise<void> {
+    await db.delete(aiNailArtImages).where(eq(aiNailArtImages.id, id));
   }
 }
 

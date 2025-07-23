@@ -91,10 +91,39 @@ export default function AdminDashboard() {
   const [showCreateImageForm, setShowCreateImageForm] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [newCarouselImage, setNewCarouselImage] = useState({
-    page: 'home',
+    page: 'main',
     headerText: '',
     detailedDescription: '',
     displayOrder: 0
+  });
+
+  // Gallery management state
+  const [galleryItems, setGalleryItems] = useState<any[]>([]);
+  const [showCreateGalleryForm, setShowCreateGalleryForm] = useState(false);
+  const [selectedGalleryFile, setSelectedGalleryFile] = useState<File | null>(null);
+  const [newGalleryItem, setNewGalleryItem] = useState({
+    title: '',
+    description: '',
+    category: 'nail_art',
+    tags: '',
+    displayOrder: 0
+  });
+
+  // AI Nail Art management state
+  const [aiNailArtImages, setAiNailArtImages] = useState<any[]>([]);
+  const [selectedCustomerPhone, setSelectedCustomerPhone] = useState('');
+  const [showCreateAiNailForm, setShowCreateAiNailForm] = useState(false);
+  const [aiNailFiles, setAiNailFiles] = useState({
+    original: null as File | null,
+    aiGenerated: null as File | null
+  });
+  const [newAiNailArt, setNewAiNailArt] = useState({
+    customerPhone: '',
+    nailPosition: 'left_thumb',
+    direction: 'front',
+    designPrompt: '',
+    nailName: '',
+    sessionId: ''
   });
 
   // Modal state for metric details
@@ -114,6 +143,7 @@ export default function AdminDashboard() {
     checkAdminAuth();
     loadDashboardData();
     loadCarouselImages();
+    loadGalleryItems();
   }, []);
 
   const checkAdminAuth = () => {
@@ -462,6 +492,181 @@ export default function AdminDashboard() {
     }
   };
 
+  // Gallery management functions
+  const handleCreateGalleryItem = async () => {
+    try {
+      if (!selectedGalleryFile) {
+        setError('Please select an image file.');
+        return;
+      }
+
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('image', selectedGalleryFile);
+      formData.append('title', newGalleryItem.title);
+      formData.append('description', newGalleryItem.description);
+      formData.append('category', newGalleryItem.category);
+      formData.append('tags', newGalleryItem.tags);
+      formData.append('displayOrder', newGalleryItem.displayOrder.toString());
+
+      const response = await fetch('/api/admin/gallery', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setShowCreateGalleryForm(false);
+        setSelectedGalleryFile(null);
+        setNewGalleryItem({
+          title: '',
+          description: '',
+          category: 'nail_art',
+          tags: '',
+          displayOrder: 0
+        });
+        loadGalleryItems();
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to create gallery item.');
+      }
+    } catch (error) {
+      console.error('Error creating gallery item:', error);
+      setError('Failed to create gallery item.');
+    }
+  };
+
+  const handleDeleteGalleryItem = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this gallery item?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/admin/gallery/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        loadGalleryItems();
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to delete gallery item.');
+      }
+    } catch (error) {
+      console.error('Error deleting gallery item:', error);
+      setError('Failed to delete gallery item.');
+    }
+  };
+
+  // AI Nail Art management functions
+  const loadAiNailArtImages = async (phone: string) => {
+    if (!phone.trim()) return;
+    
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/admin/ai-nail-art/${phone}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAiNailArtImages(data);
+      }
+    } catch (error) {
+      console.error('Error loading AI nail art images:', error);
+    }
+  };
+
+  const handleCreateAiNailArt = async () => {
+    try {
+      if (!newAiNailArt.customerPhone) {
+        setError('Customer phone number is required.');
+        return;
+      }
+
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('customerPhone', newAiNailArt.customerPhone);
+      formData.append('nailPosition', newAiNailArt.nailPosition);
+      formData.append('direction', newAiNailArt.direction);
+      formData.append('designPrompt', newAiNailArt.designPrompt);
+      formData.append('nailName', newAiNailArt.nailName);
+      formData.append('sessionId', newAiNailArt.sessionId);
+
+      if (aiNailFiles.original) {
+        formData.append('originalImage', aiNailFiles.original);
+      }
+      if (aiNailFiles.aiGenerated) {
+        formData.append('aiGeneratedImage', aiNailFiles.aiGenerated);
+      }
+
+      const response = await fetch('/api/admin/ai-nail-art', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setShowCreateAiNailForm(false);
+        setAiNailFiles({ original: null, aiGenerated: null });
+        setNewAiNailArt({
+          customerPhone: '',
+          nailPosition: 'left_thumb',
+          direction: 'front',
+          designPrompt: '',
+          nailName: '',
+          sessionId: ''
+        });
+        loadAiNailArtImages(selectedCustomerPhone);
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to create AI nail art record.');
+      }
+    } catch (error) {
+      console.error('Error creating AI nail art:', error);
+      setError('Failed to create AI nail art record.');
+    }
+  };
+
+  const handleDeleteAiNailArt = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this AI nail art record?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/admin/ai-nail-art/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        loadAiNailArtImages(selectedCustomerPhone);
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to delete AI nail art record.');
+      }
+    } catch (error) {
+      console.error('Error deleting AI nail art:', error);
+      setError('Failed to delete AI nail art record.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
@@ -502,7 +707,7 @@ export default function AdminDashboard() {
 
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <Activity className="h-4 w-4" />
               <span>Dashboard</span>
@@ -530,6 +735,14 @@ export default function AdminDashboard() {
             <TabsTrigger value="carousel" className="flex items-center space-x-2">
               <Eye className="h-4 w-4" />
               <span>Carousel Images</span>
+            </TabsTrigger>
+            <TabsTrigger value="gallery" className="flex items-center space-x-2">
+              <Image className="h-4 w-4" />
+              <span>Gallery</span>
+            </TabsTrigger>
+            <TabsTrigger value="ai-nail-art" className="flex items-center space-x-2">
+              <Activity className="h-4 w-4" />
+              <span>AI Nail Art</span>
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
@@ -819,6 +1032,340 @@ export default function AdminDashboard() {
                   ) : (
                     <div>Users will be displayed here after implementation.</div>
                   )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="gallery" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Gallery Management</h2>
+              <Button onClick={() => setShowCreateGalleryForm(true)} className="flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>Add Gallery Item</span>
+              </Button>
+            </div>
+
+            {showCreateGalleryForm && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Add New Gallery Item</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="gallery-title">Title</Label>
+                      <Input
+                        id="gallery-title"
+                        value={newGalleryItem.title}
+                        onChange={(e) => setNewGalleryItem({...newGalleryItem, title: e.target.value})}
+                        placeholder="Gallery item title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gallery-category">Category</Label>
+                      <Select value={newGalleryItem.category} onValueChange={(value) => setNewGalleryItem({...newGalleryItem, category: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="nail_art">Nail Art</SelectItem>
+                          <SelectItem value="spa_treatment">Spa Treatment</SelectItem>
+                          <SelectItem value="waxing">Waxing</SelectItem>
+                          <SelectItem value="massage">Massage</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="gallery-description">Description</Label>
+                      <Textarea
+                        id="gallery-description"
+                        value={newGalleryItem.description}
+                        onChange={(e) => setNewGalleryItem({...newGalleryItem, description: e.target.value})}
+                        placeholder="Gallery item description"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gallery-tags">Tags (comma separated)</Label>
+                      <Input
+                        id="gallery-tags"
+                        value={newGalleryItem.tags}
+                        onChange={(e) => setNewGalleryItem({...newGalleryItem, tags: e.target.value})}
+                        placeholder="tag1, tag2, tag3"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gallery-order">Display Order</Label>
+                      <Input
+                        id="gallery-order"
+                        type="number"
+                        value={newGalleryItem.displayOrder}
+                        onChange={(e) => setNewGalleryItem({...newGalleryItem, displayOrder: parseInt(e.target.value) || 0})}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="gallery-image">Image File</Label>
+                      <Input
+                        id="gallery-image"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setSelectedGalleryFile(e.target.files?.[0] || null)}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <Button variant="outline" onClick={() => setShowCreateGalleryForm(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleCreateGalleryItem}>
+                      Add Gallery Item
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Image</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Title</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Category</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Tags</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Order</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Status</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {galleryItems.map((item) => (
+                        <tr key={item.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3">
+                            <img src={item.imagePath} alt={item.title} className="w-16 h-16 object-cover rounded" />
+                          </td>
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            {item.title}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge variant="outline">{item.category}</Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {item.tags?.join(', ') || '-'}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {item.displayOrder}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge variant={item.isActive ? 'default' : 'secondary'}>
+                              {item.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="outline" onClick={() => handleDeleteGalleryItem(item.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="ai-nail-art" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">AI Nail Art Management</h2>
+              <Button onClick={() => setShowCreateAiNailForm(true)} className="flex items-center space-x-2">
+                <Plus className="h-4 w-4" />
+                <span>Add AI Nail Art</span>
+              </Button>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Search by Customer Phone</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Enter customer phone number"
+                    value={selectedCustomerPhone}
+                    onChange={(e) => setSelectedCustomerPhone(e.target.value)}
+                  />
+                  <Button onClick={() => loadAiNailArtImages(selectedCustomerPhone)}>
+                    Search
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {showCreateAiNailForm && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Add New AI Nail Art Record</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="ai-phone">Customer Phone Number</Label>
+                      <Input
+                        id="ai-phone"
+                        value={newAiNailArt.customerPhone}
+                        onChange={(e) => setNewAiNailArt({...newAiNailArt, customerPhone: e.target.value})}
+                        placeholder="010-1234-5678"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="ai-position">Nail Position</Label>
+                      <Select value={newAiNailArt.nailPosition} onValueChange={(value) => setNewAiNailArt({...newAiNailArt, nailPosition: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select nail position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="left_thumb">Left Thumb</SelectItem>
+                          <SelectItem value="left_index">Left Index</SelectItem>
+                          <SelectItem value="left_middle">Left Middle</SelectItem>
+                          <SelectItem value="left_ring">Left Ring</SelectItem>
+                          <SelectItem value="left_pinky">Left Pinky</SelectItem>
+                          <SelectItem value="right_thumb">Right Thumb</SelectItem>
+                          <SelectItem value="right_index">Right Index</SelectItem>
+                          <SelectItem value="right_middle">Right Middle</SelectItem>
+                          <SelectItem value="right_ring">Right Ring</SelectItem>
+                          <SelectItem value="right_pinky">Right Pinky</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="ai-direction">Direction</Label>
+                      <Select value={newAiNailArt.direction} onValueChange={(value) => setNewAiNailArt({...newAiNailArt, direction: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select direction" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="front">Front</SelectItem>
+                          <SelectItem value="side">Side</SelectItem>
+                          <SelectItem value="back">Back</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="ai-name">Nail Name</Label>
+                      <Input
+                        id="ai-name"
+                        value={newAiNailArt.nailName}
+                        onChange={(e) => setNewAiNailArt({...newAiNailArt, nailName: e.target.value})}
+                        placeholder="Custom nail name"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="ai-prompt">Design Prompt</Label>
+                      <Textarea
+                        id="ai-prompt"
+                        value={newAiNailArt.designPrompt}
+                        onChange={(e) => setNewAiNailArt({...newAiNailArt, designPrompt: e.target.value})}
+                        placeholder="AI design generation prompt"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="ai-original">Original Image</Label>
+                      <Input
+                        id="ai-original"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setAiNailFiles({...aiNailFiles, original: e.target.files?.[0] || null})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="ai-generated">AI Generated Image</Label>
+                      <Input
+                        id="ai-generated"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setAiNailFiles({...aiNailFiles, aiGenerated: e.target.files?.[0] || null})}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <Button variant="outline" onClick={() => setShowCreateAiNailForm(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleCreateAiNailArt}>
+                      Add AI Nail Art
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Customer Phone</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Nail Position</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Direction</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Original Image</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">AI Generated</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Nail Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {aiNailArtImages.map((nail) => (
+                        <tr key={nail.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            {nail.customerPhone}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {nail.nailPosition}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {nail.direction}
+                          </td>
+                          <td className="px-4 py-3">
+                            {nail.originalImagePath ? (
+                              <img src={nail.originalImagePath} alt="Original" className="w-12 h-12 object-cover rounded" />
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {nail.aiGeneratedImagePath ? (
+                              <img src={nail.aiGeneratedImagePath} alt="AI Generated" className="w-12 h-12 object-cover rounded" />
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {nail.nailName || '-'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="outline" onClick={() => handleDeleteAiNailArt(nail.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>

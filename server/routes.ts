@@ -7,7 +7,16 @@ import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToke
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
-import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema, insertCustomerNailImageSchema, insertCustomerReservationSchema, insertContactInquirySchema } from "@shared/schema";
+import { 
+  insertCustomerSchema, 
+  insertAppointmentSchema, 
+  insertCarouselImageSchema, 
+  insertCustomerNailImageSchema, 
+  insertCustomerReservationSchema, 
+  insertContactInquirySchema,
+  insertGallerySchema,
+  insertAiNailArtImageSchema
+} from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
 import {
@@ -18,6 +27,9 @@ import {
   contactInquiries,
   customerNailImages,
   customerReservations,
+  carouselImages,
+  gallery,
+  aiNailArtImages,
 } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import multer from "multer";
@@ -2634,6 +2646,179 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating contact inquiry:", error);
       res.status(500).json({ message: "Failed to update contact inquiry" });
+    }
+  });
+
+  // === NEW FEATURE ROUTES ===
+  
+  // Gallery Management Routes
+  app.get('/api/admin/gallery', authenticateAdmin, async (req: any, res) => {
+    try {
+      const { category } = req.query;
+      const galleryItems = category 
+        ? await storage.getGalleryByCategory(category as string)
+        : await storage.getAllGallery();
+      res.json(galleryItems);
+    } catch (error) {
+      console.error('Error fetching gallery items:', error);
+      res.status(500).json({ message: 'Failed to fetch gallery items' });
+    }
+  });
+
+  app.post('/api/admin/gallery', authenticateAdmin, upload.single('image'), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'Image file is required' });
+      }
+
+      const { title, description, category, tags, displayOrder } = req.body;
+      const imagePath = `/uploads/${req.file.filename}`;
+
+      const galleryData = {
+        title: title || 'New Gallery Item',
+        description: description || '',
+        imagePath,
+        category: category || 'nail_art',
+        tags: tags ? tags.split(',').map((tag: string) => tag.trim()) : [],
+        displayOrder: parseInt(displayOrder) || 0,
+        isActive: true
+      };
+
+      const savedGallery = await storage.createGallery(galleryData);
+      res.json({ message: 'Gallery item created successfully', gallery: savedGallery });
+    } catch (error) {
+      console.error('Error creating gallery item:', error);
+      res.status(500).json({ message: 'Failed to create gallery item' });
+    }
+  });
+
+  app.put('/api/admin/gallery/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedGallery = await storage.updateGallery(id, updates);
+      res.json({ message: 'Gallery item updated successfully', gallery: updatedGallery });
+    } catch (error) {
+      console.error('Error updating gallery item:', error);
+      res.status(500).json({ message: 'Failed to update gallery item' });
+    }
+  });
+
+  app.delete('/api/admin/gallery/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteGallery(id);
+      res.json({ message: 'Gallery item deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting gallery item:', error);
+      res.status(500).json({ message: 'Failed to delete gallery item' });
+    }
+  });
+
+  // AI Nail Art Images Routes (Customer Phone Number based)
+  app.get('/api/admin/ai-nail-art/:phone', authenticateAdmin, async (req: any, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const images = await storage.getAiNailArtImagesByPhone(customerPhone);
+      res.json(images);
+    } catch (error) {
+      console.error('Error fetching AI nail art images:', error);
+      res.status(500).json({ message: 'Failed to fetch AI nail art images' });
+    }
+  });
+
+  app.post('/api/admin/ai-nail-art', authenticateAdmin, upload.fields([
+    { name: 'originalImage', maxCount: 1 },
+    { name: 'aiGeneratedImage', maxCount: 1 }
+  ]), async (req: any, res) => {
+    try {
+      const { customerPhone, nailPosition, direction, designPrompt, nailName, sessionId } = req.body;
+      
+      if (!customerPhone || !nailPosition || !direction) {
+        return res.status(400).json({ message: 'Customer phone, nail position, and direction are required' });
+      }
+
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const originalImagePath = files.originalImage ? `/uploads/${files.originalImage[0].filename}` : undefined;
+      const aiGeneratedImagePath = files.aiGeneratedImage ? `/uploads/${files.aiGeneratedImage[0].filename}` : undefined;
+
+      const aiNailData = {
+        customerPhone,
+        nailPosition,
+        direction,
+        originalImagePath,
+        aiGeneratedImagePath,
+        designPrompt: designPrompt || '',
+        nailName: nailName || `${nailPosition} ${direction}`,
+        sessionId: sessionId || nanoid()
+      };
+
+      const savedAiNail = await storage.createAiNailArtImage(aiNailData);
+      res.json({ message: 'AI nail art image created successfully', aiNail: savedAiNail });
+    } catch (error) {
+      console.error('Error creating AI nail art image:', error);
+      res.status(500).json({ message: 'Failed to create AI nail art image' });
+    }
+  });
+
+  app.put('/api/admin/ai-nail-art/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedAiNail = await storage.updateAiNailArtImage(id, updates);
+      res.json({ message: 'AI nail art image updated successfully', aiNail: updatedAiNail });
+    } catch (error) {
+      console.error('Error updating AI nail art image:', error);
+      res.status(500).json({ message: 'Failed to update AI nail art image' });
+    }
+  });
+
+  app.delete('/api/admin/ai-nail-art/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteAiNailArtImage(id);
+      res.json({ message: 'AI nail art image deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting AI nail art image:', error);
+      res.status(500).json({ message: 'Failed to delete AI nail art image' });
+    }
+  });
+
+  // Public Gallery Route (for customer viewing)
+  app.get('/api/gallery', async (req, res) => {
+    try {
+      const { category } = req.query;
+      const galleryItems = category 
+        ? await storage.getGalleryByCategory(category as string)
+        : await storage.getAllGallery();
+      res.json(galleryItems);
+    } catch (error) {
+      console.error('Error fetching public gallery:', error);
+      res.status(500).json({ message: 'Failed to fetch gallery' });
+    }
+  });
+
+  // Carousel management route updates
+  app.put('/api/admin/carousel-images/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedImage = await storage.updateCarouselImage(id, updates);
+      res.json({ message: 'Carousel image updated successfully', image: updatedImage });
+    } catch (error) {
+      console.error('Error updating carousel image:', error);
+      res.status(500).json({ message: 'Failed to update carousel image' });
+    }
+  });
+
+  app.delete('/api/admin/carousel-images/:id', authenticateAdmin, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCarouselImage(id);
+      res.json({ message: 'Carousel image deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting carousel image:', error);
+      res.status(500).json({ message: 'Failed to delete carousel image' });
     }
   });
 
