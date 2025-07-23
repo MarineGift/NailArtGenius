@@ -30,11 +30,11 @@ export default function Home() {
         {/* AI Nail Art Section */}
         <AINailArtSection />
 
-        {/* English Services Section */}
-        <EnglishServicesSection />
-
         {/* Booking Hero Section */}
         <BookingHeroSection />
+
+        {/* English Services Section */}
+        <EnglishServicesSection />
 
         {/* Contact Us Form */}
         <ContactUsForm />
