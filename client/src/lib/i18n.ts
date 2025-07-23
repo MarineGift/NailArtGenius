@@ -18,7 +18,7 @@ const translations = {
   'nav.photo_measurement': { ko: '사진 측정', en: 'Photo Measurement', ja: '写真測定', es: 'Medición de fotos' },
   'nav.design_studio': { ko: '디자인 스튜디오', en: 'Design Studio', ja: 'デザインスタジオ', es: 'Estudio de diseño' },
   'nav.analytics': { ko: '분석', en: 'Analytics', ja: 'アナリティクス', es: 'Análisis' },
-  'nav.ai_generator': { ko: 'AI 네일아트 생성', en: 'AI Nail Art Generator', ja: 'AI ネイルアート生成', es: 'Generador de arte de uñas IA' },
+  'nav.ai_generator': { ko: 'Nail Measurement', en: 'Nail Measurement', ja: 'ネイル測定', es: 'Medición de Uñas' },
 
   // Home page
   'home.title': { ko: 'Connie\'s Nail', en: 'Connie\'s Nail', ja: 'Connie\'s Nail', es: 'Connie\'s Nail' },

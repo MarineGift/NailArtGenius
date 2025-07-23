@@ -47,7 +47,7 @@ interface AnalysisResult {
   confidence: number;
 }
 
-export default function AITailGenerator() {
+export default function AINailMeasurement() {
   const { t } = useLanguage();
   const { toast } = useToast();
   const [photos, setPhotos] = useState<NailPhoto[]>([
@@ -488,7 +488,7 @@ export default function AITailGenerator() {
           </Card>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

@@ -6,6 +6,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
+import { analyzeNailMeasurement, uploadHandler, ensureUploadDirectory } from "./nailMeasurementAnalysis";
 import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
@@ -622,6 +623,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch design" });
     }
   });
+
+  // Initialize nail analysis upload directory
+  ensureUploadDirectory().catch(console.error);
+
+  // New API route for nail measurement analysis
+  app.post('/api/analyze-nail-measurement', uploadHandler, analyzeNailMeasurement);
 
   // Orders routes
   app.post('/api/orders', isAuthenticated, async (req: any, res) => {
@@ -2020,6 +2027,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch inquiries' });
     }
   });
+
+  // Initialize nail analysis upload directory
+  ensureUploadDirectory().catch(console.error);
+
+  // New API route for nail measurement analysis
+  app.post('/api/analyze-nail-measurement', uploadHandler, analyzeNailMeasurement);
 
   const httpServer = createServer(app);
   return httpServer;
