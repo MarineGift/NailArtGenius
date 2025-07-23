@@ -5,14 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from '@/lib/i18n';
-import { CalendarDays, Clock, Phone, Mail, User, FileText } from 'lucide-react';
-import { format, addDays, startOfDay } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { CalendarDays, Clock, Phone, Mail, User, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { format, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, parseISO } from 'date-fns';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -31,11 +28,11 @@ interface TimeSlot {
 }
 
 export default function BookingPage() {
-  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [selectedDate, setSelectedDate] = useState<Date>(addDays(new Date(), 1));
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedService, setSelectedService] = useState<number | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [customerInfo, setCustomerInfo] = useState({
@@ -65,23 +62,23 @@ export default function BookingPage() {
     },
     onSuccess: () => {
       toast({
-        title: t('booking.success_title'),
-        description: t('booking.success_message'),
+        title: "Booking Successful",
+        description: "Your appointment has been booked successfully!",
       });
       
       // Reset form
       setSelectedService(null);
       setSelectedTimeSlot('');
       setCustomerInfo({ name: '', phone: '', email: '', notes: '' });
-      setSelectedDate(addDays(new Date(), 1));
+      setSelectedDate(null);
       
       // Refetch availability
       refetchAvailability();
     },
     onError: (error: any) => {
       toast({
-        title: t('booking.error_title'),
-        description: error.message || t('booking.error_message'),
+        title: "Booking Failed",
+        description: error.message || "Failed to book appointment. Please try again.",
         variant: 'destructive',
       });
     }
@@ -96,20 +93,26 @@ export default function BookingPage() {
     return acc;
   }, {});
 
-  // Generate time slots with availability
-  const timeSlots = availability?.map((slot: string) => ({
-    time: slot,
-    available: true
-  })) || [];
+  // Generate calendar days
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+  // Generate time slots
+  const timeSlots = [
+    '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+    '17:00', '17:30', '18:00', '18:30'
+  ];
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedService || !selectedTimeSlot || !customerInfo.name || !customerInfo.phone) {
+    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.name || !customerInfo.phone) {
       toast({
-        title: t('booking.validation_error'),
-        description: t('booking.required_fields'),
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
         variant: 'destructive',
       });
       return;
@@ -124,207 +127,308 @@ export default function BookingPage() {
       serviceId: selectedService,
       appointmentDate: appointmentDateTime.toISOString(),
       timeSlot: selectedTimeSlot,
-      duration: selectedServiceData?.duration || 60,
-      price: selectedServiceData?.price || 0,
       customerName: customerInfo.name,
       customerPhone: customerInfo.phone,
-      customerEmail: customerInfo.email || null,
-      serviceDetails: selectedServiceData?.name,
-      notes: customerInfo.notes || null,
-      status: 'scheduled'
+      customerEmail: customerInfo.email,
+      notes: customerInfo.notes,
+      visitReason: selectedServiceData?.name || 'General visit'
     });
   };
 
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => addDays(startOfMonth(prev), -1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => addDays(endOfMonth(prev), 1));
+  };
+
+  const isDateSelectable = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="max-w-4xl mx-auto p-6 space-y-8">
-        <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          {t('booking.title')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('booking.subtitle')}
-        </p>
+      
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Book Your Appointment</h1>
+          <p className="text-gray-600">Choose your preferred date and time for your visit</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Service Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              {t('booking.select_service')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {Object.entries(servicesByCategory).map(([category, categoryServices]) => (
-              <div key={category} className="space-y-3">
-                <h3 className="font-semibold text-lg capitalize">{category}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {categoryServices.map((service) => (
-                    <div
-                      key={service.id}
-                      onClick={() => setSelectedService(service.id)}
-                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                        selectedService === service.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                      }`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium">{service.name}</h4>
-                        <Badge variant="secondary">
-                          ₩{service.price.toLocaleString()}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                        <Clock className="w-4 h-4 mr-1" />
-                        {service.duration}분
-                      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - Date & Time Selection */}
+          <div className="space-y-6">
+            {/* Date Selection */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <CalendarDays className="w-5 h-5" />
+                  Select Date
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Calendar Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrevMonth}
+                    className="p-2"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  
+                  <h3 className="text-lg font-semibold">
+                    {format(currentMonth, 'MMMM yyyy')}
+                  </h3>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNextMonth}
+                    className="p-2"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+                      {day}
                     </div>
                   ))}
                 </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Date Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarDays className="w-5 h-5" />
-              {t('booking.select_date')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-center">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => {
-                  if (date) {
-                    setSelectedDate(date);
-                    setSelectedTimeSlot(''); // Reset time slot when date changes
-                  }
-                }}
-                disabled={(date) => date < startOfDay(new Date())}
-                locale={ko}
-                className="rounded-md border"
-              />
-            </div>
-            {selectedDate && (
-              <p className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-                {t('booking.selected_date')}: {format(selectedDate, 'yyyy년 M월 d일 (EEE)', { locale: ko })}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Time Slot Selection */}
-        {selectedDate && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                {t('booking.select_time')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {timeSlots.length === 0 ? (
-                <p className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  {t('booking.no_slots_available')}
-                </p>
-              ) : (
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                  {timeSlots.map((slot) => (
-                    <Button
-                      key={slot.time}
-                      type="button"
-                      variant={selectedTimeSlot === slot.time ? "default" : "outline"}
-                      className="h-12"
-                      onClick={() => setSelectedTimeSlot(slot.time)}
-                      disabled={!slot.available}
-                    >
-                      {slot.time}
-                    </Button>
-                  ))}
+                
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarDays.map((date, index) => {
+                    const isSelected = selectedDate && isSameDay(date, selectedDate);
+                    const isCurrentDay = isToday(date);
+                    const isSelectable = isDateSelectable(date);
+                    
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => isSelectable && setSelectedDate(date)}
+                        disabled={!isSelectable}
+                        className={`
+                          h-10 w-full text-sm rounded-md transition-colors
+                          ${isSelected 
+                            ? 'bg-blue-600 text-white' 
+                            : isCurrentDay 
+                              ? 'bg-blue-100 text-blue-600' 
+                              : isSelectable
+                                ? 'hover:bg-gray-100 text-gray-900'
+                                : 'text-gray-300 cursor-not-allowed'
+                          }
+                        `}
+                      >
+                        {format(date, 'd')}
+                      </button>
+                    );
+                  })}
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+                
+                {selectedDate && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-md">
+                    <p className="text-sm text-blue-800 font-medium">
+                      Selected Date: {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-        {/* Customer Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              {t('booking.customer_info')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('booking.name')} *</label>
-                <Input
-                  value={customerInfo.name}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder={t('booking.name_placeholder')}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">{t('booking.phone')} *</label>
-                <Input
-                  type="tel"
-                  value={customerInfo.phone}
-                  onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="010-1234-5678"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('booking.email')}</label>
-              <Input
-                type="email"
-                value={customerInfo.email}
-                onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="example@email.com"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('booking.notes')}</label>
-              <Textarea
-                value={customerInfo.notes}
-                onChange={(e) => setCustomerInfo(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder={t('booking.notes_placeholder')}
-                rows={3}
-              />
-            </div>
-          </CardContent>
-        </Card>
+            {/* Time Selection */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Clock className="w-5 h-5" />
+                  Select Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {!selectedDate ? (
+                  <p className="text-gray-500 text-center py-8">Please select a date first</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    {timeSlots.map(time => {
+                      const isAvailable = availability?.includes(time) !== false;
+                      const isSelected = selectedTimeSlot === time;
+                      
+                      return (
+                        <button
+                          key={time}
+                          onClick={() => isAvailable && setSelectedTimeSlot(time)}
+                          disabled={!isAvailable}
+                          className={`
+                            p-3 text-sm font-medium rounded-md border transition-colors
+                            ${isSelected
+                              ? 'bg-blue-600 text-white border-blue-600'
+                              : isAvailable
+                                ? 'bg-white hover:bg-blue-50 border-gray-300 text-gray-900'
+                                : 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                            }
+                          `}
+                        >
+                          {time}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-center">
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full md:w-auto px-8 py-3"
-            disabled={createAppointmentMutation.isPending || !selectedService || !selectedTimeSlot}
-          >
-            {createAppointmentMutation.isPending ? t('booking.submitting') : t('booking.confirm_booking')}
-          </Button>
+          {/* Right Column - Service & Customer Info */}
+          <div className="space-y-6">
+            {/* Service Selection */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle>Select Service</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Select value={selectedService?.toString() || ''} onValueChange={(value) => setSelectedService(Number(value))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(servicesByCategory).map(([category, categoryServices]) => (
+                      <div key={category}>
+                        <div className="px-2 py-1 text-sm font-semibold text-gray-500 uppercase">
+                          {category}
+                        </div>
+                        {categoryServices.map(service => (
+                          <SelectItem key={service.id} value={service.id.toString()}>
+                            <div className="flex justify-between items-center w-full">
+                              <span>{service.name}</span>
+                              <span className="text-sm text-gray-500 ml-2">${service.price}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </div>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </CardContent>
+            </Card>
+
+            {/* Customer Information */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle>Customer Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name *
+                  </label>
+                  <Input
+                    value={customerInfo.name}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Enter your full name"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number *
+                  </label>
+                  <Input
+                    value={customerInfo.phone}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="Enter your phone number"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
+                  <Input
+                    value={customerInfo.email}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="Enter your email address"
+                    type="email"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Additional Notes
+                  </label>
+                  <Textarea
+                    value={customerInfo.notes}
+                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, notes: e.target.value }))}
+                    placeholder="Any special requests or notes..."
+                    rows={3}
+                    className="w-full resize-none"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Booking Summary & Submit */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle>Booking Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Service:</span>
+                    <span className="font-medium">
+                      {selectedService ? services.find(s => s.id === selectedService)?.name : 'Not selected'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Date:</span>
+                    <span className="font-medium">
+                      {selectedDate ? format(selectedDate, 'MMM d, yyyy') : 'Not selected'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Time:</span>
+                    <span className="font-medium">{selectedTimeSlot || 'Not selected'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Price:</span>
+                    <span className="font-medium text-green-600">
+                      {selectedService ? `$${services.find(s => s.id === selectedService)?.price}` : '$0'}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleSubmit}
+                  disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.name || !customerInfo.phone}
+                  className="w-full"
+                  size="lg"
+                >
+                  {createAppointmentMutation.isPending ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
+                      Booking...
+                    </>
+                  ) : (
+                    'Book Appointment'
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-        </form>
-      </div>
+      </main>
+      
       <Footer />
     </div>
   );

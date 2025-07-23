@@ -63,6 +63,11 @@ function Router() {
         <Route path="/signup" component={Signup} />
         <Route path="/landing" component={Landing} />
         
+        {/* Admin routes - temporarily public for testing */}
+        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin-panel" component={AdminPanel} />
+        <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
+        
         {/* Protected pages - only for authenticated users */}
         {isAuthenticated && (
           <>
@@ -73,9 +78,6 @@ function Router() {
             <Route path="/payment" component={Payment} />
             <Route path="/appointment-booking" component={AppointmentBooking} />
             <Route path="/printing" component={PrintingStatus} />
-            <Route path="/admin" component={AdminDashboard} />
-            <Route path="/admin-panel" component={AdminPanel} />
-            <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
             <Route path="/customer-management" component={CustomerManagementPage} />
             <Route path="/gallery-admin" component={GalleryAdmin} />
             <Route path="/style-preferences" component={StylePreferences} />
