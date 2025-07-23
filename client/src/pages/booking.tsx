@@ -51,6 +51,11 @@ export default function BookingPage() {
     }
   };
 
+  // Add useEffect to reset booking when form fields change
+  useEffect(() => {
+    resetBookingState();
+  }, [selectedService, selectedDate, selectedTimeSlot, customerInfo.phone]);
+
   // Fetch services
   const { data: services = [] } = useQuery({
     queryKey: ['/api/services'],
