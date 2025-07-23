@@ -7,6 +7,7 @@ export default function AdminDashboardSimple() {
   const [modalData, setModalData] = useState<any>(null);
 
   useEffect(() => {
+    console.log('🚀 AdminDashboardSimple loaded!');
     loadStats();
   }, []);
 
@@ -41,8 +42,10 @@ export default function AdminDashboardSimple() {
     setLocation('/admin-login');
   };
 
+  console.log('🎯 Rendering AdminDashboardSimple');
+  
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', backgroundColor: '#f0f9ff' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
