@@ -39,12 +39,32 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
     
     if (!formData.customerPhone || !formData.customerName || !formData.appointmentDate || !formData.timeSlot) {
       toast({
-        title: "입력 오류",
-        description: "모든 필수 정보를 입력해 주세요.",
+        title: "Input Error",
+        description: "Please fill in all required fields.",
         variant: "destructive"
       });
       return;
     }
+
+    // Show success message with booking details
+    const appointmentDateTime = new Date(`${formData.appointmentDate}T${formData.timeSlot}`);
+    const formattedDate = appointmentDateTime.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const formattedTime = appointmentDateTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    toast({
+      title: "Booking Confirmed!",
+      description: `${formData.customerPhone}, your appointment has been successfully booked for ${formattedDate} at ${formattedTime}.`,
+      duration: 5000,
+    });
 
     onReservationSubmit(formData);
   };
@@ -53,7 +73,7 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center mb-6">
         <p className="text-lg text-gray-700">
-          예약을 위해 고객 정보와 방문 희망 일시를 입력해 주세요
+          Please enter customer information and preferred appointment date and time for your booking
         </p>
       </div>
 
@@ -62,12 +82,12 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
           <div>
             <Label htmlFor="customerPhone" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
-              고객 전화번호 *
+              Customer Phone Number *
             </Label>
             <Input
               id="customerPhone"
               type="tel"
-              placeholder="010-1234-5678"
+              placeholder="(123) 456-7890"
               value={formData.customerPhone}
               onChange={(e) => handleInputChange('customerPhone', e.target.value)}
               className="mt-1"
@@ -77,12 +97,12 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
           <div>
             <Label htmlFor="customerName" className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              고객 이름 *
+              Customer Name *
             </Label>
             <Input
               id="customerName"
               type="text"
-              placeholder="홍길동"
+              placeholder="John Smith"
               value={formData.customerName}
               onChange={(e) => handleInputChange('customerName', e.target.value)}
               className="mt-1"
@@ -94,7 +114,7 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
           <div>
             <Label htmlFor="appointmentDate" className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              방문 희망 날짜 *
+              Preferred Appointment Date *
             </Label>
             <Input
               id="appointmentDate"
@@ -109,7 +129,7 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
           <div>
             <Label htmlFor="timeSlot" className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              방문 희망 시간 *
+              Preferred Appointment Time *
             </Label>
             <select
               id="timeSlot"
@@ -117,7 +137,7 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
               onChange={(e) => handleInputChange('timeSlot', e.target.value)}
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              <option value="">시간을 선택해 주세요</option>
+              <option value="">Please select a time</option>
               {timeSlots.map((time) => (
                 <option key={time} value={time}>
                   {time}
@@ -131,11 +151,11 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
       <div>
         <Label htmlFor="notes" className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4" />
-          추가 요청사항
+          Additional Notes
         </Label>
         <Textarea
           id="notes"
-          placeholder="특별한 요청사항이나 알레르기 정보 등을 입력해 주세요"
+          placeholder="Please enter any special requests or allergy information"
           value={formData.notes}
           onChange={(e) => handleInputChange('notes', e.target.value)}
           className="mt-1"
@@ -150,11 +170,11 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
               <span className="text-white text-sm">ℹ</span>
             </div>
             <div>
-              <p className="text-blue-800 font-medium mb-1">예약 안내</p>
+              <p className="text-blue-800 font-medium mb-1">Booking Information</p>
               <ul className="text-blue-700 text-sm space-y-1">
-                <li>• AI 네일아트는 결제 후 사전 제작되어 방문시 시술시간이 단축됩니다</li>
-                <li>• 예약 확정 후 변경은 최소 1일 전에 연락해 주세요</li>
-                <li>• 영업시간: 월-금 10:00-19:00 (주말 휴무)</li>
+                <li>• AI nail art is pre-made after payment, reducing treatment time during your visit</li>
+                <li>• Please contact us at least 1 day in advance for appointment changes after confirmation</li>
+                <li>• Business hours: Monday-Friday 10:00-19:00 (Closed weekends)</li>
               </ul>
             </div>
           </div>
@@ -167,7 +187,7 @@ export function CustomerReservationForm({ onReservationSubmit }: CustomerReserva
           size="lg" 
           className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-3"
         >
-          예약 접수하기
+          Book Appointment
         </Button>
       </div>
     </form>

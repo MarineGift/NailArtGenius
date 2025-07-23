@@ -1,492 +1,101 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Calendar as CalendarIcon, Clock, User, Phone, ArrowLeft } from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
-import { format, isAfter, startOfToday } from "date-fns";
-import { ko } from "date-fns/locale";
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { CustomerReservationForm } from '@/components/customer-reservation-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import Header from "@/components/header";
-import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import Footer from "@/components/footer";
 
-// Form validation schema
-const appointmentFormSchema = z.object({
-  firstName: z.string().min(1, "Please enter your first name"),
-  lastName: z.string().min(1, "Please enter your last name"),
-  phoneNumber: z.string().min(10, "Please enter your phone number"),
-  email: z.string().email("Please enter a valid email").optional().or(z.literal("")),
-  visitType: z.enum(["Appointment Visit", "First Visit", "Online Booking"]),
-  visitReason: z.string().min(1, "Please enter reason for visit"),
-  mailingList: z.boolean().default(false),
-});
-
-type AppointmentFormData = z.infer<typeof appointmentFormSchema>;
-
-export default function AppointmentBooking() {
-  const { t } = useLanguage();
-  const [, setLocation] = useLocation();
+export default function AppointmentBookingNew() {
   const { toast } = useToast();
-  const { user, isAuthenticated } = useAuth();
-  
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState<string>("");
-  const [step, setStep] = useState(1); // 1: Date/Time, 2: Customer Info, 3: Confirmation
-
-  const form = useForm<AppointmentFormData>({
-    resolver: zodResolver(appointmentFormSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      email: "",
-      visitType: "Appointment Visit",
-      visitReason: "",
-      mailingList: false,
-    },
-  });
-
-  // Auto-fill form when user is authenticated
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      form.setValue("firstName", user.firstName || "");
-      form.setValue("lastName", user.lastName || "");
-      form.setValue("phoneNumber", user.phoneNumber || "");
-      form.setValue("email", user.email || "");
-    }
-  }, [isAuthenticated, user, form]);
-
-  // Available time slots
-  const timeSlots = [
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
-  ];
-
-  // Fetch booked slots for selected date
-  const { data: bookedSlots = [] } = useQuery({
-    queryKey: ["/api/appointments/booked-slots", selectedDate?.toISOString().split('T')[0]],
-    enabled: !!selectedDate,
-  });
-
-  // Check if phone number exists
-  const checkPhoneMutation = useMutation({
-    mutationFn: async (phoneNumber: string) => {
-      const response = await fetch(`/api/customers/check-phone?phone=${encodeURIComponent(phoneNumber)}`);
-      return response.json();
-    },
-  });
+  const queryClient = useQueryClient();
 
   // Create appointment mutation
   const createAppointmentMutation = useMutation({
     mutationFn: async (appointmentData: any) => {
-      return await apiRequest("/api/appointments", "POST", appointmentData);
+      return apiRequest('/api/appointments', 'POST', appointmentData);
     },
-    onSuccess: () => {
-      toast({
-        title: "예약 완료",
-        description: "방문 예약이 성공적으로 완료되었습니다.",
+    onSuccess: (data, variables) => {
+      // Show success message with booking details  
+      const appointmentDateTime = new Date(`${variables.appointmentDate}T${variables.timeSlot}`);
+      const formattedDate = appointmentDateTime.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-      setLocation("/");
+      const formattedTime = appointmentDateTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      toast({
+        title: "Booking Confirmed!",
+        description: `${variables.customerPhone}, your appointment has been successfully booked for ${formattedDate} at ${formattedTime}.`,
+        duration: 6000,
+      });
     },
     onError: (error: any) => {
       toast({
         title: "Booking Failed",
-        description: error.message || "An error occurred during booking.",
-        variant: "destructive",
+        description: error.message || "Failed to book appointment. Please try again.",
+        variant: 'destructive',
       });
-    },
+    }
   });
 
-  const handlePhoneNumberBlur = (phoneNumber: string) => {
-    if (phoneNumber.length >= 10) {
-      checkPhoneMutation.mutate(phoneNumber);
-    }
-  };
-
-  const handleDateTimeNext = () => {
-    if (!selectedDate || !selectedTime) {
-      toast({
-        title: "Selection Error",
-        description: "Please select both date and time.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setStep(2);
-  };
-
-  const handleCustomerInfoNext = (data: AppointmentFormData) => {
-    // Allow existing customers to proceed - we'll upsert them in the backend
-    setStep(3);
-  };
-
-  const handleConfirmBooking = () => {
-    const formData = form.getValues();
+  const handleReservationSubmit = (formData: any) => {
     const appointmentData = {
-      appointmentDate: selectedDate,
-      timeSlot: selectedTime,
-      visitReason: formData.visitReason,
-      customer: {
-        name: `${formData.firstName} ${formData.lastName}`,
-        phoneNumber: formData.phoneNumber,
-        email: formData.email,
-        visitType: formData.visitType,
-      },
-      mailingList: formData.mailingList,
+      serviceId: 1, // Default service - can be updated based on selection
+      appointmentDate: formData.appointmentDate,
+      timeSlot: formData.timeSlot,
+      customerName: formData.customerName,
+      customerPhone: formData.customerPhone,
+      customerEmail: '', // Not required
+      notes: formData.notes,
+      visitReason: 'General visit'
     };
 
     createAppointmentMutation.mutate(appointmentData);
   };
 
-  const availableSlots = timeSlots.filter(slot => !(bookedSlots as string[]).includes(slot));
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center mb-6">
-          <Button variant="ghost" onClick={() => step === 1 ? setLocation("/") : setStep(step - 1)}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-        </div>
-
-        <div className="mb-8">
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">📞 Booking Information</h1>
-          <p className="text-gray-600">Please enter customer information and desired visit date and time for booking</p>
+          <p className="text-gray-600">Please enter your details to book an appointment</p>
         </div>
 
-        {/* Step Indicator */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center">
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 1 ? 'bg-pink-600 text-white' : 'bg-gray-300'}`}>
-              1
-            </div>
-            <div className={`w-12 h-1 ${step >= 2 ? 'bg-pink-600' : 'bg-gray-300'}`}></div>
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 2 ? 'bg-pink-600 text-white' : 'bg-gray-300'}`}>
-              2
-            </div>
-            <div className={`w-12 h-1 ${step >= 3 ? 'bg-pink-600' : 'bg-gray-300'}`}></div>
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${step >= 3 ? 'bg-pink-600 text-white' : 'bg-gray-300'}`}>
-              3
-            </div>
-          </div>
-        </div>
+        <Card className="max-w-3xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-center text-xl">New Appointment Booking</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CustomerReservationForm 
+              onReservationSubmit={handleReservationSubmit}
+            />
+          </CardContent>
+        </Card>
 
-        {/* Step 1: Date and Time Selection */}
-        {step === 1 && (
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CalendarIcon className="h-5 w-5 mr-2" />
-                  Select Date
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  disabled={(date) => !isAfter(date, startOfToday())}
-                  locale={ko}
-                  className="rounded-md border"
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Clock className="h-5 w-5 mr-2" />
-                  Select Time
-                  {selectedDate && (
-                    <span className="ml-2 text-sm font-normal text-gray-600">
-                      {format(selectedDate, "M월 d일 (eee)", { locale: ko })}
-                    </span>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!selectedDate ? (
-                  <p className="text-gray-500">Please select a date first</p>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2">
-                    {availableSlots.map((slot) => (
-                      <Button
-                        key={slot}
-                        variant={selectedTime === slot ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedTime(slot)}
-                        className="text-sm"
-                      >
-                        {slot}
-                      </Button>
-                    ))}
-                  </div>
-                )}
-                {selectedDate && availableSlots.length === 0 && (
-                  <p className="text-red-500 text-sm">No available time slots for the selected date.</p>
-                )}
-              </CardContent>
-            </Card>
-            
-            {/* Booking Guidance */}
-            <Card className="bg-blue-50 border-blue-200">
-              <CardHeader>
-                <CardTitle className="text-blue-800 text-sm">ℹ Booking Guidance</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-blue-700 space-y-2">
-                <p>• AI nail art is pre-made after payment, reducing treatment time during your visit</p>
-                <p>• Please contact us at least 1 day in advance for any changes after booking confirmation</p>
-                <p>• Business Hours: Mon-Fri 10:00-19:00 (Closed on weekends)</p>
-              </CardContent>
+        {/* Loading state */}
+        {createAppointmentMutation.isPending && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <Card className="p-6">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Booking your appointment...</p>
+              </div>
             </Card>
           </div>
         )}
-
-        {/* Step 2: Customer Information */}
-        {step === 2 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
-                Customer Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleCustomerInfoNext)} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First Name *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your first name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter your last name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="phoneNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            placeholder="010-1234-5678" 
-                            {...field}
-                            onBlur={(e) => handlePhoneNumberBlur(e.target.value)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                        {checkPhoneMutation.data?.exists && (
-                          <p className="text-red-500 text-sm">Customer already registered</p>
-                        )}
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="example@email.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="visitType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Visit Type *</FormLabel>
-                        <FormControl>
-                          <RadioGroup value={field.value} onValueChange={field.onChange}>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="Appointment Visit" id="visit-booking" />
-                              <label htmlFor="visit-booking">Appointment Visit</label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="First Visit" id="first-visit" />
-                              <label htmlFor="first-visit">First Visit</label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="Online Booking" id="online-booking" />
-                              <label htmlFor="online-booking">Online Booking</label>
-                            </div>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="visitReason"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Visit Request *</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Please enter any special requests or allergy information" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="mailingList"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Join Mailing List</FormLabel>
-                          <p className="text-sm text-gray-600">
-                            Receive information about new designs and promotions via email
-                          </p>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button type="submit" className="w-full">
-                    Next Step
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 3: Confirmation */}
-        {step === 3 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Booking Confirmation</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="bg-pink-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-pink-800 mb-3">ℹ Booking Information</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Date:</span>
-                    <span>{selectedDate && format(selectedDate, "yyyy-MM-dd (eee)")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Time:</span>
-                    <span>{selectedTime}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-3">Customer Information</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Name:</span>
-                    <span>{form.getValues("firstName")} {form.getValues("lastName")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Phone:</span>
-                    <span>{form.getValues("phoneNumber")}</span>
-                  </div>
-                  {form.getValues("email") && (
-                    <div className="flex justify-between">
-                      <span>Email:</span>
-                      <span>{form.getValues("email")}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span>Visit Type:</span>
-                    <span>{form.getValues("visitType")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Visit Reason:</span>
-                    <span>{form.getValues("visitReason")}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Mailing List:</span>
-                    <span>{form.getValues("mailingList") ? "Subscribed" : "Not Subscribed"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex space-x-4">
-                <Button variant="outline" onClick={() => setStep(2)} className="flex-1">
-                  Edit
-                </Button>
-                <Button 
-                  onClick={handleConfirmBooking} 
-                  className="flex-1"
-                  disabled={createAppointmentMutation.isPending}
-                >
-                  {createAppointmentMutation.isPending ? "Booking..." : "Submit Booking"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Navigation Buttons */}
-        <div className="mt-8 flex justify-between">
-          {step === 1 && (
-            <div></div>
-          )}
-          {step === 1 && (
-            <Button onClick={handleDateTimeNext}>
-              Next Step
-            </Button>
-          )}
-        </div>
-      </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 }

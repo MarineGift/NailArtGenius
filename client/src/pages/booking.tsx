@@ -58,10 +58,25 @@ export default function BookingPage() {
     mutationFn: async (appointmentData: any) => {
       return apiRequest('/api/appointments', 'POST', appointmentData);
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Show success message with booking details
+      const appointmentDateTime = new Date(variables.appointmentDate);
+      const formattedDate = appointmentDateTime.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      const formattedTime = appointmentDateTime.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+
       toast({
-        title: "Booking Successful",
-        description: "Your appointment has been booked successfully!",
+        title: "Booking Confirmed!",
+        description: `${variables.customerPhone}, your appointment has been successfully booked for ${formattedDate} at ${formattedTime}.`,
+        duration: 6000,
       });
       
       // Reset form

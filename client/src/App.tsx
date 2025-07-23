@@ -64,6 +64,7 @@ function Router() {
           </Suspense>
         )} />
         <Route path="/booking" component={Booking} />
+        <Route path="/appointment-booking-new" component={AppointmentBooking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/signup" component={Signup} />
         <Route path="/landing" component={Landing} />
@@ -86,6 +87,7 @@ function Router() {
             <Route path="/preview" component={DesignPreview} />
             <Route path="/payment" component={Payment} />
             <Route path="/appointment-booking" component={AppointmentBooking} />
+            <Route path="/appointment-booking-new" component={AppointmentBooking} />
             <Route path="/printing" component={PrintingStatus} />
             <Route path="/customer-management" component={CustomerManagementPage} />
             <Route path="/gallery-admin" component={GalleryAdmin} />
