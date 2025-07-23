@@ -18,10 +18,10 @@ export function LocationMap() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            오시는 길
+            Directions
           </h2>
           <p className="text-lg text-gray-600">
-            편리한 교통으로 쉽게 찾아오세요
+            Easy to reach with convenient transportation
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export function LocationMap() {
                     className="w-full bg-blue-600 hover:bg-blue-700"
                   >
                     <Navigation className="h-4 w-4 mr-2" />
-                    Google Maps에서 길찾기
+                    Get Directions on Google Maps
                   </Button>
                 </div>
               </CardContent>
@@ -61,7 +61,7 @@ export function LocationMap() {
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
                   <MapPin className="h-5 w-5 mr-2 text-pink-500" />
-                  매장 위치
+                  Store Location
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -77,18 +77,18 @@ export function LocationMap() {
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
                   <Clock className="h-5 w-5 mr-2 text-purple-500" />
-                  영업시간
+                  Business Hours
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 text-gray-700">
                   <div className="flex justify-between">
-                    <span>월요일 - 금요일</span>
-                    <span className="font-medium">오전 10:00 - 오후 7:00</span>
+                    <span>Monday - Friday</span>
+                    <span className="font-medium">10:00 AM - 7:00 PM</span>
                   </div>
                   <div className="flex justify-between text-gray-500">
-                    <span>토요일 - 일요일</span>
-                    <span>휴무</span>
+                    <span>Saturday - Sunday</span>
+                    <span>Closed</span>
                   </div>
                 </div>
               </CardContent>
@@ -98,12 +98,12 @@ export function LocationMap() {
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
                   <Phone className="h-5 w-5 mr-2 text-green-500" />
-                  연락처
+                  Contact
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <p className="text-gray-600 mb-2">전화번호</p>
+                  <p className="text-gray-600 mb-2">Phone Number</p>
                   <Button 
                     variant="outline" 
                     onClick={callPhone}
@@ -114,7 +114,7 @@ export function LocationMap() {
                   </Button>
                 </div>
                 <div>
-                  <p className="text-gray-600 mb-2">이메일</p>
+                  <p className="text-gray-600 mb-2">Email</p>
                   <div className="flex items-center text-gray-700">
                     <Mail className="h-4 w-4 mr-2 text-blue-500" />
                     Sungimconniekim@gmail.com
@@ -126,22 +126,22 @@ export function LocationMap() {
             {/* Transportation Guide */}
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl">교통편 안내</CardTitle>
+                <CardTitle className="text-xl">Transportation Guide</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3 text-gray-700">
                   <div>
-                    <p className="font-medium text-blue-600 mb-1">🚇 지하철</p>
-                    <p className="text-sm">Federal Triangle 역 (Blue, Orange, Silver Line)</p>
-                    <p className="text-sm text-gray-600">도보 2분 거리</p>
+                    <p className="font-medium text-blue-600 mb-1">🚇 Metro</p>
+                    <p className="text-sm">Federal Triangle Station (Blue, Orange, Silver Line)</p>
+                    <p className="text-sm text-gray-600">2-minute walk</p>
                   </div>
                   <div>
-                    <p className="font-medium text-green-600 mb-1">🚌 버스</p>
-                    <p className="text-sm">Pennsylvania Avenue 버스 정류장</p>
+                    <p className="font-medium text-green-600 mb-1">🚌 Bus</p>
+                    <p className="text-sm">Pennsylvania Avenue Bus Stop</p>
                   </div>
                   <div>
-                    <p className="font-medium text-purple-600 mb-1">🚗 주차</p>
-                    <p className="text-sm">건물 내 유료 주차장 이용 가능</p>
+                    <p className="font-medium text-purple-600 mb-1">🚗 Parking</p>
+                    <p className="text-sm">Paid parking available in building</p>
                   </div>
                 </div>
               </CardContent>
