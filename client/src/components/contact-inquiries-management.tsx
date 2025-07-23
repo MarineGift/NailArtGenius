@@ -125,10 +125,10 @@ export function ContactInquiriesManagement() {
     }
   };
 
-  const filteredInquiries = inquiries.filter(inquiry => {
+  const filteredInquiries = inquiries?.filter(inquiry => {
     if (statusFilter === 'all') return true;
     return inquiry.status === statusFilter;
-  });
+  }) || [];
 
   if (isLoading) {
     return (

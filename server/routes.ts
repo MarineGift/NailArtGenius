@@ -2480,10 +2480,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .limit(1);
 
       const inquiryData = {
-        fullName: validatedData.fullName || validatedData.customerName,
+        fullName: validatedData.fullName || (validatedData as any).customerName,
         phoneNumber: validatedData.phoneNumber,
         inquiry: validatedData.inquiry,
-        status: 'new',
+        status: 'new' as const,
         adminResponse: null,
         respondedAt: null,
       };

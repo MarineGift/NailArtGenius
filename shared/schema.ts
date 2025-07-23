@@ -337,7 +337,15 @@ export const contactInquiries = pgTable("contact_inquiries", {
 });
 
 // Contact inquiry insert schema
-export const insertContactInquirySchema = createInsertSchema(contactInquiries);
+export const insertContactInquirySchema = createInsertSchema(contactInquiries).omit({
+  id: true,
+  createdAt: true,
+  status: true,
+  adminResponse: true,
+  respondedAt: true,
+}).extend({
+  customerName: z.string().optional(),
+});
 export type InsertContactInquiry = z.infer<typeof insertContactInquirySchema>;
 export type ContactInquiry = typeof contactInquiries.$inferSelect;
 

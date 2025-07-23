@@ -59,12 +59,12 @@ export async function authenticateAdmin(req: Request, res: Response, next: NextF
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
 
-    const admin = await storage.getAdminById(decoded.id);
+    const admin = await storage.getAdminById(parseInt(decoded.id));
     if (!admin || !admin.isActive) {
       return res.status(401).json({ message: 'Admin not found or inactive' });
     }
 
-    req.admin = admin;
+    req.admin = admin as any;
     next();
   } catch (error) {
     console.error('Authentication error:', error);
