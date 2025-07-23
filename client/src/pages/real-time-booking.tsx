@@ -226,11 +226,25 @@ export default function RealTimeBookingPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {t('booking.title')} - {t('realtime.title')}
+            Real-Time Booking
           </h1>
           <p className="text-gray-600">
-            {t('realtime.subtitle')}
+            Please select an available date and time to make your reservation
           </p>
+          <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="font-semibold text-blue-900 mb-2">Simple Booking Process</h3>
+            <div className="flex items-center justify-center">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                  <div className="ml-3">
+                    <div className="font-medium text-gray-900">AI Analysis & Design</div>
+                    <div className="text-sm text-gray-600">AI analyzes and recommends personalized designs</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
