@@ -67,20 +67,11 @@ export default function Header() {
                     </Link>
                   </>
                 ) : (
-                  <div className="flex items-center space-x-2">
-                    <Link href="/admin">
-                      <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
-                        Admin Dashboard
-                      </Button>
-                    </Link>
-                    <Button 
-                      variant="ghost" 
-                      className="text-gray-500 hover:text-gray-900"
-                      onClick={() => logoutMutation.mutate()}
-                    >
-                      Logout
+                  <Link href="/admin">
+                    <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                      Admin Dashboard
                     </Button>
-                  </div>
+                  </Link>
                 )}
               </div>
             </div>
