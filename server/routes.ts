@@ -1980,6 +1980,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+  
+  // Serve HTML version for testing
+  app.use('/html-version', express.static(path.join(process.cwd(), 'html-version')));
 
   // Contact inquiries API
   app.post('/api/contact-inquiries', async (req, res) => {
