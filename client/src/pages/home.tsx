@@ -21,13 +21,13 @@ export default function Home() {
         {/* Booking Hero Section */}
         <BookingHeroSection />
 
+        {/* AI Service Section */}
+        <AIServiceSection />
+
         {/* Hero Carousel Section */}
         <section className="mb-0">
           <ImageCarousel />
         </section>
-
-        {/* AI Service Section */}
-        <AIServiceSection />
         
         {/* English Services Section */}
         <EnglishServicesSection />
