@@ -15,7 +15,7 @@ export async function seedBookingData() {
         // Spa Treatments
         {
           name: 'Spa Manicure',
-          description: '스파 매니큐어 - 손톱 케어와 보습 트리트먼트',
+          description: 'Spa Manicure - Nail care and moisturizing treatment',
           category: 'spa',
           duration: 60,
           price: "45.00",
@@ -23,7 +23,7 @@ export async function seedBookingData() {
         },
         {
           name: 'Spa Pedicure',
-          description: '스파 페디큐어 - 발톱 케어와 보습 트리트먼트',
+          description: 'Spa Pedicure - Toenail care and moisturizing treatment',
           category: 'spa',
           duration: 75,
           price: "55.00",
@@ -33,7 +33,7 @@ export async function seedBookingData() {
         // Nail Treatments
         {
           name: 'Regular Manicure',
-          description: '일반 매니큐어 - 기본적인 손톱 정리와 폴리시',
+          description: 'Regular Manicure - Basic nail care and polish',
           category: 'treatments',
           duration: 45,
           price: "25.00",
@@ -57,7 +57,7 @@ export async function seedBookingData() {
         },
         {
           name: 'Regular Pedicure',
-          description: '일반 페디큐어 - 기본적인 발톱 정리',
+          description: 'Regular Pedicure - Basic toenail care',
           category: 'treatments',
           duration: 60,
           price: "35.00",
@@ -112,7 +112,7 @@ export async function seedBookingData() {
         // Massage
         {
           name: 'Hand & Arm Massage',
-          description: '손과 팔 마사지',
+          description: 'Hand and arm massage',
           category: 'massage',
           duration: 30,
           price: "25.00",
@@ -120,7 +120,7 @@ export async function seedBookingData() {
         },
         {
           name: 'Foot & Leg Massage',
-          description: '발과 다리 마사지',
+          description: 'Foot and leg massage',
           category: 'massage',
           duration: 45,
           price: "35.00",

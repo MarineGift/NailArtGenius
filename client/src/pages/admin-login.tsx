@@ -39,10 +39,10 @@ export default function AdminLogin() {
         setLocation('/admin');
       } else {
         const errorData = await response.json();
-        setError(errorData.message || '로그인에 실패했습니다.');
+        setError(errorData.message || 'Login failed.');
       }
     } catch (error) {
-      setError('서버 연결에 실패했습니다.');
+      setError('Server connection failed.');
     } finally {
       setIsLoading(false);
     }
@@ -66,10 +66,10 @@ export default function AdminLogin() {
               <Lock className="h-12 w-12 text-purple-600" />
             </div>
             <CardTitle className="text-2xl font-bold text-gray-800">
-              관리자 로그인
+              Admin Login
             </CardTitle>
             <p className="text-gray-600 mt-2">
-              관리자 계정으로 로그인하세요
+              Please login with your admin account
             </p>
           </CardHeader>
           
@@ -86,7 +86,7 @@ export default function AdminLogin() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-gray-700">
-                  관리자 아이디
+                  Username
                 </Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -96,7 +96,7 @@ export default function AdminLogin() {
                     type="text"
                     value={formData.username}
                     onChange={handleChange}
-                    placeholder="관리자 아이디를 입력하세요"
+                    placeholder="Enter admin username"
                     className="pl-10"
                     required
                     disabled={isLoading}
@@ -106,7 +106,7 @@ export default function AdminLogin() {
               
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-gray-700">
-                  비밀번호
+                  Password
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -116,7 +116,7 @@ export default function AdminLogin() {
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="비밀번호를 입력하세요"
+                    placeholder="Enter password"
                     className="pl-10"
                     required
                     disabled={isLoading}
@@ -132,17 +132,17 @@ export default function AdminLogin() {
                 {isLoading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                    로그인 중...
+                    Logging in...
                   </div>
                 ) : (
-                  '로그인'
+                  'Login'
                 )}
               </Button>
             </form>
             
             <div className="text-center mt-6 text-sm text-gray-500">
-              <p>기본 관리자 계정</p>
-              <p>ID: admin / PW: 1234</p>
+              <p>Default admin account</p>
+              <p>ID: admin / PW: 1111</p>
             </div>
           </CardContent>
         </Card>

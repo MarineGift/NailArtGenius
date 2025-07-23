@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { t } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,6 +9,7 @@ import { Link } from "wouter";
 
 export default function Header() {
   const { user } = useAuth();
+  const { isAuthenticated: isAdminAuthenticated, adminUser, logoutMutation } = useAdminAuth();
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100">
@@ -35,11 +37,7 @@ export default function Header() {
                     {t('nav.booking')}
                   </Button>
                 </Link>
-                <Link href="/admin-login">
-                  <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
-                    관리자
-                  </Button>
-                </Link>
+
                 <Link href="/gallery">
                   <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
                     {t('nav.gallery')}
@@ -55,6 +53,36 @@ export default function Header() {
                     {t('nav.contact')}
                   </Button>
                 </Link>
+                {!isAdminAuthenticated ? (
+                  <>
+                    <Link href="/admin-login">
+                      <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                        Log In
+                      </Button>
+                    </Link>
+                    <Link href="/signup">
+                      <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-gray-600">Welcome, {adminUser?.name || adminUser?.username}</span>
+                    <Link href="/admin">
+                      <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
+                        Admin Panel
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="ghost" 
+                      className="text-gray-500 hover:text-gray-900"
+                      onClick={() => logoutMutation.mutate()}
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -62,7 +90,7 @@ export default function Header() {
           <div className="flex items-center space-x-2">
             <LanguageSwitcher />
             
-            {user && (
+            {isAdminAuthenticated && (
               <div className="flex items-center space-x-4">
                 <Link href="/analytics">
                   <Button
@@ -75,18 +103,16 @@ export default function Header() {
                   </Button>
                 </Link>
                 
-                {user && (
-                  <Link href="/customer-management">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-600 hover:text-secondary"
-                    >
-                      <Settings className="h-4 w-4" />
-                      <span className="ml-1 hidden sm:inline">고객 관리</span>
-                    </Button>
-                  </Link>
-                )}
+                <Link href="/customer-management">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-600 hover:text-secondary"
+                  >
+                    <Settings className="h-4 w-4" />
+                    <span className="ml-1 hidden sm:inline">Customer Management</span>
+                  </Button>
+                </Link>
                 
                 <Link href="/admin-panel">
                   <Button
@@ -95,7 +121,7 @@ export default function Header() {
                     className="text-gray-600 hover:text-secondary"
                   >
                     <Settings className="h-4 w-4" />
-                    <span className="ml-1 hidden sm:inline">{t('header.adminPanel')}</span>
+                    <span className="ml-1 hidden sm:inline">Admin Panel</span>
                   </Button>
                 </Link>
                 

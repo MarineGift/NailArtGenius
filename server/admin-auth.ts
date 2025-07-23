@@ -77,7 +77,7 @@ export async function initializeDefaultAdmin() {
   try {
     const existingAdmin = await storage.getAdminByUsername('admin');
     if (!existingAdmin) {
-      const hashedPassword = await hashPassword('1234');
+      const hashedPassword = await hashPassword('1111');
       await storage.createAdmin({
         username: 'admin',
         password: hashedPassword,
@@ -85,7 +85,7 @@ export async function initializeDefaultAdmin() {
         email: 'admin@connienail.com',
         role: 'admin'
       });
-      console.log('Default admin user created: admin/1234');
+      console.log('Default admin user created: admin/1111');
     }
   } catch (error) {
     console.error('Failed to initialize default admin:', error);

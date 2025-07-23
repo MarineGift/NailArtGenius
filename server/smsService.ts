@@ -233,7 +233,7 @@ export class SMSService {
         }
       }
 
-      console.log('기본 SMS 템플릿이 생성되었습니다.');
+      console.log('Default SMS templates have been created.');
     } catch (error) {
       console.error('SMS 템플릿 생성 중 오류:', error);
     }
