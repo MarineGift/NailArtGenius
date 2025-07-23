@@ -213,41 +213,69 @@ export default function AdminDashboard() {
     return [];
   };
 
-  const handleMetricClick = (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
+  const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
     console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
-    alert(`Clicked ${title} - Count: ${totalCount}`);
     
-    // Immediately show force modal
-    setForceShowModal(true);
-    
-    // Use simple test data for immediate modal display
-    const testData = [
-      { name: 'Test Customer 1', phoneNumber: '010-1111-1111', email: 'test1@example.com' },
-      { name: 'Test Customer 2', phoneNumber: '010-2222-2222', email: 'test2@example.com' },
-      { name: 'Test Customer 3', phoneNumber: '010-3333-3333', email: 'test3@example.com' }
-    ];
+    try {
+      let data = [];
+      
+      // Load real data based on metric type
+      if (metricType === 'customers') {
+        const response = await fetch('/api/admin/customers', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          }
+        });
+        if (response.ok) {
+          data = await response.json();
+        }
+      } else if (metricType === 'appointments') {
+        const response = await fetch('/api/admin/appointments', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          }
+        });
+        if (response.ok) {
+          data = await response.json();
+        }
+      } else {
+        // For visitors and orders, use sample data for now
+        data = [
+          { name: `Sample ${metricType} 1`, phoneNumber: '010-1111-1111', email: 'sample1@example.com' },
+          { name: `Sample ${metricType} 2`, phoneNumber: '010-2222-2222', email: 'sample2@example.com' },
+          { name: `Sample ${metricType} 3`, phoneNumber: '010-3333-3333', email: 'sample3@example.com' }
+        ];
+      }
 
-    setDetailModal({
-      isOpen: true,
-      metricType,
-      title,
-      data: testData,
-      totalCount
-    });
-    
-    console.log('🎯 Modal state set:', { 
-      isOpen: true, 
-      metricType, 
-      title, 
-      dataLength: testData.length, 
-      totalCount 
-    });
-    
-    // Force re-render to ensure modal opens
-    setTimeout(() => {
-      console.log('🎯 Final modal state check:', detailModal);
-      console.log('🎯 State object references:', { detailModal });
-    }, 100);
+      // Set modal state with real data
+      setDetailModal({
+        isOpen: true,
+        metricType,
+        title,
+        data: data || [],
+        totalCount
+      });
+      
+      console.log('🎯 Modal opened with data:', { 
+        isOpen: true, 
+        metricType, 
+        title, 
+        dataLength: data.length, 
+        totalCount 
+      });
+      
+    } catch (error) {
+      console.error('Error loading metric data:', error);
+      
+      // Show modal with error message
+      setDetailModal({
+        isOpen: true,
+        metricType,
+        title,
+        data: [{ name: 'Failed to load data', error: error.message }],
+        totalCount
+      });
+    }
   };
 
   const closeDetailModal = () => {
@@ -258,6 +286,7 @@ export default function AdminDashboard() {
       data: [],
       totalCount: 0
     });
+    setForceShowModal(false);
   };
 
   const handleLogout = async () => {
@@ -473,41 +502,7 @@ export default function AdminDashboard() {
           </Alert>
         )}
 
-        {/* Debug Section - Always Visible */}
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-300 rounded">
-          <h3 className="font-bold text-blue-800">Debug Information</h3>
-          <div className="mt-2 space-y-2">
-            <p className="text-sm text-blue-700">
-              Stats loaded: {stats ? 'YES' : 'NO'}
-            </p>
-            <p className="text-sm text-blue-700">
-              Total customers: {stats?.totalCustomers || 'UNDEFINED'}
-            </p>
-            <p className="text-sm text-blue-700">
-              Modal state: isOpen={detailModal.isOpen ? 'TRUE' : 'FALSE'}
-            </p>
-            <button 
-              onClick={() => {
-                console.log('Direct button clicked!');
-                alert('Direct button works!');
-                setForceShowModal(true);
-              }}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Test Direct Click
-            </button>
-            <button 
-              onClick={() => {
-                console.log('Metric test clicked!');
-                alert('About to call handleMetricClick');
-                handleMetricClick('customers', 'Test Metric', 999);
-              }}
-              className="ml-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-            >
-              Test handleMetricClick
-            </button>
-          </div>
-        </div>
+
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
