@@ -18,21 +18,23 @@
                 </div>
                 
                 <div class="nav-menu" id="nav-menu">
-                    <a href="#home" class="nav-link" data-key="nav.home">Home</a>
-                    <a href="#ai-generator" class="nav-link nav-ai" data-key="nav.ai_nail_art">🤖 AI Nail Art</a>
-                    <a href="#services" class="nav-link" data-key="nav.services">Services</a>
-                    <a href="#booking" class="nav-link" data-key="nav.booking">Booking</a>
-                    <a href="#gallery" class="nav-link" data-key="nav.gallery">Gallery</a>
-                    <a href="#contact" class="nav-link" data-key="nav.contact">Contact</a>
+                    <a href="#home" class="nav-link">Home</a>
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#booking" class="nav-link">Booking</a>
+                    <a href="#realtime-booking" class="nav-link">Real-time Booking</a>
+                    <a href="#gallery" class="nav-link">Gallery</a>
+                    <a href="#ai-generator" class="nav-link">AI Nail Art Generator</a>
+                    <a href="#contact" class="nav-link">Contact</a>
                 </div>
                 
                 <div class="nav-controls">
                     <div class="language-selector">
+                        <i class="fas fa-globe"></i>
                         <select id="language-select" class="language-dropdown">
-                            <option value="en">English 🇺🇸</option>
-                            <option value="ko">Korean 🇰🇷</option>
-                            <option value="ja">Japanese 🇯🇵</option>
-                            <option value="es">Spanish 🇪🇸</option>
+                            <option value="en">us English</option>
+                            <option value="ko">Korean</option>
+                            <option value="ja">Japanese</option>
+                            <option value="es">Spanish</option>
                         </select>
                     </div>
                     <div class="hamburger" id="hamburger">
@@ -50,24 +52,24 @@
         <div class="hero-carousel">
             <div class="carousel-container">
                 <div class="carousel-slide active">
+                    <img src="../attached_assets/image_1753220336426.png" alt="AI Custom Nails Left" class="carousel-image">
+                    <div class="carousel-content">
+                        <h2 class="hero-title">AI Custom Nails</h2>
+                        <p class="hero-subtitle">Completed with innovative AI technology</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="../attached_assets/image_1753221294292.png" alt="AI Custom Nails Right" class="carousel-image">
+                    <div class="carousel-content">
+                        <h2 class="hero-title">AI Custom Nails</h2>
+                        <p class="hero-subtitle">Completed with innovative AI technology</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
                     <img src="../attached_assets/store_1753218028383.jpg" alt="Connie's Nail Salon" class="carousel-image">
                     <div class="carousel-content">
-                        <h2 data-key="carousel.salon.title">Connie's Nail Salon</h2>
-                        <p data-key="carousel.salon.description">Premium Nail Salon in Washington DC</p>
-                    </div>
-                </div>
-                <div class="carousel-slide">
-                    <img src="../attached_assets/image_1753220336426.png" alt="Beautiful Nail Art" class="carousel-image">
-                    <div class="carousel-content">
-                        <h2 data-key="carousel.art1.title">Beautiful Nail Art</h2>
-                        <p data-key="carousel.art1.description">Expert meticulous design</p>
-                    </div>
-                </div>
-                <div class="carousel-slide">
-                    <img src="../attached_assets/image_1753221294292.png" alt="AI Custom Nails" class="carousel-image">
-                    <div class="carousel-content">
-                        <h2 data-key="carousel.art2.title">AI Custom Nails</h2>
-                        <p data-key="carousel.art2.description">Completed with innovative AI technology</p>
+                        <h2 class="hero-title">Connie's Nail Salon</h2>
+                        <p class="hero-subtitle">Premium Nail Care in Washington DC</p>
                     </div>
                 </div>
                 
@@ -232,6 +234,217 @@
                         <button class="btn btn-success" id="download-pdf-btn" style="display: none;" data-key="ai.download_pdf">
                             <i class="fas fa-download"></i> Download 10 Designs as PDF
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery-section">
+        <div class="container">
+            <h2 class="section-title">Gallery</h2>
+            <p class="section-subtitle">Explore our beautiful nail art creations</p>
+            
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="classic">Classic</button>
+                <button class="filter-btn" data-filter="modern">Modern</button>
+                <button class="filter-btn" data-filter="ai-generated">AI Generated</button>
+            </div>
+            
+            <div class="gallery-grid" id="gallery-grid">
+                <div class="gallery-item" data-category="classic">
+                    <img src="../attached_assets/nailart1_1753154093464.jpg" alt="Classic Nail Art 1">
+                    <div class="gallery-overlay">
+                        <h4>Classic French Manicure</h4>
+                        <p>Timeless elegance</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="modern">
+                    <img src="../attached_assets/nailart2_1753154093464.jpg" alt="Modern Nail Art 1">
+                    <div class="gallery-overlay">
+                        <h4>Modern Geometric</h4>
+                        <p>Contemporary design</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="classic">
+                    <img src="../attached_assets/nailart3_1753154093464.jpg" alt="Classic Nail Art 2">
+                    <div class="gallery-overlay">
+                        <h4>Classic Rose Gold</h4>
+                        <p>Elegant luxury</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="ai-generated">
+                    <img src="../attached_assets/nailart4_1753154093465.jpg" alt="AI Generated Nail Art 1">
+                    <div class="gallery-overlay">
+                        <h4>AI Custom Design</h4>
+                        <p>Technology meets artistry</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="modern">
+                    <img src="../attached_assets/nailart5_1753154093465.jpg" alt="Modern Nail Art 2">
+                    <div class="gallery-overlay">
+                        <h4>Modern Abstract</h4>
+                        <p>Creative expression</p>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="ai-generated">
+                    <img src="../attached_assets/nailart6_1753154093465.jpg" alt="AI Generated Nail Art 2">
+                    <div class="gallery-overlay">
+                        <h4>AI Personalized</h4>
+                        <p>Unique to your style</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-time Booking Section -->
+    <section id="realtime-booking" class="realtime-booking-section">
+        <div class="container">
+            <h2 class="section-title">Real-time Booking System</h2>
+            <p class="section-subtitle">Book your appointment with live availability</p>
+            
+            <div class="booking-dashboard">
+                <div class="availability-calendar">
+                    <h3>Live Availability</h3>
+                    <div class="calendar-container" id="availability-calendar">
+                        <!-- Calendar will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="time-slots">
+                    <h3>Available Time Slots</h3>
+                    <div class="slots-container" id="time-slots">
+                        <!-- Time slots will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="booking-form">
+                    <h3>Book Your Appointment</h3>
+                    <form id="realtime-booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Selected Date</label>
+                                <input type="text" id="selected-date" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Selected Time</label>
+                                <input type="text" id="selected-time" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Service</label>
+                            <select id="booking-service" required>
+                                <option value="">Select Service</option>
+                                <option value="spa-manicure">Spa Manicure - $35</option>
+                                <option value="spa-pedicure">Spa Pedicure - $45</option>
+                                <option value="gel-manicure">Gel Manicure - $40</option>
+                                <option value="ai-nail-art">AI Custom Nail Art - $60</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="customer-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="customer-phone" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="customer-email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Special Requests</label>
+                            <textarea id="special-requests" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-large">Confirm Booking</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel (Hidden by default) -->
+    <section id="admin-panel" class="admin-section" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Admin Dashboard</h2>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="bookings">Bookings</button>
+                <button class="admin-tab" data-tab="customers">Customers</button>
+                <button class="admin-tab" data-tab="gallery">Gallery Management</button>
+                <button class="admin-tab" data-tab="settings">Settings</button>
+            </div>
+            
+            <div class="admin-content">
+                <div class="admin-tab-content active" data-content="bookings">
+                    <h3>Booking Management</h3>
+                    <div class="bookings-list" id="admin-bookings-list">
+                        <!-- Bookings will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="admin-tab-content" data-content="customers">
+                    <h3>Customer Management</h3>
+                    <div class="customers-stats">
+                        <div class="stat-card">
+                            <h4>Total Customers</h4>
+                            <span class="stat-number" id="total-customers">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>This Month</h4>
+                            <span class="stat-number" id="monthly-customers">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <h4>AI Users</h4>
+                            <span class="stat-number" id="ai-customers">0</span>
+                        </div>
+                    </div>
+                    <div class="customers-list" id="admin-customers-list">
+                        <!-- Customers will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="admin-tab-content" data-content="gallery">
+                    <h3>Gallery Management</h3>
+                    <div class="gallery-upload">
+                        <input type="file" id="gallery-upload-input" multiple accept="image/*">
+                        <button class="btn btn-secondary" onclick="document.getElementById('gallery-upload-input').click()">Upload Images</button>
+                    </div>
+                    <div class="admin-gallery-grid" id="admin-gallery-grid">
+                        <!-- Gallery management will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="admin-tab-content" data-content="settings">
+                    <h3>System Settings</h3>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Business Hours</label>
+                            <input type="text" value="Monday-Friday: 10AM-7PM">
+                        </div>
+                        <div class="form-group">
+                            <label>Booking Time Slots (minutes)</label>
+                            <select>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="60">60 minutes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>AI Analysis Price</label>
+                            <input type="number" value="60" min="0">
+                        </div>
+                        <button class="btn btn-primary">Save Settings</button>
                     </div>
                 </div>
             </div>

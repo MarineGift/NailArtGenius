@@ -619,3 +619,229 @@ function showToast(message, type = 'info') {
 window.startAIAnalysis = startAIAnalysis;
 window.removePhoto = removePhoto;
 window.updateLanguage = updateLanguage;
+// Gallery functionality
+function initializeGallery() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.getAttribute('data-filter');
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Filter items
+            galleryItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                if (filter === 'all' || category === filter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// Real-time booking functionality
+function initializeRealtimeBooking() {
+    generateAvailabilityCalendar();
+    generateTimeSlots();
+    setupRealtimeBookingForm();
+}
+
+function generateAvailabilityCalendar() {
+    const calendarContainer = document.getElementById('availability-calendar');
+    if (!calendarContainer) return;
+    
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    let calendarHTML = '<div class="calendar-header"><h4>' + 
+        today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) + 
+        '</h4></div><div class="calendar-days">';
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const isToday = date.toDateString() === today.toDateString();
+        const isFuture = date >= today;
+        const isWeekday = date.getDay() >= 1 && date.getDay() <= 5; // Monday to Friday
+        
+        if (isFuture && isWeekday) {
+            calendarHTML += `<div class="calendar-day available" data-date="${date.toISOString().split('T')[0]}">${day}</div>`;
+        } else {
+            calendarHTML += `<div class="calendar-day">${day}</div>`;
+        }
+    }
+    
+    calendarHTML += '</div>';
+    calendarContainer.innerHTML = calendarHTML;
+    
+    // Add click handlers
+    document.querySelectorAll('.calendar-day.available').forEach(day => {
+        day.addEventListener('click', function() {
+            document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selected-date').value = this.getAttribute('data-date');
+            generateTimeSlots(this.getAttribute('data-date'));
+        });
+    });
+}
+
+function generateTimeSlots(selectedDate = null) {
+    const slotsContainer = document.getElementById('time-slots');
+    if (!slotsContainer) return;
+    
+    const businessHours = {
+        start: 10, // 10 AM
+        end: 19, // 7 PM
+        interval: 30 // 30 minutes
+    };
+    
+    let slotsHTML = '';
+    const bookedSlots = ['14:00', '15:30']; // Example booked slots
+    
+    for (let hour = businessHours.start; hour < businessHours.end; hour++) {
+        for (let minute = 0; minute < 60; minute += businessHours.interval) {
+            const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const displayTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            
+            const isBooked = bookedSlots.includes(timeString);
+            const slotClass = isBooked ? 'time-slot booked' : 'time-slot';
+            
+            slotsHTML += `<div class="${slotClass}" data-time="${timeString}">${displayTime}</div>`;
+        }
+    }
+    
+    slotsContainer.innerHTML = slotsHTML;
+    
+    // Add click handlers for available slots
+    document.querySelectorAll('.time-slot:not(.booked)').forEach(slot => {
+        slot.addEventListener('click', function() {
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selected-time').value = this.textContent;
+        });
+    });
+}
+
+function setupRealtimeBookingForm() {
+    const form = document.getElementById('realtime-booking-form');
+    if (!form) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            date: document.getElementById('selected-date').value,
+            time: document.getElementById('selected-time').value,
+            service: document.getElementById('booking-service').value,
+            name: document.getElementById('customer-name').value,
+            phone: document.getElementById('customer-phone').value,
+            email: document.getElementById('customer-email').value,
+            requests: document.getElementById('special-requests').value
+        };
+        
+        if (!formData.date || !formData.time) {
+            showToast('Please select a date and time', 'error');
+            return;
+        }
+        
+        // Simulate booking confirmation
+        showToast('Booking confirmed successfully!', 'success');
+        form.reset();
+        document.getElementById('selected-date').value = '';
+        document.getElementById('selected-time').value = '';
+        
+        // Update admin data
+        updateAdminBookings(formData);
+    });
+}
+
+// Admin panel functionality
+function initializeAdminPanel() {
+    // Admin access - add to URL: #admin or use hidden button
+    if (window.location.hash === '#admin') {
+        document.getElementById('admin-panel').style.display = 'block';
+    }
+    
+    // Add secret admin access
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('admin-panel').scrollIntoView();
+        }
+    });
+    
+    setupAdminTabs();
+    loadAdminData();
+}
+
+function setupAdminTabs() {
+    const tabs = document.querySelectorAll('.admin-tab');
+    const contents = document.querySelectorAll('.admin-tab-content');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding content
+            contents.forEach(content => {
+                content.classList.remove('active');
+                if (content.getAttribute('data-content') === targetTab) {
+                    content.classList.add('active');
+                }
+            });
+        });
+    });
+}
+
+function loadAdminData() {
+    // Load customer statistics
+    document.getElementById('total-customers').textContent = '127';
+    document.getElementById('monthly-customers').textContent = '23';
+    document.getElementById('ai-customers').textContent = '45';
+    
+    // Load recent bookings
+    const bookingsList = document.getElementById('admin-bookings-list');
+    if (bookingsList) {
+        bookingsList.innerHTML = 
+            '<div class="booking-item"><h4>Sarah Johnson</h4><p>AI Custom Nail Art - July 24, 2025 at 2:00 PM</p><span class="status confirmed">Confirmed</span></div>' +
+            '<div class="booking-item"><h4>Mike Chen</h4><p>Spa Manicure - July 25, 2025 at 10:30 AM</p><span class="status pending">Pending</span></div>';
+    }
+}
+
+function updateAdminBookings(bookingData) {
+    const bookingsList = document.getElementById('admin-bookings-list');
+    if (bookingsList) {
+        const newBooking = document.createElement('div');
+        newBooking.className = 'booking-item';
+        newBooking.innerHTML = 
+            '<h4>' + bookingData.name + '</h4>' +
+            '<p>' + bookingData.service + ' - ' + bookingData.date + ' at ' + bookingData.time + '</p>' +
+            '<span class="status confirmed">Confirmed</span>';
+        bookingsList.insertBefore(newBooking, bookingsList.firstChild);
+    }
+}
+
+// Initialize all new functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add new initialization calls
+    setTimeout(() => {
+        initializeGallery();
+        initializeRealtimeBooking();
+        initializeAdminPanel();
+    }, 500);
+});
