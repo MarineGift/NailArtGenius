@@ -4,7 +4,7 @@ import Footer from "@/components/footer";
 import { ImageCarousel } from '@/components/image-carousel';
 import { BookingHeroSection } from '@/components/booking-hero-section';
 import { AIServiceSection } from '@/components/ai-service-section';
-import { KoreanServicesSection } from '@/components/korean-services-section';
+import { EnglishServicesSection } from '@/components/english-services-section';
 import { LocationMap } from '@/components/location-map';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
@@ -27,18 +27,18 @@ export default function Home() {
           <div className="container mx-auto px-6 text-center">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-                🤖 AI Nail Art - 혁신적인 네일아트 서비스
+                🤖 AI Nail Art - Revolutionary Nail Art Service
               </h2>
               <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
                 <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                  손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요. 
-                  Connie's Nail AI가 손톱을 분석한 후 고객이 선택하신 네일아트를 사전에 제작함으로 
-                  방문시 시술시간 및 비용을 획기적으로 줄여 줍니다.
+                  Register your nails → select nail art design → payment → visit date process. 
+                  Connie's Nail AI analyzes your nails and pre-creates your selected nail art design, 
+                  dramatically reducing treatment time and cost during your visit.
                 </p>
                 <div className="flex justify-center">
                   <Link href="/ai-nail-generator">
                     <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                      ✨ AI Nail Art 바로 가기
+                      ✨ Go to AI Nail Art
                     </Button>
                   </Link>
                 </div>
@@ -53,8 +53,8 @@ export default function Home() {
         {/* AI Service Section */}
         <AIServiceSection />
         
-        {/* Korean Services Section */}
-        <KoreanServicesSection />
+        {/* English Services Section */}
+        <EnglishServicesSection />
 
         {/* Location Map Section */}
         <LocationMap />

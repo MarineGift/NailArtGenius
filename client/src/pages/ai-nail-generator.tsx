@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Camera, Upload, Download, CreditCard, AlertCircle, CheckCircle } from 'lucide-react';
-import { NailArtDesignSelection } from '@/components/nail-art-design-selection';
+import { EnglishNailArtDesignSelection } from '@/components/english-nail-art-design-selection';
 import { CustomerReservationForm } from '@/components/customer-reservation-form';
 
 interface UploadedPhoto {
@@ -512,7 +512,7 @@ export default function AITailGenerator() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <NailArtDesignSelection onDesignSelect={handleDesignSelect} />
+              <EnglishNailArtDesignSelection onDesignSelect={handleDesignSelect} />
             </CardContent>
           </Card>
         )}

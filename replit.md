@@ -30,6 +30,15 @@ Preferred communication style: Simple, everyday language.
   - Updated form labels, buttons, and system messages across client and server files
   - Maintained proper authentication flow with admin/1111 credentials
   - Resolved Header component TypeScript errors for better stability
+  - **AI Nail Art Translation**: Revolutionary AI service description fully translated
+    - Korean: "손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요" 
+    - English: "Register your nails → select nail art design → payment → visit date process"
+  - **Services Section Translation**: All 9 service types with pricing and descriptions
+    - Classic French Manicure ($45), Floral Design ($65), Geometric Pattern ($55)
+    - Glitter & Sparkle ($70), Minimalist Style ($40), Seasonal Design ($60)
+    - Wedding Special ($80), Ombre Effect ($65), 3D Art Design ($90)
+  - **Treatment Process Translation**: 4-step nail treatment process in English
+    - Nail Preparation → Base Coating → Color Application → Finish Coating
 
 ### HTML/CSS/JavaScript Conversion (July 22, 2025)
 - **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
