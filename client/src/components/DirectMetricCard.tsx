@@ -17,18 +17,12 @@ const DirectMetricCard: React.FC<DirectMetricCardProps> = ({
   borderClass,
   onClick
 }) => {
-  const handleClick = () => {
-    console.log(`🔥🔥🔥 CARD CLICKED: ${title} - onClick function exists:`, typeof onClick === 'function');
-    if (typeof onClick === 'function') {
-      onClick();
-    } else {
-      console.error('onClick is not a function!', onClick);
-    }
-  };
-
   return (
     <div 
-      onClick={handleClick}
+      onClick={() => {
+        console.log(`Card clicked: ${title}`);
+        onClick();
+      }}
       style={{
         cursor: 'pointer',
         border: '2px solid #3b82f6',

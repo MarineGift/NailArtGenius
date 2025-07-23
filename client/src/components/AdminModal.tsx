@@ -17,14 +17,11 @@ const AdminModal: React.FC<AdminModalProps> = ({
   data,
   totalCount
 }) => {
-  console.log('🎯🎯🎯 AdminModal component called with:', { isOpen, title, dataLength: data?.length || 0, totalCount });
-  
   if (!isOpen) {
-    console.log('⚠️ AdminModal not rendering because isOpen is false');
     return null;
   }
 
-  console.log('✅ AdminModal WILL RENDER with:', { isOpen, title, dataLength: data.length, totalCount });
+  console.log('AdminModal rendering with:', { isOpen, title, dataLength: data.length, totalCount });
 
   return (
     <div 
