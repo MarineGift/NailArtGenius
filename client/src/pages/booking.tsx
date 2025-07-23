@@ -43,11 +43,18 @@ export default function BookingPage() {
   const [isOnlinePayment, setIsOnlinePayment] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [bookingCompleted, setBookingCompleted] = useState(false);
+  const [completedBookingDetails, setCompletedBookingDetails] = useState<{
+    service: number;
+    date: Date;
+    timeSlot: string;
+    phone: string;
+  } | null>(null);
 
   // Reset booking completed state when form changes
   const resetBookingState = () => {
     if (bookingCompleted) {
       setBookingCompleted(false);
+      setCompletedBookingDetails(null);
     }
   };
 
@@ -99,8 +106,14 @@ export default function BookingPage() {
         duration: 6000,
       });
       
-      // Mark booking as completed to enable payment button
+      // Mark booking as completed and store booking details
       setBookingCompleted(true);
+      setCompletedBookingDetails({
+        service: variables.serviceId,
+        date: new Date(variables.appointmentDate),
+        timeSlot: variables.timeSlot,
+        phone: variables.customerPhone
+      });
       
       // Reset form
       setSelectedService(null);
@@ -222,7 +235,7 @@ export default function BookingPage() {
 
   // Handle online payment
   const handleOnlinePayment = () => {
-    if (!bookingCompleted) {
+    if (!bookingCompleted || !completedBookingDetails) {
       toast({
         title: "Booking Required",
         description: "Please complete your booking first before making payment.",
@@ -231,16 +244,7 @@ export default function BookingPage() {
       return;
     }
 
-    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields.",
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const selectedServiceData = services.find(s => s.id === selectedService);
+    const selectedServiceData = services.find(s => s.id === completedBookingDetails.service);
     const discountedPrice = ((selectedServiceData?.price || 0) * (1 - onlineBookingDiscount)).toFixed(2);
 
     setShowPaymentModal(true);
@@ -582,11 +586,11 @@ export default function BookingPage() {
                   
                   <Button
                     onClick={handleOnlinePayment}
-                    disabled={!bookingCompleted || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone.trim()}
-                    className={`w-full ${bookingCompleted ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
+                    disabled={!bookingCompleted || !completedBookingDetails}
+                    className={`w-full ${(bookingCompleted && completedBookingDetails) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
-                    {bookingCompleted ? 'Online Payment (10% Discount Applied)' : 'Complete Booking First'}
+                    {(bookingCompleted && completedBookingDetails) ? 'Online Payment (10% Discount Applied)' : 'Complete Booking First'}
                   </Button>
                 </div>
               </CardContent>
