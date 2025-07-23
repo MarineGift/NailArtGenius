@@ -146,14 +146,47 @@ export default function BookingPage() {
     '17:00', '17:30', '18:00', '18:30'
   ];
 
+  // Scroll to first missing field
+  const scrollToMissingField = () => {
+    let targetElement = null;
+    
+    if (!selectedService) {
+      targetElement = document.querySelector('[data-section="services"]');
+    } else if (!selectedDate) {
+      targetElement = document.querySelector('[data-section="calendar"]');
+    } else if (!selectedTimeSlot) {
+      targetElement = document.querySelector('[data-section="time-slots"]');
+    } else if (!customerInfo.phone.trim()) {
+      targetElement = document.querySelector('[data-section="customer-info"]');
+    }
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+      
+      // Add highlight effect
+      targetElement.style.transition = 'all 0.3s ease';
+      targetElement.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.5)';
+      targetElement.style.borderRadius = '8px';
+      
+      // Remove highlight after 2 seconds
+      setTimeout(() => {
+        targetElement.style.boxShadow = '';
+      }, 2000);
+    }
+  };
+
   // Handle form submission
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
-    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
+    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone.trim()) {
+      scrollToMissingField();
       toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields.",
+        title: "Please complete all required fields",
+        description: "We've highlighted the section that needs your attention.",
         variant: 'destructive',
       });
       return;
@@ -272,7 +305,7 @@ export default function BookingPage() {
           {/* Left Column - Date & Time Selection */}
           <div className="space-y-6">
             {/* Date Selection */}
-            <Card>
+            <Card data-section="calendar">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <CalendarDays className="w-5 h-5" />
@@ -354,7 +387,7 @@ export default function BookingPage() {
             </Card>
 
             {/* Time Selection */}
-            <Card>
+            <Card data-section="time-slots">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Clock className="w-5 h-5" />
@@ -398,7 +431,7 @@ export default function BookingPage() {
           {/* Right Column - Service & Customer Info */}
           <div className="space-y-6">
             {/* Service Selection */}
-            <Card>
+            <Card data-section="services">
               <CardHeader className="pb-4">
                 <CardTitle>Select Service</CardTitle>
               </CardHeader>
@@ -438,7 +471,7 @@ export default function BookingPage() {
             </Card>
 
             {/* Customer Information */}
-            <Card>
+            <Card data-section="customer-info">
               <CardHeader className="pb-4">
                 <CardTitle>Customer Information</CardTitle>
               </CardHeader>
