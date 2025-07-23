@@ -33,6 +33,19 @@ export function AIServiceSection() {
   return (
     <section className="py-16 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       <div className="container mx-auto px-6">
+        <div className="text-center mb-12">
+          <div className="flex justify-center items-center mb-4">
+            <Star className="h-10 w-10 text-pink-500 mr-3" />
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              💅 Connie's Nail Premium Services
+            </h2>
+          </div>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            From traditional nail care to innovative AI nail art,  
+            <span className="font-semibold text-pink-600"> perfect beauty care experience</span> awaits you.
+          </p>
+        </div>
+
         {/* AI Nail Art Feature Highlight */}
         <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 mb-8">
           <CardContent className="p-8">
@@ -63,19 +76,6 @@ export function AIServiceSection() {
             </div>
           </CardContent>
         </Card>
-
-        <div className="text-center mb-12">
-          <div className="flex justify-center items-center mb-4">
-            <Star className="h-10 w-10 text-pink-500 mr-3" />
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              💅 Connie's Nail Premium Services
-            </h2>
-          </div>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            From traditional nail care to innovative AI nail art,  
-            <span className="font-semibold text-pink-600"> perfect beauty care experience</span> awaits you.
-          </p>
-        </div>
 
         {/* Service Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-12">
