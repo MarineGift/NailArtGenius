@@ -10,23 +10,23 @@ export function AIServiceSection() {
   const services = [
     {
       icon: <Palette className="h-8 w-8 text-pink-500" />,
-      title: '스파 매니큐어',
-      description: '프리미엄 스파 트리트먼트와 함께하는 완벽한 손톱 관리'
+      title: 'Spa Manicure',
+      description: 'Perfect nail care with premium spa treatment'
     },
     {
       icon: <Camera className="h-8 w-8 text-purple-500" />,
-      title: 'AI 네일아트 생성',
-      description: '인공지능이 맞춤형 독특한 네일 디자인을 생성해드립니다'
+      title: 'AI Nail Art Generation',
+      description: 'AI creates unique personalized nail designs just for you'
     },
     {
       icon: <Scissors className="h-8 w-8 text-blue-500" />,
-      title: '전문 왁싱 서비스',
-      description: '얼굴부터 전신까지 전문적인 왁싱 케어 서비스'
+      title: 'Professional Waxing',
+      description: 'Professional waxing care services from face to full body'
     },
     {
       icon: <Heart className="h-8 w-8 text-green-500" />,
-      title: '마사지 테라피',
-      description: '편안한 체어 마사지로 몸과 마음의 완전한 휴식'
+      title: 'Massage Therapy',
+      description: 'Complete relaxation for body and mind with comfortable chair massage'
     }
   ];
 
@@ -37,12 +37,12 @@ export function AIServiceSection() {
           <div className="flex justify-center items-center mb-4">
             <Star className="h-10 w-10 text-pink-500 mr-3" />
             <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              💅 Connie's Nail 프리미엄 서비스
+              💅 Connie's Nail Premium Services
             </h2>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            전통적인 네일 케어부터 혁신적인 AI 네일아트까지,  
-            <span className="font-semibold text-pink-600"> 완벽한 뷰티 케어 경험</span>을 제공합니다.
+            From traditional nail care to innovative AI nail art,  
+            <span className="font-semibold text-pink-600"> perfect beauty care experience</span> awaits you.
           </p>
         </div>
 
@@ -63,28 +63,28 @@ export function AIServiceSection() {
 
         {/* Booking Process */}
         <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
-          <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">간단한 예약 프로세스</h3>
+          <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">Simple Booking Process</h3>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">1</span>
               </div>
-              <h4 className="font-semibold text-lg mb-2">서비스 선택</h4>
-              <p className="text-gray-600">원하는 네일, 스파, 왁싱 서비스를 선택</p>
+              <h4 className="font-semibold text-lg mb-2">Select Service</h4>
+              <p className="text-gray-600">Choose your desired nail, spa, or waxing service</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
-              <h4 className="font-semibold text-lg mb-2">AI 분석 및 디자인</h4>
-              <p className="text-gray-600">AI가 분석하여 맞춤형 디자인 추천</p>
+              <h4 className="font-semibold text-lg mb-2">AI Analysis & Design</h4>
+              <p className="text-gray-600">AI analyzes and recommends personalized designs</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">3</span>
               </div>
-              <h4 className="font-semibold text-lg mb-2">매장 방문</h4>
-              <p className="text-gray-600">예약된 시간에 방문하여 빠른 시술</p>
+              <h4 className="font-semibold text-lg mb-2">Visit Store</h4>
+              <p className="text-gray-600">Visit at your scheduled time for quick service</p>
             </div>
           </div>
         </div>
@@ -92,23 +92,23 @@ export function AIServiceSection() {
         {/* CTA Buttons */}
         <div className="text-center space-y-4">
           <p className="text-lg font-medium text-gray-700 mb-6">
-            방문 가능한 편리한 시간에 예약해 주세요.
+            Book at a convenient time that works for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/booking">
               <Button size="lg" className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white px-8 py-3">
                 <Clock className="h-5 w-5 mr-2" />
-                지금 예약하기
+                Book Now
               </Button>
             </Link>
-            <Link href="/upload">
+            <Link href="/ai-generator">
               <Button 
                 variant="outline" 
                 size="lg" 
                 className="border-2 border-purple-500 text-purple-600 hover:bg-purple-50 px-8 py-3"
               >
                 <Camera className="h-5 w-5 mr-2" />
-                AI 디자인 체험
+                Try AI Design
               </Button>
             </Link>
           </div>

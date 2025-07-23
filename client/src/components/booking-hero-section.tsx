@@ -6,9 +6,9 @@ import { Link } from 'wouter';
 
 export function BookingHeroSection() {
   const popularServices = [
-    { name: '스파 매니큐어', price: '$45', duration: '60분' },
-    { name: 'AI 맞춤 네일아트', price: '$80', duration: '120분', featured: true },
-    { name: '젤 매니큐어', price: '$40', duration: '75분' }
+    { name: 'Spa Manicure', price: '$45', duration: '60min' },
+    { name: 'AI Custom Nail Art', price: '$80', duration: '120min', featured: true },
+    { name: 'Gel Manicure', price: '$40', duration: '75min' }
   ];
 
   return (
@@ -18,12 +18,12 @@ export function BookingHeroSection() {
           <div className="flex justify-center items-center mb-4">
             <Star className="h-8 w-8 text-yellow-500 mr-2" />
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-              프리미엄 네일 서비스 예약
+              Premium Nail Service Booking
             </h2>
             <Star className="h-8 w-8 text-yellow-500 ml-2" />
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            전문가의 손길과 혁신적인 AI 기술로 만나는 완벽한 네일 케어 경험
+            Experience perfect nail care with expert touch and innovative AI technology
           </p>
         </div>
 
@@ -34,23 +34,23 @@ export function BookingHeroSection() {
               <CardHeader className="text-center pb-6">
                 <CardTitle className="text-2xl md:text-3xl font-bold flex items-center justify-center">
                   <Calendar className="h-8 w-8 mr-3" />
-                  지금 예약하세요
+                  Book Now
                 </CardTitle>
                 <p className="text-pink-100 text-lg">
-                  온라인으로 간편하게 예약하고 특별한 혜택을 받으세요
+                  Book online easily and receive special benefits
                 </p>
               </CardHeader>
               <CardContent className="text-center pb-8">
                 <div className="grid md:grid-cols-2 gap-4 mb-8">
                   <div className="bg-white/10 rounded-lg p-4">
                     <Clock className="h-6 w-6 mx-auto mb-2" />
-                    <p className="font-semibold">빠른 예약</p>
-                    <p className="text-sm text-pink-100">실시간 예약 확인</p>
+                    <p className="font-semibold">Quick Booking</p>
+                    <p className="text-sm text-pink-100">Real-time confirmation</p>
                   </div>
                   <div className="bg-white/10 rounded-lg p-4">
                     <Sparkles className="h-6 w-6 mx-auto mb-2" />
-                    <p className="font-semibold">특별 혜택</p>
-                    <p className="text-sm text-pink-100">온라인 예약 할인</p>
+                    <p className="font-semibold">Special Benefits</p>
+                    <p className="text-sm text-pink-100">Online booking discount</p>
                   </div>
                 </div>
                 
@@ -60,12 +60,12 @@ export function BookingHeroSection() {
                     className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <Calendar className="h-5 w-5 mr-2" />
-                    예약하기
+                    Book Appointment
                   </Button>
                 </Link>
                 
                 <p className="text-pink-100 text-sm mt-4">
-                  * 온라인 예약시 10% 할인 혜택
+                  * 10% discount for online bookings
                 </p>
               </CardContent>
             </Card>
@@ -75,7 +75,7 @@ export function BookingHeroSection() {
           <div>
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl text-gray-800">인기 서비스</CardTitle>
+                <CardTitle className="text-xl text-gray-800">Popular Services</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {popularServices.map((service, index) => (
@@ -92,7 +92,7 @@ export function BookingHeroSection() {
                       {service.featured && (
                         <Badge className="bg-purple-500 hover:bg-purple-600">
                           <Sparkles className="h-3 w-3 mr-1" />
-                          추천
+                          Recommended
                         </Badge>
                       )}
                     </div>
@@ -108,7 +108,7 @@ export function BookingHeroSection() {
                 
                 <Link href="/services">
                   <Button variant="outline" className="w-full mt-4">
-                    전체 서비스 보기
+                    View All Services
                   </Button>
                 </Link>
               </CardContent>
