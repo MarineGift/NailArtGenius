@@ -19,6 +19,7 @@
                 
                 <div class="nav-menu" id="nav-menu">
                     <a href="#home" class="nav-link" data-key="nav.home">Home</a>
+                    <a href="#ai-generator" class="nav-link nav-ai" data-key="nav.ai_generator">🤖 AI Nail Art</a>
                     <a href="#services" class="nav-link" data-key="nav.services">Services</a>
                     <a href="#booking" class="nav-link" data-key="nav.booking">Booking</a>
                     <a href="#gallery" class="nav-link" data-key="nav.gallery">Gallery</a>
@@ -100,7 +101,7 @@
         </div>
         
         <!-- AI Nail Art Generator Section -->
-        <div class="ai-service-section">
+        <div class="ai-service-section" id="ai-generator">
             <div class="container">
                 <div class="ai-service-card">
                     <h3 data-key="ai.nail_generator_title">🤖 AI Nail Art Generator 🤖</h3>
@@ -230,12 +231,12 @@
                     <div class="form-group">
                         <label data-key="booking.select_service">Select Service</label>
                         <select id="service-select" required>
-                            <option value="">Choose a service...</option>
-                            <option value="spa-manicure">Spa Manicure - $35</option>
-                            <option value="spa-pedicure">Spa Pedicure - $40</option>
-                            <option value="regular-manicure">Regular Manicure - $20</option>
-                            <option value="french-manicure">French Manicure - $25</option>
-                            <option value="gel-manicure">Color Gel Manicure - $35</option>
+                            <option value="" data-key="booking.choose_service">Choose a service...</option>
+                            <option value="spa-manicure" data-key="booking.spa_manicure">Spa Manicure - $35</option>
+                            <option value="spa-pedicure" data-key="booking.spa_pedicure">Spa Pedicure - $40</option>
+                            <option value="regular-manicure" data-key="booking.regular_manicure">Regular Manicure - $20</option>
+                            <option value="french-manicure" data-key="booking.french_manicure">French Manicure - $25</option>
+                            <option value="gel-manicure" data-key="booking.gel_manicure">Color Gel Manicure - $35</option>
                         </select>
                     </div>
                     
@@ -247,16 +248,16 @@
                         <div class="form-group">
                             <label data-key="booking.select_time">Select Time</label>
                             <select id="time-select" required>
-                                <option value="">Choose a time...</option>
-                                <option value="10:00">10:00 AM</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="12:00">12:00 PM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="14:00">2:00 PM</option>
-                                <option value="15:00">3:00 PM</option>
-                                <option value="16:00">4:00 PM</option>
-                                <option value="17:00">5:00 PM</option>
-                                <option value="18:00">6:00 PM</option>
+                                <option value="" data-key="booking.choose_time">Choose a time...</option>
+                                <option value="10:00" data-key="booking.time_10">10:00 AM</option>
+                                <option value="11:00" data-key="booking.time_11">11:00 AM</option>
+                                <option value="12:00" data-key="booking.time_12">12:00 PM</option>
+                                <option value="13:00" data-key="booking.time_13">1:00 PM</option>
+                                <option value="14:00" data-key="booking.time_14">2:00 PM</option>
+                                <option value="15:00" data-key="booking.time_15">3:00 PM</option>
+                                <option value="16:00" data-key="booking.time_16">4:00 PM</option>
+                                <option value="17:00" data-key="booking.time_17">5:00 PM</option>
+                                <option value="18:00" data-key="booking.time_18">6:00 PM</option>
                             </select>
                         </div>
                     </div>
@@ -298,22 +299,22 @@
                 <div class="gallery-item">
                     <img src="../attached_assets/image_1753225509459.png" alt="Classic French Nails">
                     <div class="gallery-overlay">
-                        <h4>Classic French</h4>
+                        <h4 data-key="gallery.classic_french">Classic French</h4>
                         <p data-key="gallery.classic_french_desc">Traditional French manicure style</p>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="../attached_assets/image_1753225573140.png" alt="Artistic Designs">
                     <div class="gallery-overlay">
-                        <h4>Artistic Designs</h4>
-                        <p>Creative and unique nail art</p>
+                        <h4 data-key="gallery.artistic_designs">Artistic Designs</h4>
+                        <p data-key="gallery.artistic_desc">Creative and unique nail art</p>
                     </div>
                 </div>
                 <div class="gallery-item">
                     <img src="../attached_assets/image_1753225819202.png" alt="Elegant Styles">
                     <div class="gallery-overlay">
-                        <h4>Elegant Styles</h4>
-                        <p>Sophisticated and classy designs</p>
+                        <h4 data-key="gallery.elegant_styles">Elegant Styles</h4>
+                        <p data-key="gallery.elegant_desc">Sophisticated and classy designs</p>
                     </div>
                 </div>
             </div>
@@ -336,7 +337,7 @@
                 </div>
                 
                 <div class="contact-form-section">
-                    <h3>Send us a message</h3>
+                    <h3 data-key="contact.send_message">Send us a message</h3>
                     <form id="contact-form" class="contact-form">
                         <div class="form-group">
                             <label data-key="contact.form.name">Full Name</label>

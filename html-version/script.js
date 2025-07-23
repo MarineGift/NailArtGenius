@@ -2,6 +2,7 @@
 const translations = {
     // Navigation
     'nav.home': { ko: '홈', en: 'Home', ja: 'ホーム', es: 'Inicio' },
+    'nav.ai_generator': { ko: '🤖 AI 네일아트', en: '🤖 AI Nail Art', ja: '🤖 AI ネイルアート', es: '🤖 Arte de Uñas IA' },
     'nav.services': { ko: '서비스', en: 'Services', ja: 'サービス', es: 'Servicios' },
     'nav.booking': { ko: '예약', en: 'Booking', ja: '予約', es: 'Reserva' },
     'nav.gallery': { ko: '갤러리', en: 'Gallery', ja: 'ギャラリー', es: 'Galería' },
@@ -98,6 +99,34 @@ const translations = {
     'ai.design_selected': { ko: '디자인이 선택되었습니다! 아래로 스크롤하여 예약하세요.', en: 'Design selected! Scroll down to book your appointment.', ja: 'デザインが選択されました！下にスクロールして予約してください。', es: '¡Diseño seleccionado! Desplázate hacia abajo para reservar tu cita.' },
     'ai.download_started': { ko: '다운로드가 시작되었습니다! 디자인이 저장됩니다.', en: 'Download started! Your designs will be saved.', ja: 'ダウンロード開始！デザインが保存されます。', es: '¡Descarga iniciada! Tus diseños serán guardados.' },
     'ai.download_complete': { ko: '디자인이 성공적으로 다운로드되었습니다!', en: 'Designs downloaded successfully!', ja: 'デザインのダウンロードが完了しました！', es: '¡Diseños descargados con éxito!' },
+    
+    // Booking form translations
+    'booking.choose_service': { ko: '서비스를 선택하세요...', en: 'Choose a service...', ja: 'サービスを選択...', es: 'Elige un servicio...' },
+    'booking.spa_manicure': { ko: '스파 매니큐어 - $35', en: 'Spa Manicure - $35', ja: 'スパマニキュア - $35', es: 'Manicura de Spa - $35' },
+    'booking.spa_pedicure': { ko: '스파 페디큐어 - $40', en: 'Spa Pedicure - $40', ja: 'スパペディキュア - $40', es: 'Pedicura de Spa - $40' },
+    'booking.regular_manicure': { ko: '일반 매니큐어 - $20', en: 'Regular Manicure - $20', ja: 'レギュラーマニキュア - $20', es: 'Manicura Regular - $20' },
+    'booking.french_manicure': { ko: '프렌치 매니큐어 - $25', en: 'French Manicure - $25', ja: 'フレンチマニキュア - $25', es: 'Manicura Francesa - $25' },
+    'booking.gel_manicure': { ko: '컬러 젤 매니큐어 - $35', en: 'Color Gel Manicure - $35', ja: 'カラージェルマニキュア - $35', es: 'Manicura de Gel de Color - $35' },
+    'booking.choose_time': { ko: '시간을 선택하세요...', en: 'Choose a time...', ja: '時間を選択...', es: 'Elige una hora...' },
+    'booking.time_10': { ko: '오전 10:00', en: '10:00 AM', ja: '午前10:00', es: '10:00 AM' },
+    'booking.time_11': { ko: '오전 11:00', en: '11:00 AM', ja: '午前11:00', es: '11:00 AM' },
+    'booking.time_12': { ko: '오후 12:00', en: '12:00 PM', ja: '午後12:00', es: '12:00 PM' },
+    'booking.time_13': { ko: '오후 1:00', en: '1:00 PM', ja: '午後1:00', es: '1:00 PM' },
+    'booking.time_14': { ko: '오후 2:00', en: '2:00 PM', ja: '午後2:00', es: '2:00 PM' },
+    'booking.time_15': { ko: '오후 3:00', en: '3:00 PM', ja: '午後3:00', es: '3:00 PM' },
+    'booking.time_16': { ko: '오후 4:00', en: '4:00 PM', ja: '午後4:00', es: '4:00 PM' },
+    'booking.time_17': { ko: '오후 5:00', en: '5:00 PM', ja: '午後5:00', es: '5:00 PM' },
+    'booking.time_18': { ko: '오후 6:00', en: '6:00 PM', ja: '午後6:00', es: '6:00 PM' },
+    
+    // Gallery translations
+    'gallery.classic_french': { ko: '클래식 프렌치', en: 'Classic French', ja: 'クラシックフレンチ', es: 'Francés Clásico' },
+    'gallery.artistic_designs': { ko: '아티스틱 디자인', en: 'Artistic Designs', ja: 'アーティスティックデザイン', es: 'Diseños Artísticos' },
+    'gallery.artistic_desc': { ko: '창의적이고 독특한 네일아트', en: 'Creative and unique nail art', ja: '創造的でユニークなネイルアート', es: 'Arte de uñas creativo y único' },
+    'gallery.elegant_styles': { ko: '우아한 스타일', en: 'Elegant Styles', ja: 'エレガントスタイル', es: 'Estilos Elegantes' },
+    'gallery.elegant_desc': { ko: '세련되고 고급스러운 디자인', en: 'Sophisticated and classy designs', ja: '洗練されたクラッシーなデザイン', es: 'Diseños sofisticados y elegantes' },
+    
+    // Contact form translations
+    'contact.send_message': { ko: '메시지 보내기', en: 'Send us a message', ja: 'メッセージを送る', es: 'Envíanos un mensaje' },
     
     // Additional missing translations
     'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado Premium' },
