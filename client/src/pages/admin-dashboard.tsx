@@ -60,6 +60,15 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [adminUser, setAdminUser] = useState<any>(null);
+  const [showCreateUserForm, setShowCreateUserForm] = useState(false);
+  const [newUser, setNewUser] = useState({
+    username: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    level: 'Customer'
+  });
   
   // Password change form
   const [passwordForm, setPasswordForm] = useState({
@@ -151,6 +160,53 @@ export default function AdminDashboard() {
     setLocation('/admin-login');
   };
 
+  const handleCreateUser = async () => {
+    try {
+      setError('');
+      
+      if (!newUser.username || !newUser.password || !newUser.firstName || !newUser.lastName) {
+        setError('All required fields must be filled.');
+        return;
+      }
+
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        setLocation('/admin-login');
+        return;
+      }
+
+      const response = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newUser)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setShowCreateUserForm(false);
+        setNewUser({
+          username: '',
+          password: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          level: 'Customer'
+        });
+        loadDashboardData(); // Refresh data
+        alert('User created successfully!');
+      } else {
+        setError(data.message || 'Failed to create user.');
+      }
+    } catch (error) {
+      console.error('Create user error:', error);
+      setError('Failed to create user.');
+    }
+  };
+
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -227,10 +283,14 @@ export default function AdminDashboard() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <Activity className="h-4 w-4" />
               <span>Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center space-x-2">
+              <Users className="h-4 w-4" />
+              <span>User Management</span>
             </TabsTrigger>
             <TabsTrigger value="customers" className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
@@ -430,6 +490,111 @@ export default function AdminDashboard() {
             <Card>
               <CardContent>
                 <p className="text-center text-gray-600 py-8">메일링 기능을 준비 중입니다.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  User Management
+                  <Button 
+                    onClick={() => setShowCreateUserForm(!showCreateUserForm)}
+                    className="flex items-center space-x-2"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    <span>Create User</span>
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {showCreateUserForm && (
+                  <Card className="mb-6">
+                    <CardHeader>
+                      <CardTitle>Create New User</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="username">Username</Label>
+                          <Input
+                            id="username"
+                            value={newUser.username}
+                            onChange={(e) => setNewUser({...newUser, username: e.target.value})}
+                            placeholder="Enter username"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="password">Password</Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={newUser.password}
+                            onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                            placeholder="Enter password"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First Name</Label>
+                          <Input
+                            id="firstName"
+                            value={newUser.firstName}
+                            onChange={(e) => setNewUser({...newUser, firstName: e.target.value})}
+                            placeholder="Enter first name"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input
+                            id="lastName"
+                            value={newUser.lastName}
+                            onChange={(e) => setNewUser({...newUser, lastName: e.target.value})}
+                            placeholder="Enter last name"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={newUser.email}
+                            onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                            placeholder="Enter email (optional)"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="level">Level</Label>
+                          <select
+                            id="level"
+                            value={newUser.level}
+                            onChange={(e) => setNewUser({...newUser, level: e.target.value})}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <option value="Customer">Customer</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="flex justify-end space-x-2 mt-4">
+                        <Button variant="outline" onClick={() => setShowCreateUserForm(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleCreateUser}>
+                          Create User
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+                
+                <div className="space-y-4">
+                  {stats?.totalUsers === 0 ? (
+                    <p className="text-gray-500 text-center py-8">No users found. Create your first user above.</p>
+                  ) : (
+                    <div>Users will be displayed here after implementation.</div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

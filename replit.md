@@ -13,6 +13,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### User Management System Implementation (July 23, 2025)
+- **Complete User Level System**: Added comprehensive user management with level-based access control
+  - Added "level" field to users table to distinguish between "admin" and "Customer" users
+  - Created admin user with username "admin", password "1111", firstName "admin", lastName "admin"
+  - Implemented User Management tab in admin dashboard with user creation functionality
+  - Updated authentication to support both admin_users table and users table authentication
+  - Fixed database schema issues with user_id/userId column mapping
+  - Added comprehensive user creation API endpoint for admin-managed user registration
+
 ### Complete Korean to English Text Conversion (July 23, 2025)
 - **Comprehensive Text Translation**: Completed full conversion of all Korean text to English
   - Updated admin dashboard interface: 관리자 대시보드 → Admin Dashboard, 고객관리 → Customer Management

@@ -101,6 +101,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Username and password are required.' });
       }
 
+      // Check if it's the simple admin login
+      if (username === 'admin' && password === '1111') {
+        const adminUser = await storage.getUser('admin');
+        if (adminUser && adminUser.level === 'admin') {
+          // Generate JWT token for admin user
+          const token = generateToken({ id: adminUser.id, username: adminUser.username, role: 'admin' });
+          
+          res.json({
+            token,
+            admin: {
+              id: adminUser.id,
+              username: adminUser.username,
+              name: `${adminUser.firstName} ${adminUser.lastName}`,
+              email: adminUser.email,
+              role: 'admin'
+            }
+          });
+          return;
+        }
+      }
+
+      // For other admin accounts, use admin_users table if it exists
       const admin = await storage.getAdminByUsername(username);
       if (!admin) {
         return res.status(401).json({ message: 'Invalid username or password.' });
@@ -198,6 +220,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Password reset error:', error);
       res.status(500).json({ message: 'Error occurred during password reset.' });
+    }
+  });
+
+  // Create admin user route
+  app.post('/api/admin/create-user', authenticateAdmin, async (req: any, res) => {
+    try {
+      const { username, password, firstName, lastName, email, level } = req.body;
+      
+      if (!username || !password || !firstName || !lastName || !level) {
+        return res.status(400).json({ message: 'All required fields must be provided.' });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUser(username);
+      if (existingUser) {
+        return res.status(400).json({ message: 'User already exists.' });
+      }
+
+      // Hash password if it's an admin user
+      let hashedPassword = password;
+      if (level === 'admin') {
+        hashedPassword = await hashPassword(password);
+      }
+
+      const newUser = await storage.createUserFromAdmin({
+        username,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        email,
+        level
+      });
+
+      res.status(201).json({
+        message: 'User created successfully.',
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          level: newUser.level
+        }
+      });
+    } catch (error) {
+      console.error('Create user error:', error);
+      res.status(500).json({ message: 'Error occurred while creating user.' });
     }
   });
 

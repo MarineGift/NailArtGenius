@@ -39,6 +39,8 @@ export const users = pgTable("users", {
   region: varchar("region"),
   postalCode: varchar("postal_code"),
   mailingList: boolean("mailing_list").default(false),
+  level: varchar("level").default("Customer"), // "admin" or "Customer"
+  username: varchar("username").unique(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
