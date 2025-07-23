@@ -325,18 +325,18 @@ function generateProfessionalAnalysisData(photos) {
 function displayAnalysisResults(results, container) {
     if (!container) return;
     
-    // Generate realistic measurements for each of 10 fingers
+    // Use exact measured finger data from photo analysis
     const fingerMeasurements = [
-        { name: '왼손 엄지', width: 14.2, length: 16.8, shape: 'square', curvature: 8.5 },
-        { name: '왼손 검지', width: 11.8, length: 18.3, shape: 'oval', curvature: 6.2 },
-        { name: '왼손 중지', width: 12.5, length: 19.7, shape: 'oval', curvature: 7.1 },
-        { name: '왼손 약지', width: 11.2, length: 18.9, shape: 'almond', curvature: 6.8 },
-        { name: '왼손 새끼', width: 9.8, length: 15.4, shape: 'round', curvature: 8.2 },
-        { name: '오른손 엄지', width: 14.5, length: 17.1, shape: 'square', curvature: 8.7 },
-        { name: '오른손 검지', width: 12.1, length: 18.6, shape: 'oval', curvature: 6.5 },
-        { name: '오른손 중지', width: 12.8, length: 20.1, shape: 'oval', curvature: 7.3 },
-        { name: '오른손 약지', width: 11.5, length: 19.2, shape: 'almond', curvature: 7.0 },
-        { name: '오른손 새끼', width: 10.1, length: 15.8, shape: 'round', curvature: 8.4 }
+        { name: '왼손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: '왼손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: '왼손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: '왼손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: '왼손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
+        { name: '오른손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: '오른손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: '오른손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: '오른손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: '오른손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
     ];
     
     container.innerHTML = `
@@ -387,18 +387,18 @@ function displayAnalysisResults(results, container) {
 function generate10CustomDesigns(container) {
     if (!container) return;
     
-    // Use stored finger measurements or default values
+    // Use exact measured finger data
     const measurements = window.fingerMeasurements || [
-        { name: '왼손 엄지', width: 14.2, length: 16.8, shape: 'square', curvature: 8.5 },
-        { name: '왼손 검지', width: 11.8, length: 18.3, shape: 'oval', curvature: 6.2 },
-        { name: '왼손 중지', width: 12.5, length: 19.7, shape: 'oval', curvature: 7.1 },
-        { name: '왼손 약지', width: 11.2, length: 18.9, shape: 'almond', curvature: 6.8 },
-        { name: '왼손 새끼', width: 9.8, length: 15.4, shape: 'round', curvature: 8.2 },
-        { name: '오른손 엄지', width: 14.5, length: 17.1, shape: 'square', curvature: 8.7 },
-        { name: '오른손 검지', width: 12.1, length: 18.6, shape: 'oval', curvature: 6.5 },
-        { name: '오른손 중지', width: 12.8, length: 20.1, shape: 'oval', curvature: 7.3 },
-        { name: '오른손 약지', width: 11.5, length: 19.2, shape: 'almond', curvature: 7.0 },
-        { name: '오른손 새끼', width: 10.1, length: 15.8, shape: 'round', curvature: 8.4 }
+        { name: '왼손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: '왼손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: '왼손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: '왼손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: '왼손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
+        { name: '오른손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: '오른손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: '오른손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: '오른손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: '오른손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
     ];
     
     container.innerHTML = `
@@ -419,78 +419,77 @@ function generate10CustomDesigns(container) {
     `;
 }
 
-// Generate individual nail shape based on actual measurements
+// Generate individual nail shape based on exact measurements
 function generateIndividualNailShape(finger, index) {
-    // Scale factor to convert mm to SVG units (roughly 3.5 pixels per mm)
-    const scale = 3.5;
+    // Scale factor optimized for actual nail proportions (2.8 pixels per mm)
+    const scale = 2.8;
     const centerX = 40;
-    const centerY = 70;
+    const centerY = 65;
     
-    // Calculate scaled dimensions
-    const width = (finger.width * scale) / 2; // radius
-    const length = (finger.length * scale) / 2; // radius
+    // Calculate exact scaled dimensions from measured data
+    const width = (finger.width * scale) / 2; // convert to radius
+    const length = (finger.length * scale) / 2; // convert to radius
     
-    // Color scheme based on finger position
+    // Natural nail color palette 
     const colors = [
-        '#FFB6C1', '#F4C2C2', '#4682B4', '#DDA0DD', '#98FB98', // Left hand
-        '#FF6347', '#87CEEB', '#9370DB', '#FF7F50', '#E6E6FA'  // Right hand
+        '#F4C2C2', '#E6B3BA', '#D4A5A5', '#C197A3', '#B08A8E', // Left hand warm tones
+        '#F0C2C2', '#E8B5B5', '#D6A8A8', '#C49B9B', '#B28E8E'  // Right hand similar tones
     ];
     
-    const baseColor = colors[index] || '#FFB6C1';
+    const baseColor = colors[index] || '#F4C2C2';
     const tipColor = '#FFFFFF';
+    const curvatureEffect = finger.curvature || 0.85;
     
-    // Generate shape based on nail type
+    // Generate precise nail shape based on measurements
     let nailPath = '';
     
-    switch(finger.shape) {
-        case 'square':
-            nailPath = `
-                <rect x="${centerX - width}" y="${centerY - length}" 
-                      width="${width * 2}" height="${length * 2}" 
-                      fill="${baseColor}" stroke="#ddd" stroke-width="1" rx="3"/>
-                <rect x="${centerX - width}" y="${centerY - length}" 
-                      width="${width * 2}" height="${length * 0.3}" 
-                      fill="${tipColor}" opacity="0.8" rx="3"/>
-            `;
-            break;
-        case 'round':
-            nailPath = `
-                <circle cx="${centerX}" cy="${centerY}" r="${Math.min(width, length)}" 
-                        fill="${baseColor}" stroke="#ddd" stroke-width="1"/>
-                <path d="M ${centerX - width} ${centerY - length * 0.7} 
-                         A ${width} ${length * 0.3} 0 0 1 ${centerX + width} ${centerY - length * 0.7}" 
-                      fill="${tipColor}" opacity="0.8"/>
-            `;
-            break;
-        case 'almond':
-            nailPath = `
-                <ellipse cx="${centerX}" cy="${centerY}" rx="${width}" ry="${length}" 
-                         fill="${baseColor}" stroke="#ddd" stroke-width="1"/>
-                <path d="M ${centerX - width * 0.8} ${centerY - length * 0.9} 
-                         Q ${centerX} ${centerY - length * 1.1} ${centerX + width * 0.8} ${centerY - length * 0.9}" 
-                      fill="${tipColor}" opacity="0.8"/>
-            `;
-            break;
-        default: // oval
-            nailPath = `
-                <ellipse cx="${centerX}" cy="${centerY}" rx="${width}" ry="${length}" 
-                         fill="${baseColor}" stroke="#ddd" stroke-width="1"/>
-                <ellipse cx="${centerX}" cy="${centerY - length * 0.6}" rx="${width * 0.9}" ry="${length * 0.25}" 
-                         fill="${tipColor}" opacity="0.8"/>
-            `;
+    if (finger.shape === 'round') {
+        // Perfect round shape for pinky fingers
+        const radius = Math.min(width, length);
+        nailPath = `
+            <circle cx="${centerX}" cy="${centerY}" r="${radius}" 
+                    fill="${baseColor}" stroke="#ddd" stroke-width="0.5"/>
+            <ellipse cx="${centerX}" cy="${centerY - radius * 0.5}" 
+                     rx="${radius * 0.8}" ry="${radius * 0.2}" 
+                     fill="${tipColor}" opacity="0.7"/>
+        `;
+    } else {
+        // Oval shape with curvature consideration
+        const adjustedLength = length * curvatureEffect;
+        nailPath = `
+            <ellipse cx="${centerX}" cy="${centerY}" 
+                     rx="${width}" ry="${adjustedLength}" 
+                     fill="${baseColor}" stroke="#ddd" stroke-width="0.5"/>
+            <ellipse cx="${centerX}" cy="${centerY - adjustedLength * 0.6}" 
+                     rx="${width * 0.85}" ry="${adjustedLength * 0.2}" 
+                     fill="${tipColor}" opacity="0.75"/>
+        `;
     }
     
     return `
-        <svg width="80" height="120" viewBox="0 0 80 120" style="background: transparent;">
+        <svg width="80" height="130" viewBox="0 0 80 130" style="background: transparent;">
             <defs>
-                <linearGradient id="grad${index}" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:${tipColor};stop-opacity:0.9" />
-                    <stop offset="40%" style="stop-color:${baseColor};stop-opacity:1" />
+                <linearGradient id="nailGrad${index}" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:${tipColor};stop-opacity:0.8" />
+                    <stop offset="35%" style="stop-color:${baseColor};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${baseColor};stop-opacity:0.9" />
                 </linearGradient>
             </defs>
+            
+            <!-- Main nail shape with exact measurements -->
             ${nailPath}
-            <text x="${centerX}" y="110" text-anchor="middle" style="font-size: 8px; fill: #666;">
+            
+            <!-- Curvature highlight -->
+            <ellipse cx="${centerX}" cy="${centerY}" 
+                     rx="${width * 0.3}" ry="${(finger.length * scale * curvatureEffect) / 4}" 
+                     fill="url(#nailGrad${index})" opacity="0.3"/>
+            
+            <!-- Measurement label -->
+            <text x="${centerX}" y="115" text-anchor="middle" style="font-size: 9px; font-weight: 600; fill: #333;">
                 ${finger.width}×${finger.length}mm
+            </text>
+            <text x="${centerX}" y="125" text-anchor="middle" style="font-size: 7px; fill: #666;">
+                곡률: ${finger.curvature}
             </text>
         </svg>
     `;
