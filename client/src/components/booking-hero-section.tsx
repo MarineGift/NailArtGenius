@@ -12,59 +12,59 @@ export function BookingHeroSection() {
   ];
 
   return (
-    <section className="py-16 bg-gradient-to-br from-pink-100 via-white to-purple-100">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <div className="flex justify-center items-center mb-4">
-            <Star className="h-8 w-8 text-yellow-500 mr-2" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
+    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-pink-100 via-white to-purple-100">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="flex justify-center items-center mb-4 flex-wrap">
+            <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500 mr-2" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800">
               Premium Nail Service Booking
             </h2>
-            <Star className="h-8 w-8 text-yellow-500 ml-2" />
+            <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500 ml-2" />
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-2">
             Experience perfect nail care with expert touch and innovative AI technology
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Main Booking Card */}
           <div className="lg:col-span-2">
             <Card className="shadow-xl border-0 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-              <CardHeader className="text-center pb-6">
-                <CardTitle className="text-2xl md:text-3xl font-bold flex items-center justify-center">
-                  <Calendar className="h-8 w-8 mr-3" />
-                  Book Now
+              <CardHeader className="text-center pb-4 sm:pb-6">
+                <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center justify-center flex-wrap">
+                  <Calendar className="h-6 w-6 sm:h-8 sm:w-8 mr-2 sm:mr-3" />
+                  <span>Book Now</span>
                 </CardTitle>
-                <p className="text-pink-100 text-lg">
+                <p className="text-pink-100 text-sm sm:text-base lg:text-lg">
                   Book online easily and receive special benefits
                 </p>
               </CardHeader>
-              <CardContent className="text-center pb-8">
-                <div className="grid md:grid-cols-2 gap-4 mb-8">
-                  <div className="bg-white/10 rounded-lg p-4">
-                    <Clock className="h-6 w-6 mx-auto mb-2" />
-                    <p className="font-semibold">Quick Booking</p>
-                    <p className="text-sm text-pink-100">Real-time confirmation</p>
+              <CardContent className="text-center pb-6 sm:pb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+                  <div className="bg-white/10 rounded-lg p-3 sm:p-4">
+                    <Clock className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-2" />
+                    <p className="font-semibold text-sm sm:text-base">Quick Booking</p>
+                    <p className="text-xs sm:text-sm text-pink-100">Real-time confirmation</p>
                   </div>
-                  <div className="bg-white/10 rounded-lg p-4">
-                    <Sparkles className="h-6 w-6 mx-auto mb-2" />
-                    <p className="font-semibold">Special Benefits</p>
-                    <p className="text-sm text-pink-100">Online booking discount</p>
+                  <div className="bg-white/10 rounded-lg p-3 sm:p-4">
+                    <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 mx-auto mb-2" />
+                    <p className="font-semibold text-sm sm:text-base">Special Benefits</p>
+                    <p className="text-xs sm:text-sm text-pink-100">Online booking discount</p>
                   </div>
                 </div>
                 
                 <Link href="/booking">
                   <Button 
                     size="lg" 
-                    className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="bg-white text-purple-600 hover:bg-gray-100 px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-base lg:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <Calendar className="h-5 w-5 mr-2" />
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                     Book Appointment
                   </Button>
                 </Link>
                 
-                <p className="text-pink-100 text-sm mt-4">
+                <p className="text-pink-100 text-xs sm:text-sm mt-4">
                   * 10% discount for online bookings
                 </p>
               </CardContent>
