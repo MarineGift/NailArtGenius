@@ -613,7 +613,7 @@ export default function BookingPage() {
                     className={`w-full ${(bookingCompleted && completedBookingDetails) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
-                    Payment Button
+                    온라인 결제 할인(10%)
                   </Button>
                 </div>
               </CardContent>
