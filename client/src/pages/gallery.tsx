@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/lib/i18n';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -6,31 +7,75 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Eye, Clock, Star, Heart } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Eye, Clock, Star, Heart, Image as ImageIcon } from 'lucide-react';
 
-interface NailArtItem {
+interface GalleryItem {
   id: number;
   title: string;
   description: string;
   category: string;
-  image: string;
-  price: string;
-  duration?: string;
-  difficulty?: string;
-  rating?: number;
-  reviews?: number;
-  techniques?: string[];
-  materials?: string[];
-  aftercare?: string;
+  imagePath: string;
+  thumbnailPath?: string;
+  tags: string[];
+  displayOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface GalleryDetailItem {
+  id: number;
+  galleryId: number;
+  techniquesUsed?: string;
+  timeRequired?: string;
+  difficultyLevel?: string;
+  priceRange?: string;
+  maintenanceGuide?: string;
   suitableFor?: string;
+  materials?: string[];
 }
 
 export default function Gallery() {
   const { t } = useTranslation();
-  const [selectedItem, setSelectedItem] = useState<NailArtItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [selectedDetail, setSelectedDetail] = useState<GalleryDetailItem | null>(null);
 
-  // Gallery data
-  const nailArtGallery = [
+  // Fetch gallery items from database
+  const { data: galleryItems = [], isLoading } = useQuery<GalleryItem[]>({
+    queryKey: ['/api/gallery'],
+  });
+
+  // Fetch gallery detail when item is selected
+  const { data: galleryDetail } = useQuery<GalleryDetailItem>({
+    queryKey: ['/api/gallery', selectedItem?.id, 'detail'],
+    queryFn: () => 
+      fetch(`/api/gallery/${selectedItem?.id}/detail`).then(res => res.json()),
+    enabled: !!selectedItem?.id,
+  });
+
+  // Create thumbnail from image
+  const createThumbnail = (imagePath: string) => {
+    if (imagePath.startsWith('http')) {
+      return imagePath + '?w=64&h=64&fit=crop';
+    }
+    return imagePath; // For local images, use as-is for now
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">Loading gallery...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Previous hardcoded data (kept for fallback)
+  const fallbackGallery = [
     {
       id: 1,
       title: "클래식 프렌치 매니큐어",
@@ -193,11 +238,11 @@ export default function Gallery() {
             {t('gallery.design_gallery')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {nailArtGallery.map((item) => (
+            {galleryItems.map((item) => (
               <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 <div className="aspect-square relative">
                   <img
-                    src={item.image}
+                    src={item.imagePath}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />
@@ -238,7 +283,7 @@ export default function Gallery() {
                         onClick={() => setSelectedItem(item)}
                       >
                         <Eye className="w-4 h-4 mr-2" />
-                        상세히 보기
+                        View Details
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -248,7 +293,7 @@ export default function Gallery() {
                       <div className="space-y-6">
                         <div className="aspect-video relative rounded-lg overflow-hidden">
                           <img
-                            src={item.image}
+                            src={item.imagePath}
                             alt={item.title}
                             className="w-full h-full object-cover"
                           />
@@ -258,6 +303,98 @@ export default function Gallery() {
                             </Badge>
                           </div>
                         </div>
+                        
+                        {/* Gallery Information Table */}
+                        {galleryDetail && (
+                          <div className="mt-6">
+                            <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                              <ImageIcon className="h-5 w-5" />
+                              Gallery Information
+                            </h4>
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Property</TableHead>
+                                  <TableHead>Details</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell className="font-medium">Image Path</TableCell>
+                                  <TableCell>{item.imagePath}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="font-medium">Thumbnail</TableCell>
+                                  <TableCell>
+                                    <img 
+                                      src={createThumbnail(item.imagePath)} 
+                                      alt="Thumbnail" 
+                                      className="w-8 h-8 object-cover rounded"
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="font-medium">Category</TableCell>
+                                  <TableCell>{item.category}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="font-medium">Tags</TableCell>
+                                  <TableCell>{item.tags?.join(', ') || 'None'}</TableCell>
+                                </TableRow>
+                                {galleryDetail.techniquesUsed && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Techniques Used</TableCell>
+                                    <TableCell>{galleryDetail.techniquesUsed}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.timeRequired && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Time Required</TableCell>
+                                    <TableCell>{galleryDetail.timeRequired}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.difficultyLevel && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Difficulty Level</TableCell>
+                                    <TableCell>{galleryDetail.difficultyLevel}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.priceRange && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Price Range</TableCell>
+                                    <TableCell>{galleryDetail.priceRange}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.maintenanceGuide && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Maintenance Guide</TableCell>
+                                    <TableCell>{galleryDetail.maintenanceGuide}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.suitableFor && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Suitable For</TableCell>
+                                    <TableCell>{galleryDetail.suitableFor}</TableCell>
+                                  </TableRow>
+                                )}
+                                {galleryDetail.materials && galleryDetail.materials.length > 0 && (
+                                  <TableRow>
+                                    <TableCell className="font-medium">Materials</TableCell>
+                                    <TableCell>{galleryDetail.materials.join(', ')}</TableCell>
+                                  </TableRow>
+                                )}
+                                <TableRow>
+                                  <TableCell className="font-medium">Display Order</TableCell>
+                                  <TableCell>{item.displayOrder}</TableCell>
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell className="font-medium">Created Date</TableCell>
+                                  <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          </div>
+                        )}
                         
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">

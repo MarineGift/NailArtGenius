@@ -957,6 +957,11 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
     return galleryItem;
   }
 
+  async getGalleryDetail(galleryId: number): Promise<any> {
+    const [detail] = await db.select().from(galleryDesc).where(eq(galleryDesc.galleryId, galleryId));
+    return detail;
+  }
+
   async updateGallery(id: number, updates: Partial<Gallery>): Promise<Gallery> {
     const [updatedGallery] = await db
       .update(gallery)

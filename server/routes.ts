@@ -2851,6 +2851,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Gallery detail endpoint
+  app.get('/api/gallery/:id/detail', async (req, res) => {
+    try {
+      const galleryId = parseInt(req.params.id);
+      const detail = await storage.getGalleryDetail(galleryId);
+      if (!detail) {
+        return res.status(404).json({ error: 'Gallery detail not found' });
+      }
+      res.json(detail);
+    } catch (error) {
+      console.error('Error fetching gallery detail:', error);
+      res.status(500).json({ error: 'Failed to fetch gallery detail' });
+    }
+  });
+
   // Gallery Description Routes
   app.get('/api/gallery/:id/description', async (req, res) => {
     try {

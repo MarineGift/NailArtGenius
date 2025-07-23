@@ -242,6 +242,7 @@ export const gallery = pgTable("gallery", {
   title: varchar("title").notNull(), // Gallery item title
   description: text("description"), // Gallery item description
   imagePath: varchar("image_path").notNull(), // Path to the gallery image
+  thumbnailPath: varchar("thumbnail_path"), // Path to thumbnail image (icon size)
   category: varchar("category").notNull(), // Category: "nail_art", "spa", "treatment", "before_after"
   tags: text("tags").array(), // Array of tags for filtering
   displayOrder: integer("display_order").default(0), // Order in gallery display
@@ -254,14 +255,13 @@ export const gallery = pgTable("gallery", {
 export const galleryDesc = pgTable("gallery_desc", {
   id: serial("id").primaryKey(),
   galleryId: integer("gallery_id").notNull().references(() => gallery.id),
-  detailTitle: varchar("detail_title").notNull(), // Detailed title for modal
-  detailDescription: text("detail_description").notNull(), // Full description
-  technicalDetails: text("technical_details"), // Technical specifications
-  duration: varchar("duration"), // Service duration if applicable
-  price: varchar("price"), // Price information
-  beforeAfterImages: text("before_after_images").array(), // Before/after image paths
-  additionalImages: text("additional_images").array(), // Additional detail images
-  tips: text("tips"), // Care tips or recommendations
+  techniquesUsed: text("techniques_used"), // Techniques used in the nail art
+  timeRequired: varchar("time_required"), // Time required for the service
+  difficultyLevel: varchar("difficulty_level"), // Difficulty level: beginner, intermediate, advanced
+  priceRange: varchar("price_range"), // Price range for the service
+  maintenanceGuide: text("maintenance_guide"), // Maintenance and care instructions
+  suitableFor: text("suitable_for"), // Suitable occasions or customer types
+  materials: text("materials").array(), // Materials used
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
