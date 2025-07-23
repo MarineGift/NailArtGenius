@@ -970,14 +970,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mailingList 
       } = req.body;
       
-      // Check if appointment slot is already booked
-      const existingAppointment = await storage.getAppointmentByDateAndTime(
+      // Check if appointment slot has capacity (max 3 people per time slot)
+      const existingAppointments = await storage.getAppointmentsByDateAndTime(
         appointmentDate, 
         timeSlot
       );
       
-      if (existingAppointment) {
-        return res.status(400).json({ message: "Time slot is already booked" });
+      if (existingAppointments.length >= 3) {
+        return res.status(400).json({ 
+          message: "Sorry, this time slot is fully booked. Please select a different time." 
+        });
       }
       
       // Create or update customer - handle both old format (customer object) and new format (individual fields)

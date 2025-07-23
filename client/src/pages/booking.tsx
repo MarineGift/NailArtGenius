@@ -110,8 +110,8 @@ export default function BookingPage() {
       console.error('Booking error:', error);
       let errorMessage = "Failed to book appointment. Please try again.";
       
-      if (error.message && error.message.includes("already booked")) {
-        errorMessage = "This time slot is already taken. Please select a different time.";
+      if (error.message && (error.message.includes("already booked") || error.message.includes("fully booked"))) {
+        errorMessage = "Sorry, this time slot is fully booked. Please select a different time.";
       } else if (error.message) {
         errorMessage = error.message;
       }

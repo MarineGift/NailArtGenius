@@ -93,6 +93,7 @@ export interface IStorage {
   getAppointmentsByDate(date: Date): Promise<Appointment[]>;
   getBookedSlotsByDate(date: string): Promise<{ timeSlot: string; customerId: number }[]>;
   getAppointmentByDateAndTime(date: string, timeSlot: string): Promise<Appointment | undefined>;
+  getAppointmentsByDateAndTime(date: string, timeSlot: string): Promise<Appointment[]>;
   getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]>;
   getUserAppointments(userId: string): Promise<Appointment[]>;
   
@@ -345,6 +346,27 @@ export class DatabaseStorage implements IStorage {
     return appointment;
   }
 
+  async getAppointmentsByDateAndTime(date: string, timeSlot: string): Promise<Appointment[]> {
+    const targetDate = new Date(date);
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const appointments_list = await db
+      .select()
+      .from(appointments)
+      .where(
+        and(
+          gte(appointments.appointmentDate, startOfDay),
+          lte(appointments.appointmentDate, endOfDay),
+          eq(appointments.timeSlot, timeSlot),
+          eq(appointments.status, 'scheduled') // Only count scheduled appointments
+        )
+      );
+    return appointments_list;
+  }
+
   async getAppointmentsByPeriod(period: string, date: string, view: string): Promise<any[]> {
     const targetDate = new Date(date);
     let startDate: Date;
@@ -444,20 +466,28 @@ export class DatabaseStorage implements IStorage {
 
   async getAvailableTimeSlots(date: Date): Promise<string[]> {
     const existingAppointments = await this.getAppointmentsByDate(date);
-    const bookedSlots = existingAppointments.map(apt => apt.timeSlot);
     
-    // Generate all possible 30-minute slots from 9:00 AM to 6:00 PM
+    // Count appointments per time slot
+    const slotCounts: { [key: string]: number } = {};
+    existingAppointments.forEach(apt => {
+      if (apt.status === 'scheduled') {
+        slotCounts[apt.timeSlot] = (slotCounts[apt.timeSlot] || 0) + 1;
+      }
+    });
+    
+    // Generate all possible 30-minute slots from 10:00 AM to 6:30 PM
     const allSlots: string[] = [];
-    for (let hour = 9; hour <= 17; hour++) {
+    for (let hour = 10; hour <= 18; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
         const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        if (hour < 17 || (hour === 17 && minute === 0)) { // Don't include 17:30
+        if (hour < 18 || (hour === 18 && minute === 30)) { // Include up to 18:30
           allSlots.push(timeSlot);
         }
       }
     }
     
-    return allSlots.filter(slot => !bookedSlots.includes(slot));
+    // Filter out slots that have 3 or more bookings (max capacity)
+    return allSlots.filter(slot => (slotCounts[slot] || 0) < 3);
   }
 
   // Admin operations
