@@ -21,7 +21,6 @@ const DirectMetricCard: React.FC<DirectMetricCardProps> = ({
     <div 
       onClick={() => {
         console.log(`🔥 ${title} clicked!`);
-        alert(`${title} clicked!`);
         onClick();
       }}
       style={{

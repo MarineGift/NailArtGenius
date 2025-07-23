@@ -541,6 +541,28 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
+            {/* Simple test button to verify modal works */}
+            <div className="mb-4">
+              <Button 
+                onClick={() => {
+                  console.log('Test button clicked - opening modal directly');
+                  setDetailModal({
+                    isOpen: true,
+                    metricType: 'customers',
+                    title: 'Test Modal',
+                    data: [
+                      { name: 'Test Customer 1', phoneNumber: '010-1111-1111', email: 'test1@test.com' },
+                      { name: 'Test Customer 2', phoneNumber: '010-2222-2222', email: 'test2@test.com' }
+                    ],
+                    totalCount: 2
+                  });
+                }}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                TEST MODAL (임시 테스트)
+              </Button>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <DirectMetricCard
                 title="Total Customers"
