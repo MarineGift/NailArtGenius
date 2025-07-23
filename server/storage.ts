@@ -15,6 +15,7 @@ import {
   userActivities,
   designInteractions,
   userBehaviorAnalytics,
+  carouselImages,
   type User,
   type UpsertUser,
   type Customer,
@@ -50,6 +51,8 @@ import {
   type InsertDesignInteraction,
   type UserBehaviorAnalytics,
   type InsertUserBehaviorAnalytics,
+  type CarouselImage,
+  type InsertCarouselImage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -134,6 +137,13 @@ export interface IStorage {
   getUserCustomNailDesigns(userId: string): Promise<CustomNailDesign[]>;
   getCustomNailDesign(id: number): Promise<CustomNailDesign | undefined>;
   updateCustomNailDesign(id: number, updates: Partial<CustomNailDesign>): Promise<CustomNailDesign>;
+  
+  // Carousel images operations
+  createCarouselImage(image: InsertCarouselImage): Promise<CarouselImage>;
+  getCarouselImages(page?: string): Promise<CarouselImage[]>;
+  getCarouselImage(id: number): Promise<CarouselImage | undefined>;
+  updateCarouselImage(id: number, updates: Partial<CarouselImage>): Promise<CarouselImage>;
+  deleteCarouselImage(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -813,6 +823,53 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
       .where(eq(customers.id, id))
       .returning();
     return updatedCustomer;
+  }
+
+  // Carousel images operations
+  async createCarouselImage(image: InsertCarouselImage): Promise<CarouselImage> {
+    const [created] = await db
+      .insert(carouselImages)
+      .values(image)
+      .returning();
+    return created;
+  }
+
+  async getCarouselImages(page?: string): Promise<CarouselImage[]> {
+    if (page) {
+      return await db
+        .select()
+        .from(carouselImages)
+        .where(and(eq(carouselImages.page, page), eq(carouselImages.isActive, true)))
+        .orderBy(carouselImages.displayOrder, carouselImages.createdAt);
+    }
+    return await db
+      .select()
+      .from(carouselImages)
+      .where(eq(carouselImages.isActive, true))
+      .orderBy(carouselImages.displayOrder, carouselImages.createdAt);
+  }
+
+  async getCarouselImage(id: number): Promise<CarouselImage | undefined> {
+    const [image] = await db
+      .select()
+      .from(carouselImages)
+      .where(eq(carouselImages.id, id));
+    return image;
+  }
+
+  async updateCarouselImage(id: number, updates: Partial<CarouselImage>): Promise<CarouselImage> {
+    const [updated] = await db
+      .update(carouselImages)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(carouselImages.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteCarouselImage(id: number): Promise<void> {
+    await db
+      .delete(carouselImages)
+      .where(eq(carouselImages.id, id));
   }
 }
 

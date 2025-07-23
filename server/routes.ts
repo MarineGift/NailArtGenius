@@ -7,7 +7,7 @@ import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToke
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
-import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
+import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
 import {
@@ -2263,6 +2263,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching inquiries:', error);
       res.status(500).json({ error: 'Failed to fetch inquiries' });
+    }
+  });
+
+  // Carousel Images Routes
+  app.get("/api/carousel-images", async (req, res) => {
+    try {
+      const page = req.query.page as string;
+      const images = await storage.getCarouselImages(page);
+      res.json(images);
+    } catch (error) {
+      console.error("Error fetching carousel images:", error);
+      res.status(500).json({ message: "Failed to fetch carousel images" });
+    }
+  });
+
+  app.post("/api/admin/carousel-images", upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "Image file is required" });
+      }
+
+      const { page, headerText, detailedDescription, displayOrder } = req.body;
+      const imagePath = `/uploads/${req.file.filename}`;
+
+      const imageData = {
+        page,
+        imagePath,
+        headerText,
+        detailedDescription,
+        displayOrder: parseInt(displayOrder) || 0,
+        isActive: true
+      };
+
+      const result = insertCarouselImageSchema.safeParse(imageData);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid image data", errors: result.error.errors });
+      }
+
+      const carousel = await storage.createCarouselImage(result.data);
+      res.json(carousel);
+    } catch (error) {
+      console.error("Error creating carousel image:", error);
+      res.status(500).json({ message: "Failed to create carousel image" });
+    }
+  });
+
+  app.put("/api/admin/carousel-images/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+
+      const carousel = await storage.updateCarouselImage(id, updates);
+      res.json(carousel);
+    } catch (error) {
+      console.error("Error updating carousel image:", error);
+      res.status(500).json({ message: "Failed to update carousel image" });
+    }
+  });
+
+  app.delete("/api/admin/carousel-images/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteCarouselImage(id);
+      res.json({ message: "Carousel image deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting carousel image:", error);
+      res.status(500).json({ message: "Failed to delete carousel image" });
+    }
+  });
+
+  app.get("/api/admin/carousel-images", async (req, res) => {
+    try {
+      const images = await storage.getCarouselImages(); // Get all images for admin
+      res.json(images);
+    } catch (error) {
+      console.error("Error fetching admin carousel images:", error);
+      res.status(500).json({ message: "Failed to fetch carousel images" });
     }
   });
 

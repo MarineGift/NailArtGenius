@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, 
   Calendar, 
@@ -23,7 +25,10 @@ import {
   Activity,
   TrendingUp,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Upload,
+  Image,
+  Plus
 } from 'lucide-react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -77,9 +82,21 @@ export default function AdminDashboard() {
     confirmPassword: ''
   });
 
+  // Carousel management state
+  const [carouselImages, setCarouselImages] = useState<any[]>([]);
+  const [showCreateImageForm, setShowCreateImageForm] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [newCarouselImage, setNewCarouselImage] = useState({
+    page: 'home',
+    headerText: '',
+    detailedDescription: '',
+    displayOrder: 0
+  });
+
   useEffect(() => {
     checkAdminAuth();
     loadDashboardData();
+    loadCarouselImages();
   }, []);
 
   const checkAdminAuth = () => {
@@ -257,6 +274,79 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadCarouselImages = async () => {
+    try {
+      const response = await fetch('/api/admin/carousel-images');
+      if (response.ok) {
+        const images = await response.json();
+        setCarouselImages(images);
+      }
+    } catch (error) {
+      console.error('Error loading carousel images:', error);
+    }
+  };
+
+  const handleCreateCarouselImage = async () => {
+    try {
+      if (!selectedFile) {
+        setError('Please select an image file.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      formData.append('page', newCarouselImage.page);
+      formData.append('headerText', newCarouselImage.headerText);
+      formData.append('detailedDescription', newCarouselImage.detailedDescription);
+      formData.append('displayOrder', newCarouselImage.displayOrder.toString());
+
+      const response = await fetch('/api/admin/carousel-images', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        setShowCreateImageForm(false);
+        setSelectedFile(null);
+        setNewCarouselImage({
+          page: 'home',
+          headerText: '',
+          detailedDescription: '',
+          displayOrder: 0
+        });
+        loadCarouselImages();
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Failed to create carousel image.');
+      }
+    } catch (error) {
+      console.error('Error creating carousel image:', error);
+      setError('Failed to create carousel image.');
+    }
+  };
+
+  const handleDeleteCarouselImage = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this carousel image?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/carousel-images/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        loadCarouselImages();
+      } else {
+        setError('Failed to delete carousel image.');
+      }
+    } catch (error) {
+      console.error('Error deleting carousel image:', error);
+      setError('Failed to delete carousel image.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
@@ -295,7 +385,7 @@ export default function AdminDashboard() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <Activity className="h-4 w-4" />
               <span>Dashboard</span>
@@ -315,6 +405,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="emails" className="flex items-center space-x-2">
               <Mail className="h-4 w-4" />
               <span>Mailing</span>
+            </TabsTrigger>
+            <TabsTrigger value="carousel" className="flex items-center space-x-2">
+              <Eye className="h-4 w-4" />
+              <span>Carousel Images</span>
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
@@ -690,6 +784,173 @@ export default function AdminDashboard() {
                   </form>
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="carousel" className="space-y-6">
+            <div className="grid gap-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Carousel Images Management</h2>
+                <Button 
+                  onClick={() => setShowCreateImageForm(true)}
+                  className="flex items-center space-x-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add New Image</span>
+                </Button>
+              </div>
+
+              {showCreateImageForm && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Add New Carousel Image</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="page">Page</Label>
+                        <Select 
+                          value={newCarouselImage.page} 
+                          onValueChange={(value) => setNewCarouselImage(prev => ({ ...prev, page: value }))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select page" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="home">Home</SelectItem>
+                            <SelectItem value="services">Services</SelectItem>
+                            <SelectItem value="gallery">Gallery</SelectItem>
+                            <SelectItem value="about">About</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="displayOrder">Display Order</Label>
+                        <Input
+                          id="displayOrder"
+                          type="number"
+                          value={newCarouselImage.displayOrder}
+                          onChange={(e) => setNewCarouselImage(prev => ({ 
+                            ...prev, 
+                            displayOrder: parseInt(e.target.value) || 0 
+                          }))}
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="headerText">Header Text</Label>
+                      <Input
+                        id="headerText"
+                        value={newCarouselImage.headerText}
+                        onChange={(e) => setNewCarouselImage(prev => ({ 
+                          ...prev, 
+                          headerText: e.target.value 
+                        }))}
+                        placeholder="Enter header text"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="detailedDescription">Detailed Description</Label>
+                      <Textarea
+                        id="detailedDescription"
+                        value={newCarouselImage.detailedDescription}
+                        onChange={(e) => setNewCarouselImage(prev => ({ 
+                          ...prev, 
+                          detailedDescription: e.target.value 
+                        }))}
+                        placeholder="Enter detailed description"
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="imageFile">Image File</Label>
+                      <Input
+                        id="imageFile"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      />
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <Button onClick={handleCreateCarouselImage}>
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload Image
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setShowCreateImageForm(false);
+                          setSelectedFile(null);
+                          setNewCarouselImage({
+                            page: 'home',
+                            headerText: '',
+                            detailedDescription: '',
+                            displayOrder: 0
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <div className="grid gap-4">
+                <h3 className="text-lg font-semibold">Current Carousel Images</h3>
+                {carouselImages.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-8 text-center">
+                      <Image className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                      <p className="text-gray-500">No carousel images found. Add your first image to get started.</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid gap-4">
+                    {carouselImages.map((image) => (
+                      <Card key={image.id}>
+                        <CardContent className="p-4">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex-shrink-0">
+                              <img 
+                                src={image.imagePath} 
+                                alt={image.headerText}
+                                className="h-16 w-16 object-cover rounded-md"
+                              />
+                            </div>
+                            <div className="flex-grow">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h4 className="font-semibold">{image.headerText}</h4>
+                                <Badge variant="outline">{image.page}</Badge>
+                                <Badge variant="secondary">Order: {image.displayOrder}</Badge>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">{image.detailedDescription}</p>
+                              <p className="text-xs text-gray-400">
+                                Created: {new Date(image.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleDeleteCarouselImage(image.id)}
+                                className="text-red-600 hover:text-red-700"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </TabsContent>
         </Tabs>

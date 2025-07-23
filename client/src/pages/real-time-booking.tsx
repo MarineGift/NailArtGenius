@@ -232,16 +232,22 @@ export default function RealTimeBookingPage() {
             Please select an available date and time to make your reservation
           </p>
           <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="font-semibold text-blue-900 mb-2">Simple Booking Process</h3>
-            <div className="flex items-center justify-center">
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
-                  <div className="ml-3">
-                    <div className="font-medium text-gray-900">AI Analysis & Design</div>
-                    <div className="text-sm text-gray-600">AI analyzes and recommends personalized designs</div>
-                  </div>
-                </div>
+            <h3 className="font-semibold text-blue-900 mb-4">Simple Booking Process</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold mb-2">1</div>
+                <div className="font-medium text-gray-900 mb-1">Select Service</div>
+                <div className="text-sm text-gray-600">Choose your desired nail, spa, or waxing service</div>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mb-2">2</div>
+                <div className="font-medium text-gray-900 mb-1">Select Date & Time</div>
+                <div className="text-sm text-gray-600">Then enter phone number and additional notes</div>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mb-2">3</div>
+                <div className="font-medium text-gray-900 mb-1">Visit Store</div>
+                <div className="text-sm text-gray-600">Visit at your scheduled time for quick service</div>
               </div>
             </div>
           </div>

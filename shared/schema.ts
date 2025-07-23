@@ -189,6 +189,19 @@ export const smsTemplates = pgTable("sms_templates", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Carousel Images table for managing images displayed on the website
+export const carouselImages = pgTable("carousel_images", {
+  id: serial("id").primaryKey(),
+  page: varchar("page").notNull(), // Which page/section this image belongs to
+  imagePath: varchar("image_path").notNull(), // Path to the image file
+  headerText: varchar("header_text").notNull(), // Header/title text for the image
+  detailedDescription: text("detailed_description"), // Detailed description of the image
+  displayOrder: integer("display_order").default(0), // Order in which to display images
+  isActive: boolean("is_active").default(true), // Whether the image is currently active
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // SMS automation rules
 export const smsAutomationRules = pgTable("sms_automation_rules", {
   id: serial("id").primaryKey(),
@@ -468,6 +481,11 @@ export type AdminUser = typeof adminUsers.$inferSelect;
 export const insertEmailCampaignSchema = createInsertSchema(emailCampaigns).omit({ id: true, createdAt: true });
 export type InsertEmailCampaign = z.infer<typeof insertEmailCampaignSchema>;
 export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+
+// Carousel images type definitions
+export const insertCarouselImageSchema = createInsertSchema(carouselImages).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCarouselImage = z.infer<typeof insertCarouselImageSchema>;
+export type CarouselImage = typeof carouselImages.$inferSelect;
 
 
 
