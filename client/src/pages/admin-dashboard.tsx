@@ -34,7 +34,7 @@ import {
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
-import MetricDetailModal from "@/components/MetricDetailModal";
+import SimpleMetricModal from "@/components/SimpleMetricModal";
 
 interface AdminStats {
   totalCustomers: number;
@@ -542,10 +542,8 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card 
                 className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('🔥 Customer card clicked! Stats:', stats);
+                onClick={() => {
+                  console.log('Customer card clicked!');
                   handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0);
                 }}
               >
@@ -561,10 +559,8 @@ export default function AdminDashboard() {
 
               <Card 
                 className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('🔥 Appointments card clicked! Stats:', stats);
+                onClick={() => {
+                  console.log('Appointments card clicked!');
                   handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0);
                 }}
               >
@@ -580,10 +576,8 @@ export default function AdminDashboard() {
 
               <Card 
                 className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-yellow-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('🔥 Visitors card clicked! Stats:', stats);
+                onClick={() => {
+                  console.log('Visitors card clicked!');
                   handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12);
                 }}
               >
@@ -599,10 +593,8 @@ export default function AdminDashboard() {
 
               <Card 
                 className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-red-300"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('🔥 Orders card clicked! Stats:', stats);
+                onClick={() => {
+                  console.log('Orders card clicked!');
                   handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0);
                 }}
               >
@@ -1148,11 +1140,10 @@ export default function AdminDashboard() {
         </div>
       )}
       
-      {/* Metric Detail Modal */}
-      <MetricDetailModal
+      {/* Simple Metric Modal */}
+      <SimpleMetricModal
         isOpen={detailModal.isOpen}
         onClose={closeDetailModal}
-        metricType={detailModal.metricType}
         title={detailModal.title}
         data={detailModal.data}
         totalCount={detailModal.totalCount}
