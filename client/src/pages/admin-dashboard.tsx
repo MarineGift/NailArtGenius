@@ -254,6 +254,7 @@ export default function AdminDashboard() {
     // Force re-render to ensure modal opens
     setTimeout(() => {
       console.log('🎯 Final modal state check:', detailModal);
+      console.log('🎯 State object references:', { detailModal });
     }, 100);
   };
 
@@ -1094,7 +1095,13 @@ export default function AdminDashboard() {
       
       <Footer />
       
-      {/* Metric Detail Modal */}
+      {/* Metric Detail Modal - Always render for debugging */}
+      <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
+        <div style={{ background: 'red', color: 'white', padding: '5px', fontSize: '12px' }}>
+          Modal Debug: isOpen={detailModal.isOpen ? 'true' : 'false'}, type={detailModal.metricType}
+        </div>
+      </div>
+      
       <MetricDetailModal
         isOpen={detailModal.isOpen}
         onClose={closeDetailModal}

@@ -333,6 +333,13 @@ const MetricDetailModal: React.FC<MetricDetailModalProps> = ({
     }
   };
 
+  if (!isOpen) {
+    console.log('🚫 Modal not rendering - isOpen is false');
+    return null;
+  }
+
+  console.log('✅ Rendering modal with data:', { metricType, title, dataCount: data?.length });
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -347,6 +354,13 @@ const MetricDetailModal: React.FC<MetricDetailModalProps> = ({
             Detailed breakdown and analysis of {title.toLowerCase()}
           </DialogDescription>
         </DialogHeader>
+        
+        <div className="p-4 bg-yellow-100 text-center">
+          <p className="text-lg font-semibold">Modal is working! 🎉</p>
+          <p>Metric Type: {metricType}</p>
+          <p>Data Count: {data?.length || 0}</p>
+          <p>Total Count: {totalCount}</p>
+        </div>
         
         {renderContent()}
       </DialogContent>
