@@ -7,12 +7,31 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLocation } from 'wouter';
-import { Phone, Hand, Palette, Clock, Sparkles, Camera, Bot } from 'lucide-react';
-import type { CustomerNailInfo } from '@shared/schema';
+import { Phone, Hand, Palette, Clock, Sparkles, Camera, Bot, Calendar, ShoppingBag, Eye, User } from 'lucide-react';
+import type { CustomerNailInfo, Customer, Appointment } from '@shared/schema';
+
+interface CustomerComprehensiveData {
+  customer: Customer;
+  appointments: Appointment[];
+  nailInfo: CustomerNailInfo[];
+  aiNailArt: any[];
+  purchases: any[];
+  visits: any[];
+  summary: {
+    totalAppointments: number;
+    totalNailSessions: number;
+    totalAiNailArt: number;
+    totalPurchases: number;
+    totalVisits: number;
+    totalSpent: string;
+    lastVisit: string | null;
+  };
+}
 
 export function CustomerNailInfo() {
   const [location, setLocation] = useLocation();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [customerData, setCustomerData] = useState<CustomerComprehensiveData | null>(null);
   const [nailInfo, setNailInfo] = useState<CustomerNailInfo[]>([]);
   const [latestSession, setLatestSession] = useState<CustomerNailInfo[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,13 +61,22 @@ export function CustomerNailInfo() {
     setError('');
 
     try {
+      // Get comprehensive customer information
+      const comprehensiveResponse = await fetch(`/api/customer/${phoneNumber}/comprehensive`);
+      if (comprehensiveResponse.ok) {
+        const comprehensiveData = await comprehensiveResponse.json();
+        setCustomerData(comprehensiveData);
+        setActiveTab('overview');
+      } else {
+        setError('Customer not found');
+        return;
+      }
+
       // Get all nail info for this customer
       const response = await fetch(`/api/customer/${phoneNumber}/nail-info`);
       if (response.ok) {
         const data = await response.json();
         setNailInfo(data);
-      } else {
-        setError('Customer not found or no nail information available');
       }
 
       // Get latest session nail info
@@ -56,13 +84,10 @@ export function CustomerNailInfo() {
       if (latestResponse.ok) {
         const latestData = await latestResponse.json();
         setLatestSession(latestData);
-        if (latestData.length > 0) {
-          setActiveTab('latest');
-        }
       }
     } catch (error) {
-      console.error('Error fetching nail info:', error);
-      setError('Failed to fetch nail information');
+      console.error('Error fetching customer info:', error);
+      setError('Failed to fetch customer information');
     }
 
     setLoading(false);
@@ -218,49 +243,277 @@ export function CustomerNailInfo() {
         </Card>
 
         {/* Results */}
-        {(nailInfo.length > 0 || latestSession.length > 0) && (
+        {customerData && (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-              <TabsTrigger value="latest" className="flex items-center space-x-2">
-                <Sparkles className="h-4 w-4" />
-                <span>Latest Session ({latestSession.length})</span>
+            <TabsList className="grid w-full grid-cols-5 max-w-4xl mx-auto">
+              <TabsTrigger value="overview" className="flex items-center space-x-2">
+                <User className="h-4 w-4" />
+                <span>Overview</span>
               </TabsTrigger>
-              <TabsTrigger value="all" className="flex items-center space-x-2">
-                <Camera className="h-4 w-4" />
-                <span>All History ({nailInfo.length})</span>
+              <TabsTrigger value="appointments" className="flex items-center space-x-2">
+                <Calendar className="h-4 w-4" />
+                <span>Appointments ({customerData.summary.totalAppointments})</span>
+              </TabsTrigger>
+              <TabsTrigger value="nails" className="flex items-center space-x-2">
+                <Sparkles className="h-4 w-4" />
+                <span>Nail Art ({customerData.summary.totalNailSessions})</span>
+              </TabsTrigger>
+              <TabsTrigger value="purchases" className="flex items-center space-x-2">
+                <ShoppingBag className="h-4 w-4" />
+                <span>Purchases ({customerData.summary.totalPurchases})</span>
+              </TabsTrigger>
+              <TabsTrigger value="visits" className="flex items-center space-x-2">
+                <Eye className="h-4 w-4" />
+                <span>Visits ({customerData.summary.totalVisits})</span>
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="latest" className="space-y-6">
-              {latestSession.length > 0 ? (
-                <div>
-                  <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">
-                    Latest Nail Session - All 10 Fingers
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                    {latestSession.map(renderNailCard)}
-                  </div>
+            {/* Customer Overview Tab */}
+            <TabsContent value="overview" className="space-y-6">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">{customerData.customer.name}</h2>
+                <p className="text-lg text-gray-600">{customerData.customer.phoneNumber}</p>
+                <Badge className="mt-2" variant={customerData.customer.category === 'VIP' ? 'default' : 'secondary'}>
+                  {customerData.customer.category}
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center space-x-2">
+                      <Calendar className="h-5 w-5 text-blue-500" />
+                      <span>Appointments</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{customerData.summary.totalAppointments}</div>
+                    <p className="text-sm text-gray-600">Total bookings</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center space-x-2">
+                      <Hand className="h-5 w-5 text-purple-500" />
+                      <span>Nail Sessions</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{customerData.summary.totalNailSessions}</div>
+                    <p className="text-sm text-gray-600">AI designs created</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center space-x-2">
+                      <ShoppingBag className="h-5 w-5 text-green-500" />
+                      <span>Purchases</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">${customerData.summary.totalSpent}</div>
+                    <p className="text-sm text-gray-600">Total spent</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center space-x-2">
+                      <Eye className="h-5 w-5 text-orange-500" />
+                      <span>Visits</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{customerData.summary.totalVisits}</div>
+                    <p className="text-sm text-gray-600">Store visits</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {customerData.customer.lastVisit && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Clock className="h-5 w-5" />
+                      <span>Last Visit</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-lg">{new Date(customerData.customer.lastVisit).toLocaleDateString()}</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* Appointments Tab */}
+            <TabsContent value="appointments" className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">Appointment History</h3>
+              {customerData.appointments.length > 0 ? (
+                <div className="space-y-4">
+                  {customerData.appointments.map((appointment, index) => (
+                    <Card key={appointment.id}>
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-lg">{appointment.serviceDetails}</CardTitle>
+                          <Badge variant={appointment.status === 'confirmed' ? 'default' : 'secondary'}>
+                            {appointment.status}
+                          </Badge>
+                        </div>
+                        <CardDescription>
+                          {new Date(appointment.appointmentDate).toLocaleDateString()} at {appointment.timeSlot}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium">Visit Reason:</p>
+                            <p className="text-sm text-gray-600">{appointment.visitReason}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Price:</p>
+                            <p className="text-sm text-gray-600">${appointment.price}</p>
+                          </div>
+                        </div>
+                        {appointment.notes && (
+                          <div className="mt-4">
+                            <p className="text-sm font-medium">Notes:</p>
+                            <p className="text-sm text-gray-600">{appointment.notes}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">No recent nail session found</p>
+                  <p className="text-gray-500">No appointments found</p>
                 </div>
               )}
             </TabsContent>
 
-            <TabsContent value="all" className="space-y-6">
-              {nailInfo.length > 0 ? (
-                <div>
-                  <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">
-                    Complete Nail Art History
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {nailInfo.map(renderNailCard)}
-                  </div>
+            {/* Nail Art Tab */}
+            <TabsContent value="nails" className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">Nail Art History</h3>
+              {customerData.nailInfo.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {customerData.nailInfo.map(renderNailCard)}
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500">No nail information found</p>
+                  <p className="text-gray-500">No nail art sessions found</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Purchases Tab */}
+            <TabsContent value="purchases" className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">Purchase History</h3>
+              {customerData.purchases.length > 0 ? (
+                <div className="space-y-4">
+                  {customerData.purchases.map((purchase, index) => (
+                    <Card key={index}>
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-lg">{purchase.productName || 'Service Purchase'}</CardTitle>
+                          <Badge variant="default">
+                            ${purchase.amount}
+                          </Badge>
+                        </div>
+                        <CardDescription>
+                          {new Date(purchase.purchaseDate).toLocaleDateString()}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium">Payment Method:</p>
+                            <p className="text-sm text-gray-600">{purchase.paymentMethod || 'Cash'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Quantity:</p>
+                            <p className="text-sm text-gray-600">{purchase.quantity || 1}</p>
+                          </div>
+                        </div>
+                        {purchase.notes && (
+                          <div className="mt-4">
+                            <p className="text-sm font-medium">Notes:</p>
+                            <p className="text-sm text-gray-600">{purchase.notes}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No purchases found</p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Visits Tab */}
+            <TabsContent value="visits" className="space-y-6">
+              <h3 className="text-2xl font-bold text-center text-gray-900 mb-6">Visit History</h3>
+              {customerData.visits.length > 0 ? (
+                <div className="space-y-4">
+                  {customerData.visits.map((visit, index) => (
+                    <Card key={index}>
+                      <CardHeader>
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-lg">{visit.visitType}</CardTitle>
+                          <div className="flex items-center space-x-2">
+                            {visit.satisfaction && (
+                              <Badge variant="outline">
+                                {'★'.repeat(visit.satisfaction)} ({visit.satisfaction}/5)
+                              </Badge>
+                            )}
+                            <Badge variant="default">
+                              ${visit.totalAmount}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardDescription>
+                          {new Date(visit.visitDate).toLocaleDateString()}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm font-medium">Services Received:</p>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {visit.servicesReceived?.map((service, i) => (
+                                <Badge key={i} variant="outline" className="text-xs">
+                                  {service}
+                                </Badge>
+                              )) || <span className="text-sm text-gray-600">None specified</span>}
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">Payment Method:</p>
+                            <p className="text-sm text-gray-600">{visit.paymentMethod}</p>
+                          </div>
+                        </div>
+                        {visit.visitNotes && (
+                          <div className="mt-4">
+                            <p className="text-sm font-medium">Visit Notes:</p>
+                            <p className="text-sm text-gray-600">{visit.visitNotes}</p>
+                          </div>
+                        )}
+                        {visit.nextAppointment && (
+                          <div className="mt-4">
+                            <p className="text-sm font-medium">Next Appointment:</p>
+                            <p className="text-sm text-gray-600">{new Date(visit.nextAppointment).toLocaleDateString()}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No visit history found</p>
                 </div>
               )}
             </TabsContent>
@@ -268,14 +521,14 @@ export function CustomerNailInfo() {
         )}
 
         {/* No Results State */}
-        {nailInfo.length === 0 && latestSession.length === 0 && phoneNumber && !loading && (
+        {!customerData && phoneNumber && !loading && (
           <div className="text-center py-12">
             <div className="mx-auto w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mb-4">
               <Hand className="h-12 w-12 text-purple-600" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Nail Information Found</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Customer Information Found</h3>
             <p className="text-gray-600 mb-4">
-              We couldn't find any nail art information for this phone number.
+              We couldn't find any information for this phone number.
             </p>
             <Button onClick={() => setLocation('/')} variant="outline">
               Return Home

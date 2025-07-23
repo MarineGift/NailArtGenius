@@ -181,7 +181,7 @@ export const customers = pgTable("customers", {
   userId: varchar("user_id").references(() => users.id),
   name: varchar("name", { length: 100 }).notNull(),
   email: varchar("email", { length: 100 }),
-  phoneNumber: varchar("phone_number", { length: 20 }),
+  phoneNumber: varchar("phone_number", { length: 20 }).unique().notNull(), // UNIQUE KEY FIELD
   visitType: varchar("visit_type").default("general_visit"), // "appointment_visit", "first_visit", "online_booking"
   category: varchar("category", { length: 20 }).default("general").notNull(), // mailing, general, booking
   mailingConsent: boolean("mailing_consent").default(false),
@@ -269,7 +269,7 @@ export const galleryDesc = pgTable("gallery_desc", {
 // AI Nail Art images table - stores customer nail images and AI generated designs
 export const aiNailArtImages = pgTable("ai_nail_art_images", {
   id: serial("id").primaryKey(),
-  customerPhone: varchar("customer_phone").notNull(), // Customer phone number as key
+  customerPhone: varchar("customer_phone").notNull().references(() => customers.phoneNumber), // Connected to Customer table
   nailPosition: varchar("nail_position").notNull(), // "left_thumb", "left_index", "left_middle", "left_ring", "left_pinky", "right_thumb", "right_index", "right_middle", "right_ring", "right_pinky"
   direction: varchar("direction").notNull(), // "front", "side", "top" - nail direction/angle
   originalImagePath: varchar("original_image_path"), // Path to original nail photo
@@ -523,6 +523,43 @@ export type InsertDesignAnalytics = typeof designAnalytics.$inferInsert;
 export type UserJourney = typeof userJourneys.$inferSelect;
 export type InsertUserJourney = typeof userJourneys.$inferInsert;
 
+// Customer Nail Info table for 10-finger AI nail art system
+export const customerNailInfo = pgTable("customer_nail_info", {
+  id: serial("id").primaryKey(),
+  customerPhone: varchar("customer_phone", { length: 20 }).notNull().references(() => customers.phoneNumber, { onDelete: "cascade" }),
+  fingerPosition: varchar("finger_position", { length: 20 }).notNull(), // left_thumb, left_index, left_middle, left_ring, left_pinky, right_thumb, right_index, right_middle, right_ring, right_pinky
+  originalImagePath: varchar("original_image_path", { length: 500 }),
+  aiGeneratedImagePath: varchar("ai_generated_image_path", { length: 500 }),
+  designPrompt: text("design_prompt"),
+  nailShape: varchar("nail_shape", { length: 50 }), // oval, square, round, almond, stiletto
+  nailLength: varchar("nail_length", { length: 20 }), // short, medium, long
+  nailCondition: varchar("nail_condition", { length: 100 }), // healthy, damaged, brittle, etc.
+  designStyle: varchar("design_style", { length: 100 }), // french, artistic, geometric, floral, etc.
+  colorPreferences: varchar("color_preferences").array(), // array of preferred colors
+  sessionId: varchar("session_id", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Customer Visit History table
+export const customerVisits = pgTable("customer_visits", {
+  id: serial("id").primaryKey(),
+  customerPhone: varchar("customer_phone", { length: 20 }).notNull().references(() => customers.phoneNumber, { onDelete: "cascade" }),
+  visitDate: timestamp("visit_date").notNull(),
+  visitType: varchar("visit_type").notNull(), // "appointment", "walk_in", "consultation", "follow_up"
+  servicesReceived: text("services_received").array(), // Array of service names
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }),
+  paymentMethod: varchar("payment_method").default("cash"), // cash, card, paypal
+  visitNotes: text("visit_notes"),
+  satisfaction: integer("satisfaction"), // 1-5 rating
+  nextAppointment: timestamp("next_appointment"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Customer Visit History schema and types
+export const insertCustomerVisitSchema = createInsertSchema(customerVisits).omit({ id: true, createdAt: true });
+export type InsertCustomerVisit = z.infer<typeof insertCustomerVisitSchema>;
+
 export const insertCustomerPhotoSchema = createInsertSchema(customerPhotos).omit({ id: true, uploadedAt: true });
 export type InsertCustomerPhoto = z.infer<typeof insertCustomerPhotoSchema>;
 export type CustomerPhoto = typeof customerPhotos.$inferSelect;
@@ -586,33 +623,13 @@ export const insertGallerySchema = createInsertSchema(gallery).omit({ id: true, 
 export type InsertGallery = z.infer<typeof insertGallerySchema>;
 export type Gallery = typeof gallery.$inferSelect;
 
-// Customer Nail Info table for 10-finger AI nail art system
-export const customerNailInfo = pgTable("customer_nail_info", {
-  id: serial("id").primaryKey(),
-  customerPhone: varchar("customer_phone", { length: 20 }).notNull().references(() => customers.phoneNumber, { onDelete: "cascade" }),
-  fingerPosition: varchar("finger_position", { length: 20 }).notNull(), // left_thumb, left_index, left_middle, left_ring, left_pinky, right_thumb, right_index, right_middle, right_ring, right_pinky
-  originalImagePath: varchar("original_image_path", { length: 500 }),
-  aiGeneratedImagePath: varchar("ai_generated_image_path", { length: 500 }),
-  designPrompt: text("design_prompt"),
-  nailShape: varchar("nail_shape", { length: 50 }), // oval, square, round, almond, stiletto
-  nailLength: varchar("nail_length", { length: 20 }), // short, medium, long
-  nailCondition: varchar("nail_condition", { length: 100 }), // healthy, damaged, brittle, etc.
-  designStyle: varchar("design_style", { length: 100 }), // french, artistic, geometric, floral, etc.
-  colorPreferences: varchar("color_preferences").array(), // array of preferred colors
-  sessionId: varchar("session_id", { length: 100 }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
 // AI Nail Art Images schema and types (legacy support)
 export const insertAiNailArtImageSchema = createInsertSchema(aiNailArtImages).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertAiNailArtImage = z.infer<typeof insertAiNailArtImageSchema>;
 export type AiNailArtImage = typeof aiNailArtImages.$inferSelect;
 
-// Customer Nail Info schema and types
+// Customer Nail Info schema and types  
 export const insertCustomerNailInfoSchema = createInsertSchema(customerNailInfo).omit({ id: true, createdAt: true, updatedAt: true });
-export type InsertCustomerNailInfo = z.infer<typeof insertCustomerNailInfoSchema>;
-export type CustomerNailInfo = typeof customerNailInfo.$inferSelect;
 export type CarouselImage = typeof carouselImages.$inferSelect;
 
 

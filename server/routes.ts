@@ -2728,6 +2728,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get comprehensive customer information with all related data
+  app.get('/api/customer/:phone/comprehensive', async (req, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const customerData = await storage.getCustomerWithAllRelatedInfo(customerPhone);
+      
+      if (!customerData) {
+        return res.status(404).json({ message: 'Customer not found' });
+      }
+      
+      res.json(customerData);
+    } catch (error) {
+      console.error('Error fetching comprehensive customer info:', error);
+      res.status(500).json({ message: 'Failed to fetch comprehensive customer info' });
+    }
+  });
+
   app.get('/api/customer/:phone/nail-info/latest', async (req, res) => {
     try {
       const customerPhone = req.params.phone;

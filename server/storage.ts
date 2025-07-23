@@ -1081,6 +1081,73 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
 
     return await this.getCustomerNailInfoBySession(customerPhone, latestSession[0].sessionId);
   }
+
+  // Get comprehensive customer information including all related data
+  async getCustomerWithAllRelatedInfo(phoneNumber: string): Promise<any> {
+    const customer = await this.getCustomerByPhone(phoneNumber);
+    if (!customer) return null;
+
+    // Get all related information
+    const [appointments, nailInfo, aiNailArt, purchases, visits] = await Promise.all([
+      // Appointments (Booking)
+      db.select({
+        id: appointments.id,
+        appointmentDate: appointments.appointmentDate,
+        timeSlot: appointments.timeSlot,
+        status: appointments.status,
+        visitReason: appointments.visitReason,
+        serviceDetails: appointments.serviceDetails,
+        price: appointments.price,
+        notes: appointments.notes,
+        createdAt: appointments.createdAt
+      })
+      .from(appointments)
+      .where(eq(appointments.customerId, customer.id))
+      .orderBy(desc(appointments.appointmentDate)),
+
+      // Customer Nail Info (Finger)
+      db.select()
+      .from(customerNailInfo)
+      .where(eq(customerNailInfo.customerPhone, phoneNumber))
+      .orderBy(desc(customerNailInfo.createdAt)),
+
+      // AI Nail Art Images (AI_Nail)
+      db.select()
+      .from(aiNailArtImages)
+      .where(eq(aiNailArtImages.customerPhone, phoneNumber))
+      .orderBy(desc(aiNailArtImages.createdAt)),
+
+      // Customer Purchases (Buying)
+      db.select()
+      .from(customerPurchases)
+      .where(eq(customerPurchases.customerId, customer.id))
+      .orderBy(desc(customerPurchases.purchaseDate)),
+
+      // Customer Visits (Visit)
+      db.select()
+      .from(customerVisits)
+      .where(eq(customerVisits.customerPhone, phoneNumber))
+      .orderBy(desc(customerVisits.visitDate))
+    ]);
+
+    return {
+      customer,
+      appointments,
+      nailInfo,
+      aiNailArt,
+      purchases,
+      visits,
+      summary: {
+        totalAppointments: appointments.length,
+        totalNailSessions: nailInfo.length,
+        totalAiNailArt: aiNailArt.length,
+        totalPurchases: purchases.length,
+        totalVisits: visits.length,
+        totalSpent: customer.totalSpent,
+        lastVisit: customer.lastVisit
+      }
+    };
+  }
 }
 
 export const storage = new EnhancedDatabaseStorage();
