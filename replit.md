@@ -13,6 +13,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### Korean Payment Button Implementation (July 23, 2025)
+- **Payment Button Localization**: Changed payment button text to Korean "결제 버튼"
+  - Button activates only after booking completion with proper state management
+  - Added bilingual discount message: "💳 온라인으로 결제시 10% 추가할인을 해 드립니다!"
+  - Enhanced payment modal with Korean text "온라인 결제 처리중..."
+  - Payment completion message includes Korean: "온라인 결제 완료! $XX (10% 할인 적용)"
+  - Fixed payment button activation logic using completedBookingDetails state
+  - Preserved booking information after form reset to maintain payment functionality
+
 ### User Management System Implementation (July 23, 2025)
 - **Complete User Level System**: Added comprehensive user management with level-based access control
   - Added "level" field to users table to distinguish between "admin" and "Customer" users
