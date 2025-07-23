@@ -18,11 +18,11 @@ export default function Home() {
       <Header />
       
       <main>
-        {/* Booking Hero Section */}
-        <BookingHeroSection />
-
         {/* AI Service Section */}
         <AIServiceSection />
+
+        {/* Booking Hero Section */}
+        <BookingHeroSection />
 
         {/* Hero Carousel Section */}
         <section className="mb-0">
