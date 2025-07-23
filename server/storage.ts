@@ -59,6 +59,9 @@ import {
   type InsertGallery,
   type AiNailArtImage,
   type InsertAiNailArtImage,
+  customerNailInfo,
+  type CustomerNailInfo,
+  type InsertCustomerNailInfo,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -1011,6 +1014,67 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
 
   async deleteAiNailArtImage(id: number): Promise<void> {
     await db.delete(aiNailArtImages).where(eq(aiNailArtImages.id, id));
+  }
+
+  // Customer Nail Info operations (10-finger system)
+  async createCustomerNailInfo(nailData: InsertCustomerNailInfo): Promise<CustomerNailInfo> {
+    const [savedNail] = await db
+      .insert(customerNailInfo)
+      .values(nailData)
+      .returning();
+    return savedNail;
+  }
+
+  async getCustomerNailInfoByPhone(customerPhone: string): Promise<CustomerNailInfo[]> {
+    return await db
+      .select()
+      .from(customerNailInfo)
+      .where(eq(customerNailInfo.customerPhone, customerPhone))
+      .orderBy(customerNailInfo.fingerPosition, desc(customerNailInfo.createdAt));
+  }
+
+  async getCustomerNailInfoBySession(customerPhone: string, sessionId: string): Promise<CustomerNailInfo[]> {
+    return await db
+      .select()
+      .from(customerNailInfo)
+      .where(and(
+        eq(customerNailInfo.customerPhone, customerPhone),
+        eq(customerNailInfo.sessionId, sessionId)
+      ))
+      .orderBy(customerNailInfo.fingerPosition);
+  }
+
+  async updateCustomerNailInfo(id: number, updates: Partial<CustomerNailInfo>): Promise<CustomerNailInfo> {
+    const [updatedNail] = await db
+      .update(customerNailInfo)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(customerNailInfo.id, id))
+      .returning();
+    return updatedNail;
+  }
+
+  async deleteCustomerNailInfo(id: number): Promise<void> {
+    await db.delete(customerNailInfo).where(eq(customerNailInfo.id, id));
+  }
+
+  async getCustomerNailInfoById(id: number): Promise<CustomerNailInfo | undefined> {
+    const [nail] = await db.select().from(customerNailInfo).where(eq(customerNailInfo.id, id));
+    return nail;
+  }
+
+  // Get all 10 fingers info for a customer's latest session
+  async getLatestCustomerNailSession(customerPhone: string): Promise<CustomerNailInfo[]> {
+    // Get the latest session ID for this customer
+    const latestSession = await db
+      .select({ sessionId: customerNailInfo.sessionId, createdAt: customerNailInfo.createdAt })
+      .from(customerNailInfo)
+      .where(eq(customerNailInfo.customerPhone, customerPhone))
+      .orderBy(desc(customerNailInfo.createdAt))
+      .limit(1);
+
+    if (latestSession.length === 0) return [];
+
+    return await this.getCustomerNailInfoBySession(customerPhone, latestSession[0].sessionId);
   }
 }
 

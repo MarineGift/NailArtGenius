@@ -13,6 +13,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### Complete AI Nail Art System with Customer Integration (July 23, 2025)
+- **Customer-Centric 10-Finger AI Nail System**: Comprehensive nail art management connected to Customer table via phone number
+  - Created customer_nail_info table storing all 10 fingers data per customer session
+  - Each customer identified by phone number with complete nail information storage
+  - Finger positions: left_thumb, left_index, left_middle, left_ring, left_pinky, right_thumb, right_index, right_middle, right_ring, right_pinky
+  - Comprehensive nail data: original/AI images, design prompts, nail shape/length/condition, design style, color preferences
+- **Customer Nail Info Page**: Dedicated customer interface for viewing nail art history
+  - Phone number-based search to access personal nail information
+  - Latest session view showing all 10 fingers in current design session
+  - Complete history view with all past nail art records
+  - Responsive card layout with nail images, design details, and AI prompts
+- **Database Schema & API Integration**: Complete backend system for nail art management
+  - customer_nail_info table with foreign key to customers.phone_number
+  - Session-based grouping for complete 10-finger nail art sets
+  - REST API endpoints: GET/POST /api/customer/:phone/nail-info for customer access
+  - Admin API endpoints: /api/admin/customer-nail-info for management
+- **Sample Data Integration**: Test data with complete 10-finger nail art session
+  - Customer 010-1234-5678 with floral design session across all 10 fingers
+  - Design prompt: "Elegant floral design with roses" with oval shape, medium length
+  - Color preferences: pink, white, gold for consistent design theme
+
 ### Complete Database-Driven Gallery System Implementation (July 23, 2025)
 - **Database Schema Completion**: Successfully created gallery and gallery_desc tables with proper relationships
   - Gallery table stores basic information: title, description, category, tags, image_path, display_order

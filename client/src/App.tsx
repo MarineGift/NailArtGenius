@@ -46,6 +46,7 @@ import Checkout from "@/pages/checkout";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import PWATestPage from "@/pages/pwa-test";
 import PWAStatus from "@/components/PWAStatus";
+import { CustomerNailInfo } from "@/pages/customer-nail-info";
 
 // Lazy load AI Nail System
 const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
@@ -69,6 +70,7 @@ function Router() {
         )} />
         <Route path="/booking" component={Booking} />
         <Route path="/checkout" component={Checkout} />
+        <Route path="/customer-nail-info" component={CustomerNailInfo} />
         <Route path="/appointment-booking-new" component={AppointmentBooking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/pwa-test" component={PWATestPage} />

@@ -2716,49 +2716,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Nail Art Images Routes (Customer Phone Number based)
+  // Customer Nail Info Routes (10-finger AI nail art system)
+  app.get('/api/customer/:phone/nail-info', async (req, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const nailInfo = await storage.getCustomerNailInfoByPhone(customerPhone);
+      res.json(nailInfo);
+    } catch (error) {
+      console.error('Error fetching customer nail info:', error);
+      res.status(500).json({ message: 'Failed to fetch customer nail info' });
+    }
+  });
+
+  app.get('/api/customer/:phone/nail-info/latest', async (req, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const latestNailInfo = await storage.getLatestCustomerNailSession(customerPhone);
+      res.json(latestNailInfo);
+    } catch (error) {
+      console.error('Error fetching latest customer nail info:', error);
+      res.status(500).json({ message: 'Failed to fetch latest customer nail info' });
+    }
+  });
+
+  app.post('/api/customer/:phone/nail-info', async (req, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const nailData = {
+        customerPhone,
+        ...req.body
+      };
+
+      const savedNail = await storage.createCustomerNailInfo(nailData);
+      res.json({ message: 'Customer nail info created successfully', nail: savedNail });
+    } catch (error) {
+      console.error('Error creating customer nail info:', error);
+      res.status(500).json({ message: 'Failed to create customer nail info' });
+    }
+  });
+
+  // AI Nail Art Images Routes (Customer Phone Number based) - Legacy Support
   app.get('/api/admin/ai-nail-art/:phone', authenticateAdmin, async (req: any, res) => {
     try {
       const customerPhone = req.params.phone;
-      const images = await storage.getAiNailArtImagesByPhone(customerPhone);
-      res.json(images);
+      const nailInfo = await storage.getCustomerNailInfoByPhone(customerPhone);
+      res.json(nailInfo);
     } catch (error) {
       console.error('Error fetching AI nail art images:', error);
       res.status(500).json({ message: 'Failed to fetch AI nail art images' });
     }
   });
 
-  app.post('/api/admin/ai-nail-art', authenticateAdmin, upload.fields([
+  app.post('/api/admin/customer-nail-info', authenticateAdmin, upload.fields([
     { name: 'originalImage', maxCount: 1 },
     { name: 'aiGeneratedImage', maxCount: 1 }
   ]), async (req: any, res) => {
     try {
-      const { customerPhone, nailPosition, direction, designPrompt, nailName, sessionId } = req.body;
+      const { 
+        customerPhone, 
+        fingerPosition, 
+        designPrompt, 
+        nailShape, 
+        nailLength, 
+        nailCondition, 
+        designStyle, 
+        colorPreferences, 
+        sessionId 
+      } = req.body;
       
-      if (!customerPhone || !nailPosition || !direction) {
-        return res.status(400).json({ message: 'Customer phone, nail position, and direction are required' });
+      if (!customerPhone || !fingerPosition) {
+        return res.status(400).json({ message: 'Customer phone and finger position are required' });
       }
 
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
       const originalImagePath = files.originalImage ? `/uploads/${files.originalImage[0].filename}` : undefined;
       const aiGeneratedImagePath = files.aiGeneratedImage ? `/uploads/${files.aiGeneratedImage[0].filename}` : undefined;
 
-      const aiNailData = {
+      const nailData = {
         customerPhone,
-        nailPosition,
-        direction,
+        fingerPosition,
         originalImagePath,
         aiGeneratedImagePath,
         designPrompt: designPrompt || '',
-        nailName: nailName || `${nailPosition} ${direction}`,
+        nailShape: nailShape || 'oval',
+        nailLength: nailLength || 'medium',
+        nailCondition: nailCondition || 'healthy',
+        designStyle: designStyle || 'natural',
+        colorPreferences: colorPreferences ? colorPreferences.split(',').map((c: string) => c.trim()) : [],
         sessionId: sessionId || nanoid()
       };
 
-      const savedAiNail = await storage.createAiNailArtImage(aiNailData);
-      res.json({ message: 'AI nail art image created successfully', aiNail: savedAiNail });
+      const savedNail = await storage.createCustomerNailInfo(nailData);
+      res.json({ message: 'Customer nail info created successfully', nail: savedNail });
     } catch (error) {
-      console.error('Error creating AI nail art image:', error);
-      res.status(500).json({ message: 'Failed to create AI nail art image' });
+      console.error('Error creating customer nail info:', error);
+      res.status(500).json({ message: 'Failed to create customer nail info' });
     }
   });
 

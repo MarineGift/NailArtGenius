@@ -586,10 +586,33 @@ export const insertGallerySchema = createInsertSchema(gallery).omit({ id: true, 
 export type InsertGallery = z.infer<typeof insertGallerySchema>;
 export type Gallery = typeof gallery.$inferSelect;
 
-// AI Nail Art Images schema and types
+// Customer Nail Info table for 10-finger AI nail art system
+export const customerNailInfo = pgTable("customer_nail_info", {
+  id: serial("id").primaryKey(),
+  customerPhone: varchar("customer_phone", { length: 20 }).notNull().references(() => customers.phoneNumber, { onDelete: "cascade" }),
+  fingerPosition: varchar("finger_position", { length: 20 }).notNull(), // left_thumb, left_index, left_middle, left_ring, left_pinky, right_thumb, right_index, right_middle, right_ring, right_pinky
+  originalImagePath: varchar("original_image_path", { length: 500 }),
+  aiGeneratedImagePath: varchar("ai_generated_image_path", { length: 500 }),
+  designPrompt: text("design_prompt"),
+  nailShape: varchar("nail_shape", { length: 50 }), // oval, square, round, almond, stiletto
+  nailLength: varchar("nail_length", { length: 20 }), // short, medium, long
+  nailCondition: varchar("nail_condition", { length: 100 }), // healthy, damaged, brittle, etc.
+  designStyle: varchar("design_style", { length: 100 }), // french, artistic, geometric, floral, etc.
+  colorPreferences: varchar("color_preferences").array(), // array of preferred colors
+  sessionId: varchar("session_id", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Nail Art Images schema and types (legacy support)
 export const insertAiNailArtImageSchema = createInsertSchema(aiNailArtImages).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertAiNailArtImage = z.infer<typeof insertAiNailArtImageSchema>;
 export type AiNailArtImage = typeof aiNailArtImages.$inferSelect;
+
+// Customer Nail Info schema and types
+export const insertCustomerNailInfoSchema = createInsertSchema(customerNailInfo).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertCustomerNailInfo = z.infer<typeof insertCustomerNailInfoSchema>;
+export type CustomerNailInfo = typeof customerNailInfo.$inferSelect;
 export type CarouselImage = typeof carouselImages.$inferSelect;
 
 
