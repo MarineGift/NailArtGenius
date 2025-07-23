@@ -18,10 +18,10 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center flex-1">
             <div className="flex-shrink-0 flex items-center">
-              <Palette className="text-secondary text-2xl mr-2" />
-              <span className="text-lg sm:text-xl font-bold text-gray-900">{t('home.title')}</span>
+              <Palette className="text-secondary text-xl sm:text-2xl mr-2" />
+              <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 truncate">{t('home.title')}</span>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export default function Header() {
           </div>
 
           {/* Right side - Language Switcher and Admin Profile */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-shrink-0">
             <div className="hidden sm:block">
               <LanguageSwitcher />
             </div>
@@ -117,18 +117,19 @@ export default function Header() {
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - Always visible on mobile */}
             <div className="md:hidden">
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-gray-500 hover:text-gray-900"
+                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300 p-2 ml-2"
+                aria-label="메뉴 열기"
               >
                 {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5" />
                 ) : (
-                  <Menu className="h-6 w-6" />
+                  <Menu className="h-5 w-5" />
                 )}
               </Button>
             </div>
@@ -137,8 +138,8 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+          <div className="md:hidden absolute top-16 left-0 right-0 z-50 bg-white shadow-lg border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link href="/">
                 <Button
                   variant="ghost"
