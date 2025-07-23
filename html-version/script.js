@@ -440,7 +440,45 @@ function initializeContactForm() {
 }
 
 function initializeCarousel() {
-    // Carousel functionality would go here
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length;
+    
+    if (totalSlides === 0) return;
+    
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+    
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+    
+    // Auto-advance carousel every 5 seconds
+    setInterval(nextSlide, 5000);
+    
+    function goToSlide(n) {
+        currentSlide = n - 1;
+        showSlide(currentSlide);
+    }
+    
+    function previousSlide() {
+        prevSlide();
+    }
+    
+    // Make functions globally available
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+    window.currentSlide = goToSlide;
+    window.previousSlide = previousSlide;
 }
 
 function showToast(message, type = 'info') {
