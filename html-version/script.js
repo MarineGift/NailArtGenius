@@ -276,7 +276,7 @@ function startAIAnalysis() {
         
         // Generate professional analysis data
         const analysisResults = generateProfessionalAnalysisData(photos);
-        displayAnalysisResults(analysisResults, analysisData);
+        // Skip displaying detailed measurement data - go directly to nail generation
         
         // Generate 10 custom nail designs
         generate10CustomDesigns(designGallery);
