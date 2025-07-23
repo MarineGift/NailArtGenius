@@ -3,7 +3,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ImageCarousel } from '@/components/image-carousel';
 import { BookingHeroSection } from '@/components/booking-hero-section';
-import { AIServiceSection } from '@/components/ai-service-section';
+import { PremiumServicesSection } from '@/components/premium-services-section';
+import { AINailArtSection } from '@/components/ai-nail-art-section';
 import { EnglishServicesSection } from '@/components/english-services-section';
 import { ContactUsForm } from '@/components/contact-us-form';
 import { LocationMap } from '@/components/location-map';
@@ -18,13 +19,16 @@ export default function Home() {
       <Header />
       
       <main>
+        {/* Premium Services Section */}
+        <PremiumServicesSection />
+
+        {/* AI Nail Art Section */}
+        <AINailArtSection />
+
         {/* Hero Carousel Section */}
         <section className="mb-0">
           <ImageCarousel />
         </section>
-
-        {/* AI Service Section */}
-        <AIServiceSection />
 
         {/* Booking Hero Section */}
         <BookingHeroSection />
