@@ -207,7 +207,9 @@ export default function AdminDashboard() {
   };
 
   const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
-    console.log('Metric clicked:', metricType, title, totalCount);
+    console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
+    console.log('🚀 Current detailModal state:', detailModal);
+    
     let data: any[] = [];
     
     switch (metricType) {
@@ -241,13 +243,18 @@ export default function AdminDashboard() {
       totalCount
     });
     
-    console.log('Modal state set:', { 
+    console.log('🎯 Modal state set:', { 
       isOpen: true, 
       metricType, 
       title, 
       dataLength: data.length, 
       totalCount 
     });
+    
+    // Force re-render to ensure modal opens
+    setTimeout(() => {
+      console.log('🎯 Final modal state check:', detailModal);
+    }, 100);
   };
 
   const closeDetailModal = () => {
@@ -512,8 +519,13 @@ export default function AdminDashboard() {
           <TabsContent value="dashboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0)}
+                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🔥 Customer card clicked! Stats:', stats);
+                  handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0);
+                }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
@@ -526,8 +538,13 @@ export default function AdminDashboard() {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0)}
+                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🔥 Appointments card clicked! Stats:', stats);
+                  handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0);
+                }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
@@ -540,8 +557,13 @@ export default function AdminDashboard() {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12)}
+                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-yellow-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🔥 Visitors card clicked! Stats:', stats);
+                  handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12);
+                }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Today's Visitors</CardTitle>
@@ -554,8 +576,13 @@ export default function AdminDashboard() {
               </Card>
 
               <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0)}
+                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-red-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🔥 Orders card clicked! Stats:', stats);
+                  handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0);
+                }}
               >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
