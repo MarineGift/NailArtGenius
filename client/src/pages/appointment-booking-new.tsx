@@ -23,12 +23,12 @@ import { z } from "zod";
 
 // Form validation schema
 const appointmentFormSchema = z.object({
-  firstName: z.string().min(1, "성을 입력해 주세요"),
-  lastName: z.string().min(1, "이름을 입력해 주세요"),
-  phoneNumber: z.string().min(10, "전화번호를 입력해 주세요"),
-  email: z.string().email("올바른 이메일을 입력해 주세요").optional().or(z.literal("")),
-  visitType: z.enum(["방문예약", "최초방문", "인터넷예약"]),
-  visitReason: z.string().min(1, "방문 사유를 입력해 주세요"),
+  firstName: z.string().min(1, "Please enter your first name"),
+  lastName: z.string().min(1, "Please enter your last name"),
+  phoneNumber: z.string().min(10, "Please enter your phone number"),
+  email: z.string().email("Please enter a valid email").optional().or(z.literal("")),
+  visitType: z.enum(["Appointment Visit", "First Visit", "Online Booking"]),
+  visitReason: z.string().min(1, "Please enter reason for visit"),
   mailingList: z.boolean().default(false),
 });
 
@@ -51,7 +51,7 @@ export default function AppointmentBooking() {
       lastName: "",
       phoneNumber: "",
       email: "",
-      visitType: "방문예약",
+      visitType: "Appointment Visit",
       visitReason: "",
       mailingList: false,
     },
@@ -103,8 +103,8 @@ export default function AppointmentBooking() {
     },
     onError: (error: any) => {
       toast({
-        title: "예약 실패",
-        description: error.message || "예약 중 오류가 발생했습니다.",
+        title: "Booking Failed",
+        description: error.message || "An error occurred during booking.",
         variant: "destructive",
       });
     },
@@ -119,8 +119,8 @@ export default function AppointmentBooking() {
   const handleDateTimeNext = () => {
     if (!selectedDate || !selectedTime) {
       toast({
-        title: "선택 오류",
-        description: "날짜와 시간을 모두 선택해주세요.",
+        title: "Selection Error",
+        description: "Please select both date and time.",
         variant: "destructive",
       });
       return;
@@ -161,13 +161,13 @@ export default function AppointmentBooking() {
         <div className="flex items-center mb-6">
           <Button variant="ghost" onClick={() => step === 1 ? setLocation("/") : setStep(step - 1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            뒤로가기
+            Back
           </Button>
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">방문 예약</h1>
-          <p className="text-gray-600">네일아트 서비스 방문 일정을 예약하세요</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">📞 Booking Information</h1>
+          <p className="text-gray-600">Please enter customer information and desired visit date and time for booking</p>
         </div>
 
         {/* Step Indicator */}
@@ -194,7 +194,7 @@ export default function AppointmentBooking() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <CalendarIcon className="h-5 w-5 mr-2" />
-                  날짜 선택
+                  Select Date
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -213,7 +213,7 @@ export default function AppointmentBooking() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Clock className="h-5 w-5 mr-2" />
-                  시간 선택
+                  Select Time
                   {selectedDate && (
                     <span className="ml-2 text-sm font-normal text-gray-600">
                       {format(selectedDate, "M월 d일 (eee)", { locale: ko })}
@@ -223,7 +223,7 @@ export default function AppointmentBooking() {
               </CardHeader>
               <CardContent>
                 {!selectedDate ? (
-                  <p className="text-gray-500">먼저 날짜를 선택해주세요</p>
+                  <p className="text-gray-500">Please select a date first</p>
                 ) : (
                   <div className="grid grid-cols-3 gap-2">
                     {availableSlots.map((slot) => (
@@ -240,8 +240,20 @@ export default function AppointmentBooking() {
                   </div>
                 )}
                 {selectedDate && availableSlots.length === 0 && (
-                  <p className="text-red-500 text-sm">선택한 날짜에 예약 가능한 시간이 없습니다.</p>
+                  <p className="text-red-500 text-sm">No available time slots for the selected date.</p>
                 )}
+              </CardContent>
+            </Card>
+            
+            {/* Booking Guidance */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="text-blue-800 text-sm">ℹ Booking Guidance</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-blue-700 space-y-2">
+                <p>• AI nail art is pre-made after payment, reducing treatment time during your visit</p>
+                <p>• Please contact us at least 1 day in advance for any changes after booking confirmation</p>
+                <p>• Business Hours: Mon-Fri 10:00-19:00 (Closed on weekends)</p>
               </CardContent>
             </Card>
           </div>
@@ -253,7 +265,7 @@ export default function AppointmentBooking() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <User className="h-5 w-5 mr-2" />
-                고객 정보
+                Customer Information
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -265,9 +277,9 @@ export default function AppointmentBooking() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>성 (First Name) *</FormLabel>
+                          <FormLabel>First Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="성을 입력해주세요" {...field} />
+                            <Input placeholder="Enter your first name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -278,9 +290,9 @@ export default function AppointmentBooking() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>이름 (Last Name) *</FormLabel>
+                          <FormLabel>Last Name *</FormLabel>
                           <FormControl>
-                            <Input placeholder="이름을 입력해주세요" {...field} />
+                            <Input placeholder="Enter your last name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -293,17 +305,17 @@ export default function AppointmentBooking() {
                     name="phoneNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>전화번호 *</FormLabel>
+                        <FormLabel>Phone Number *</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="01012345678" 
+                            placeholder="010-1234-5678" 
                             {...field}
                             onBlur={(e) => handlePhoneNumberBlur(e.target.value)}
                           />
                         </FormControl>
                         <FormMessage />
                         {checkPhoneMutation.data?.exists && (
-                          <p className="text-red-500 text-sm">이미 등록된 고객입니다</p>
+                          <p className="text-red-500 text-sm">Customer already registered</p>
                         )}
                       </FormItem>
                     )}
@@ -314,7 +326,7 @@ export default function AppointmentBooking() {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>이메일</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input placeholder="example@email.com" {...field} />
                         </FormControl>
@@ -328,20 +340,20 @@ export default function AppointmentBooking() {
                     name="visitType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>방문 유형 *</FormLabel>
+                        <FormLabel>Visit Type *</FormLabel>
                         <FormControl>
                           <RadioGroup value={field.value} onValueChange={field.onChange}>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="방문예약" id="visit-booking" />
-                              <label htmlFor="visit-booking">방문예약</label>
+                              <RadioGroupItem value="Appointment Visit" id="visit-booking" />
+                              <label htmlFor="visit-booking">Appointment Visit</label>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="최초방문" id="first-visit" />
-                              <label htmlFor="first-visit">최초방문</label>
+                              <RadioGroupItem value="First Visit" id="first-visit" />
+                              <label htmlFor="first-visit">First Visit</label>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="인터넷예약" id="online-booking" />
-                              <label htmlFor="online-booking">인터넷예약</label>
+                              <RadioGroupItem value="Online Booking" id="online-booking" />
+                              <label htmlFor="online-booking">Online Booking</label>
                             </div>
                           </RadioGroup>
                         </FormControl>
@@ -355,9 +367,9 @@ export default function AppointmentBooking() {
                     name="visitReason"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>방문 사유 *</FormLabel>
+                        <FormLabel>Visit Request *</FormLabel>
                         <FormControl>
-                          <Input placeholder="네일아트, 네일케어, 상담 등" {...field} />
+                          <Input placeholder="Please enter any special requests or allergy information" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -376,9 +388,9 @@ export default function AppointmentBooking() {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>메일링 리스트 가입</FormLabel>
+                          <FormLabel>Join Mailing List</FormLabel>
                           <p className="text-sm text-gray-600">
-                            새로운 디자인과 프로모션 정보를 이메일로 받아보세요
+                            Receive information about new designs and promotions via email
                           </p>
                         </div>
                       </FormItem>
@@ -386,7 +398,7 @@ export default function AppointmentBooking() {
                   />
 
                   <Button type="submit" className="w-full">
-                    다음 단계
+                    Next Step
                   </Button>
                 </form>
               </Form>
@@ -398,65 +410,65 @@ export default function AppointmentBooking() {
         {step === 3 && (
           <Card>
             <CardHeader>
-              <CardTitle>예약 확인</CardTitle>
+              <CardTitle>Booking Confirmation</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-pink-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-pink-800 mb-3">예약 정보</h3>
+                <h3 className="font-semibold text-pink-800 mb-3">ℹ Booking Information</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>날짜:</span>
-                    <span>{selectedDate && format(selectedDate, "yyyy년 M월 d일 (eee)", { locale: ko })}</span>
+                    <span>Date:</span>
+                    <span>{selectedDate && format(selectedDate, "yyyy-MM-dd (eee)")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>시간:</span>
+                    <span>Time:</span>
                     <span>{selectedTime}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-3">고객 정보</h3>
+                <h3 className="font-semibold text-blue-800 mb-3">Customer Information</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>성명:</span>
+                    <span>Name:</span>
                     <span>{form.getValues("firstName")} {form.getValues("lastName")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>전화번호:</span>
+                    <span>Phone:</span>
                     <span>{form.getValues("phoneNumber")}</span>
                   </div>
                   {form.getValues("email") && (
                     <div className="flex justify-between">
-                      <span>이메일:</span>
+                      <span>Email:</span>
                       <span>{form.getValues("email")}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <span>방문 유형:</span>
+                    <span>Visit Type:</span>
                     <span>{form.getValues("visitType")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>방문 사유:</span>
+                    <span>Visit Reason:</span>
                     <span>{form.getValues("visitReason")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>메일링 리스트:</span>
-                    <span>{form.getValues("mailingList") ? "가입" : "가입 안함"}</span>
+                    <span>Mailing List:</span>
+                    <span>{form.getValues("mailingList") ? "Subscribed" : "Not Subscribed"}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex space-x-4">
                 <Button variant="outline" onClick={() => setStep(2)} className="flex-1">
-                  수정하기
+                  Edit
                 </Button>
                 <Button 
                   onClick={handleConfirmBooking} 
                   className="flex-1"
                   disabled={createAppointmentMutation.isPending}
                 >
-                  {createAppointmentMutation.isPending ? "예약 중..." : "예약 확정"}
+                  {createAppointmentMutation.isPending ? "Booking..." : "Submit Booking"}
                 </Button>
               </div>
             </CardContent>
@@ -470,7 +482,7 @@ export default function AppointmentBooking() {
           )}
           {step === 1 && (
             <Button onClick={handleDateTimeNext}>
-              다음 단계
+              Next Step
             </Button>
           )}
         </div>

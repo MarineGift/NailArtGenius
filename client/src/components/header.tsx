@@ -68,7 +68,6 @@ export default function Header() {
                   </>
                 ) : (
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Welcome, {adminUser?.name || adminUser?.username}</span>
                     <Link href="/admin">
                       <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
                         Admin Panel
