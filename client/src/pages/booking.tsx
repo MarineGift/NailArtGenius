@@ -261,20 +261,40 @@ export default function BookingPage() {
     }
 
     const selectedServiceData = services.find(s => s.id === completedBookingDetails.service);
-    const discountedPrice = ((selectedServiceData?.price || 0) * (1 - onlineBookingDiscount)).toFixed(2);
-
-    setShowPaymentModal(true);
-    setIsOnlinePayment(true);
-
-    // Simulate payment processing
-    setTimeout(() => {
-      setShowPaymentModal(false);
+    if (!selectedServiceData) {
       toast({
-        title: "Payment Successful!",
-        description: `온라인 결제 완료! $${discountedPrice} (10% 할인 적용) - Online payment completed with 10% discount applied!`,
-        duration: 6000,
+        title: "Service Not Found",
+        description: "Unable to find service details for payment.",
+        variant: 'destructive',
       });
-    }, 3000);
+      return;
+    }
+
+    // Calculate pricing with 10% discount
+    const originalPrice = selectedServiceData.price;
+    const discountedPrice = Math.round(originalPrice * 0.9 * 100) / 100; // 10% discount
+
+    // Store booking details for payment page
+    const paymentData = {
+      service: completedBookingDetails.service,
+      date: completedBookingDetails.date,
+      timeSlot: completedBookingDetails.timeSlot,
+      phone: completedBookingDetails.phone,
+      originalPrice,
+      discountedPrice
+    };
+
+    sessionStorage.setItem('pendingBookingPayment', JSON.stringify(paymentData));
+    
+    toast({
+      title: "Redirecting to Payment",
+      description: "Opening secure Stripe checkout with card scanning functionality...",
+    });
+    
+    // Redirect to Stripe checkout page
+    setTimeout(() => {
+      window.location.href = '/checkout';
+    }, 1000);
   };
 
   const handlePrevMonth = () => {
@@ -613,7 +633,7 @@ export default function BookingPage() {
                     className={`w-full ${(bookingCompleted && completedBookingDetails) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
-                    온라인 결제 할인(10%)
+                    Online Payment Discount (10%)
                   </Button>
                 </div>
               </CardContent>

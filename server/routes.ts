@@ -311,7 +311,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PayPal routes
+  // Stripe payment routes
+  app.post("/api/create-payment-intent", async (req, res) => {
+    const Stripe = (await import('stripe')).default;
+    
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return res.status(500).json({ message: 'Stripe secret key not configured' });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-06-20",
+    });
+
+    try {
+      const { amount, currency = 'usd', bookingDetails } = req.body;
+      
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency,
+        metadata: {
+          bookingService: bookingDetails?.service?.toString() || '',
+          bookingDate: bookingDetails?.date || '',
+          bookingTimeSlot: bookingDetails?.timeSlot || '',
+          customerPhone: bookingDetails?.phone || ''
+        },
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error: any) {
+      console.error('Stripe payment intent error:', error);
+      res.status(500).json({ 
+        message: "Error creating payment intent: " + error.message 
+      });
+    }
+  });
+
+  // PayPal routes (keeping existing functionality)
   app.get("/api/paypal/setup", async (req, res) => {
     await loadPaypalDefault(req, res);
   });

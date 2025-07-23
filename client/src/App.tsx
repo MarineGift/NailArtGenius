@@ -42,6 +42,7 @@ import AdminTest from "@/pages/admin-test";
 import AdminLogin from "@/pages/admin-login";
 import SignUp from "@/pages/signup";
 import PasswordReset from "@/pages/password-reset";
+import Checkout from "@/pages/checkout";
 
 // Lazy load AI Nail System
 const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
@@ -64,6 +65,7 @@ function Router() {
           </Suspense>
         )} />
         <Route path="/booking" component={Booking} />
+        <Route path="/checkout" component={Checkout} />
         <Route path="/appointment-booking-new" component={AppointmentBooking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/signup" component={Signup} />
