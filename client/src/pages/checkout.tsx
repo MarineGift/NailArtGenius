@@ -201,34 +201,46 @@ export default function Checkout() {
     console.log('Parsed booking:', booking);
     setBookingDetails(booking);
 
-    // Create payment intent
-    console.log('Creating payment intent...');
+    // Create payment intent using apiRequest (which handles JSON parsing)
+    console.log('Creating payment intent with data:', { 
+      amount: booking.discountedPrice,
+      currency: 'usd',
+      bookingDetails: booking
+    });
+    
     apiRequest("/api/create-payment-intent", "POST", { 
       amount: booking.discountedPrice,
       currency: 'usd',
       bookingDetails: booking
     })
-      .then((res) => res.json())
       .then((data) => {
-        console.log('Payment intent created:', data);
-        setClientSecret(data.clientSecret);
+        console.log('Payment intent response:', data);
+        if (data.clientSecret) {
+          console.log('Setting client secret:', data.clientSecret);
+          setClientSecret(data.clientSecret);
+        } else {
+          throw new Error('No client secret received from server');
+        }
       })
       .catch((error) => {
         console.error('Payment intent creation failed:', error);
         toast({
           title: "Payment Setup Failed", 
-          description: "Unable to initialize payment. Please try again.",
+          description: `Unable to initialize payment: ${error.message}`,
           variant: "destructive",
         });
       });
   }, [setLocation, toast]);
 
+  console.log('Render state - clientSecret:', !!clientSecret, 'bookingDetails:', !!bookingDetails);
+  
   if (!clientSecret || !bookingDetails) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p>Setting up secure payment...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-lg font-medium">Setting up secure payment...</p>
+          <p className="text-sm text-gray-600 mt-2">Please wait while we prepare your checkout</p>
         </div>
       </div>
     );
