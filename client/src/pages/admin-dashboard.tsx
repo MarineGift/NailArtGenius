@@ -35,6 +35,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
 import SimpleMetricModal from "@/components/SimpleMetricModal";
+import MetricCard from "@/components/MetricCard";
 
 interface AdminStats {
   totalCustomers: number;
@@ -214,8 +215,10 @@ export default function AdminDashboard() {
 
   const handleMetricClick = (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
     console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
-    console.log('🚀 Current detailModal state:', detailModal);
     alert(`Clicked ${title} - Count: ${totalCount}`);
+    
+    // Immediately show force modal
+    setForceShowModal(true);
     
     // Use simple test data for immediate modal display
     const testData = [
@@ -232,13 +235,11 @@ export default function AdminDashboard() {
       totalCount
     });
     
-    setForceShowModal(true);
-    
     console.log('🎯 Modal state set:', { 
       isOpen: true, 
       metricType, 
       title, 
-      dataLength: data.length, 
+      dataLength: testData.length, 
       totalCount 
     });
     
@@ -528,73 +529,41 @@ export default function AdminDashboard() {
 
           <TabsContent value="dashboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-300"
-                onClick={() => {
-                  console.log('Customer card clicked!');
-                  handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0);
-                }}
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats?.totalCustomers || 0}</div>
-                  <p className="text-xs text-muted-foreground">All registered customers - Click for details</p>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Total Customers"
+                value={stats?.totalCustomers || 0}
+                description="All registered customers - Click for details"
+                icon={<Users className="h-4 w-4 text-muted-foreground" />}
+                borderColor="border-blue-300"
+                onClick={() => handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0)}
+              />
 
-              <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-300"
-                onClick={() => {
-                  console.log('Appointments card clicked!');
-                  handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0);
-                }}
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats?.totalAppointments || 0}</div>
-                  <p className="text-xs text-muted-foreground">All appointment bookings - Click for details</p>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Total Appointments"
+                value={stats?.totalAppointments || 0}
+                description="All appointment bookings - Click for details"
+                icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
+                borderColor="border-green-300"
+                onClick={() => handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0)}
+              />
 
-              <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-yellow-300"
-                onClick={() => {
-                  console.log('Visitors card clicked!');
-                  handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12);
-                }}
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Today's Visitors</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats?.todayAppointments || 12}</div>
-                  <p className="text-xs text-muted-foreground">Today's website visitors - Click for details</p>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Today's Visitors"
+                value={stats?.todayAppointments || 12}
+                description="Today's website visitors - Click for details"
+                icon={<Clock className="h-4 w-4 text-muted-foreground" />}
+                borderColor="border-yellow-300"
+                onClick={() => handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12)}
+              />
 
-              <Card 
-                className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-red-300"
-                onClick={() => {
-                  console.log('Orders card clicked!');
-                  handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0);
-                }}
-              >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-                  <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
-                  <p className="text-xs text-muted-foreground">All order transactions - Click for details</p>
-                </CardContent>
-              </Card>
+              <MetricCard
+                title="Total Orders"
+                value={stats?.totalOrders || 0}
+                description="All order transactions - Click for details"
+                icon={<ShoppingBag className="h-4 w-4 text-muted-foreground" />}
+                borderColor="border-red-300"
+                onClick={() => handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0)}
+              />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
