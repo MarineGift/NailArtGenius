@@ -351,37 +351,118 @@ function displayAnalysisResults(results, container) {
     `;
 }
 
-// Generate 10 custom nail designs
+// Generate 10 custom nail designs with actual nail shapes
 function generate10CustomDesigns(container) {
     if (!container) return;
     
-    const designTemplates = [
-        { name: 'Classic French', style: 'elegant', color: '#FFE4E1' },
-        { name: 'Floral Garden', style: 'nature', color: '#F0FFF0' },
-        { name: 'Geometric Art', style: 'modern', color: '#E6E6FA' },
-        { name: 'Marble Effect', style: 'luxury', color: '#F5F5DC' },
-        { name: 'Gradient Sunset', style: 'gradient', color: '#FFE4B5' },
-        { name: 'Minimalist Lines', style: 'simple', color: '#F8F8FF' },
-        { name: 'Starry Night', style: 'artistic', color: '#191970' },
-        { name: 'Rose Gold Glam', style: 'metallic', color: '#B76E79' },
-        { name: 'Ocean Waves', style: 'nature', color: '#E0FFFF' },
-        { name: 'Abstract Modern', style: 'contemporary', color: '#DCDCDC' }
+    const nailDesigns = [
+        { name: 'Classic French', baseColor: '#FFB6C1', tipColor: '#FFFFFF', pattern: 'french' },
+        { name: 'Rose Gold Glam', baseColor: '#F4C2C2', tipColor: '#D4AF37', pattern: 'gradient' },
+        { name: 'Ocean Blue', baseColor: '#4682B4', tipColor: '#87CEEB', pattern: 'wave' },
+        { name: 'Sunset Ombre', baseColor: '#FF6347', tipColor: '#FFD700', pattern: 'ombre' },
+        { name: 'Purple Dreams', baseColor: '#DDA0DD', tipColor: '#9370DB', pattern: 'dots' },
+        { name: 'Mint Fresh', baseColor: '#98FB98', tipColor: '#00FA9A', pattern: 'stripes' },
+        { name: 'Cherry Blossom', baseColor: '#FFB6C1', tipColor: '#FF69B4', pattern: 'floral' },
+        { name: 'Galaxy Night', baseColor: '#191970', tipColor: '#4169E1', pattern: 'stars' },
+        { name: 'Coral Reef', baseColor: '#FF7F50', tipColor: '#FFA07A', pattern: 'marble' },
+        { name: 'Lavender Field', baseColor: '#E6E6FA', tipColor: '#9370DB', pattern: 'geometric' }
     ];
     
     container.innerHTML = `
         <div class="designs-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px;">
-            ${designTemplates.map((design, index) => `
-                <div class="design-card" style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden; text-align: center;">
-                    <div class="design-preview" style="height: 120px; background: ${design.color}; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #333;">
-                        Design ${index + 1}
+            ${nailDesigns.map((design, index) => `
+                <div class="design-card" style="border: 2px solid #ddd; border-radius: 12px; overflow: hidden; text-align: center; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div class="nail-shape-container" style="height: 120px; padding: 15px; display: flex; align-items: center; justify-content: center; background: #f8f9fa;">
+                        ${generateNailShape(design, index + 1)}
                     </div>
-                    <div class="design-info" style="padding: 10px;">
-                        <h5 style="margin: 5px 0; font-size: 12px;">${design.name}</h5>
-                        <p style="margin: 0; font-size: 10px; color: #666;">${design.style}</p>
+                    <div class="design-info" style="padding: 12px; background: white;">
+                        <h5 style="margin: 5px 0; font-size: 13px; color: #333; font-weight: 600;">${design.name}</h5>
+                        <p style="margin: 0; font-size: 11px; color: #666;">AI 맞춤 디자인 #${index + 1}</p>
                     </div>
                 </div>
             `).join('')}
         </div>
+    `;
+}
+
+function generateNailShape(design, number) {
+    const patterns = {
+        french: `
+            <defs>
+                <linearGradient id="french${number}" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:${design.tipColor};stop-opacity:1" />
+                    <stop offset="30%" style="stop-color:${design.baseColor};stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="url(#french${number})" stroke="#ddd" stroke-width="1"/>
+        `,
+        gradient: `
+            <defs>
+                <linearGradient id="grad${number}" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:${design.baseColor};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${design.tipColor};stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="url(#grad${number})" stroke="#ddd" stroke-width="1"/>
+            <circle cx="35" cy="50" r="3" fill="${design.tipColor}" opacity="0.8"/>
+        `,
+        wave: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <path d="M 20 60 Q 30 50 40 60 T 60 60" stroke="${design.tipColor}" stroke-width="3" fill="none"/>
+            <path d="M 20 80 Q 30 70 40 80 T 60 80" stroke="${design.tipColor}" stroke-width="2" fill="none"/>
+        `,
+        ombre: `
+            <defs>
+                <linearGradient id="ombre${number}" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" style="stop-color:${design.baseColor};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${design.tipColor};stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="url(#ombre${number})" stroke="#ddd" stroke-width="1"/>
+        `,
+        dots: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <circle cx="30" cy="50" r="2" fill="${design.tipColor}"/>
+            <circle cx="45" cy="60" r="2" fill="${design.tipColor}"/>
+            <circle cx="35" cy="75" r="2" fill="${design.tipColor}"/>
+            <circle cx="50" cy="85" r="2" fill="${design.tipColor}"/>
+        `,
+        stripes: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <line x1="20" y1="45" x2="60" y2="45" stroke="${design.tipColor}" stroke-width="2"/>
+            <line x1="20" y1="65" x2="60" y2="65" stroke="${design.tipColor}" stroke-width="2"/>
+            <line x1="20" y1="85" x2="60" y2="85" stroke="${design.tipColor}" stroke-width="2"/>
+        `,
+        floral: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <circle cx="35" cy="55" r="4" fill="${design.tipColor}" opacity="0.8"/>
+            <circle cx="30" cy="58" r="2" fill="${design.tipColor}"/>
+            <circle cx="40" cy="58" r="2" fill="${design.tipColor}"/>
+            <circle cx="35" cy="62" r="2" fill="${design.tipColor}"/>
+        `,
+        stars: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <polygon points="35,45 37,50 42,50 38,53 40,58 35,55 30,58 32,53 28,50 33,50" fill="${design.tipColor}"/>
+            <circle cx="50" cy="70" r="1" fill="${design.tipColor}"/>
+            <circle cx="25" cy="80" r="1" fill="${design.tipColor}"/>
+        `,
+        marble: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <path d="M 20 50 Q 35 45 50 55 Q 45 70 60 75" stroke="${design.tipColor}" stroke-width="2" fill="none" opacity="0.7"/>
+            <path d="M 25 85 Q 40 80 55 90" stroke="${design.tipColor}" stroke-width="1" fill="none" opacity="0.5"/>
+        `,
+        geometric: `
+            <ellipse cx="40" cy="70" rx="25" ry="45" fill="${design.baseColor}" stroke="#ddd" stroke-width="1"/>
+            <polygon points="40,45 45,55 35,55" fill="${design.tipColor}"/>
+            <rect x="32" y="65" width="16" height="8" fill="${design.tipColor}" opacity="0.7"/>
+            <polygon points="30,85 50,85 40,95" fill="${design.tipColor}" opacity="0.5"/>
+        `
+    };
+    
+    return `
+        <svg width="80" height="120" viewBox="0 0 80 120" style="background: transparent;">
+            ${patterns[design.pattern] || patterns.french}
+        </svg>
     `;
 }
 
