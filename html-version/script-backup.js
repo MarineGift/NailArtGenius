@@ -439,17 +439,13 @@ function initializeAnimations() {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // ABSOLUTE ENGLISH ENFORCEMENT - NUCLEAR OVERRIDE
+    // Force immediate English initialization - absolute override
     currentLanguage = 'en';
     try {
         localStorage.clear();
         sessionStorage.clear();
-        // Clear any existing preferences
-        document.cookie.split(";").forEach(function(c) { 
-            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-        });
     } catch(e) {
-        console.log('Storage clearing error, continuing with English enforcement');
+        // Ignore storage errors, continue with English
     }
     localStorage.setItem('preferred-language', 'en');
     
@@ -474,38 +470,16 @@ document.addEventListener('DOMContentLoaded', function() {
     window.previousSlide = previousSlide;
     window.currentSlide = currentSlideIndex;
     
-    // EXTREME ENGLISH ENFORCEMENT - Multiple waves of updates
-    for (let i = 0; i < 10; i++) {
-        setTimeout(() => {
-            updateLanguage('en');
-            const langSelect = document.getElementById('language-select');
-            if (langSelect) langSelect.value = 'en';
-            
-            // Force all elements to show English text
-            const elements = document.querySelectorAll('[data-key]');
-            elements.forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[key] && translations[key].en) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        if (element.hasAttribute('data-placeholder')) {
-                            element.placeholder = translations[key].en;
-                        }
-                    } else {
-                        element.textContent = translations[key].en;
-                    }
-                }
-            });
-        }, i * 100);
-    }
-    
-    // Continuous enforcement every 3 seconds
-    setInterval(() => {
-        if (currentLanguage !== 'en') {
-            updateLanguage('en');
-            const langSelect = document.getElementById('language-select');
-            if (langSelect) langSelect.value = 'en';
-        }
-    }, 3000);
+    // Force multiple English updates to ensure complete translation
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 100);
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 500);
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 1000);
 });
 
 // AI Nail Art Generation functionality
