@@ -19,6 +19,7 @@ import AppointmentBooking from "@/pages/appointment-booking-new";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminDashboardSimple from "@/pages/admin-dashboard-simple";
 import TestModal from "@/pages/test-modal";
+import AdminDashboardNew from "@/pages/admin-dashboard-new";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import { EnhancedAdminPanel } from "@/components/enhanced-admin-panel";
@@ -84,6 +85,7 @@ function Router() {
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard-simple" component={AdminDashboardSimple} />
         <Route path="/test-modal" component={TestModal} />
+        <Route path="/admin-dashboard-new" component={AdminDashboardNew} />
         <Route path="/admin-test" component={AdminTest} />
         <Route path="/admin-panel" component={AdminPanel} />
         <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
