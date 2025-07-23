@@ -18,16 +18,16 @@ export default function Home() {
       <Header />
       
       <main>
+        {/* Hero Carousel Section */}
+        <section className="mb-0">
+          <ImageCarousel />
+        </section>
+
         {/* AI Service Section */}
         <AIServiceSection />
 
         {/* Booking Hero Section */}
         <BookingHeroSection />
-
-        {/* Hero Carousel Section */}
-        <section className="mb-0">
-          <ImageCarousel />
-        </section>
         
         {/* English Services Section */}
         <EnglishServicesSection />
