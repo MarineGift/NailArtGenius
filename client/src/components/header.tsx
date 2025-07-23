@@ -70,7 +70,7 @@ export default function Header() {
                   <div className="flex items-center space-x-2">
                     <Link href="/admin">
                       <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
-                        Admin Panel
+                        Admin Dashboard
                       </Button>
                     </Link>
                     <Button 
@@ -102,27 +102,7 @@ export default function Header() {
                   </Button>
                 </Link>
                 
-                <Link href="/customer-management">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-600 hover:text-secondary"
-                  >
-                    <Settings className="h-4 w-4" />
-                    <span className="ml-1 hidden sm:inline">Customer Management</span>
-                  </Button>
-                </Link>
-                
-                <Link href="/admin-panel">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-600 hover:text-secondary"
-                  >
-                    <Settings className="h-4 w-4" />
-                    <span className="ml-1 hidden sm:inline">Admin Panel</span>
-                  </Button>
-                </Link>
+
                 
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-8 w-8">

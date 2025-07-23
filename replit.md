@@ -36,6 +36,7 @@ Preferred communication style: Simple, everyday language.
     - Visit type options: 방문예약/최초방문/인터넷예약 → Appointment Visit/First Visit/Online Booking
     - Booking guidance: Added English booking information panel with business hours and policies
   - **Header Welcome Text**: Removed "Welcome, admin admin" text after admin login for cleaner interface
+  - **Navigation Cleanup**: Removed "Customer Management" and "Admin Panel" from navigation menu for streamlined interface
   - **AI Nail Art Translation**: Revolutionary AI service description fully translated
     - Korean: "손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요" 
     - English: "Register your nails → select nail art design → payment → visit date process"
