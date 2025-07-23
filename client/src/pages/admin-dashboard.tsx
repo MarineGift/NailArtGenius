@@ -242,13 +242,14 @@ export default function AdminDashboard() {
   };
 
   const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
-    console.log('Metric click handler called:', metricType, title, totalCount);
+    console.log('🔥 Card clicked! Metric:', metricType, 'Title:', title, 'Count:', totalCount);
     
     try {
-      let data = [];
+      let data: any[] = [];
       
       // Load real data based on metric type
       if (metricType === 'customers') {
+        console.log('📊 Loading customers data...');
         const response = await fetch('/api/admin/customers', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -256,8 +257,12 @@ export default function AdminDashboard() {
         });
         if (response.ok) {
           data = await response.json();
+          console.log('✅ Customers data loaded:', data.length, 'items');
+        } else {
+          console.error('❌ Failed to load customers:', response.status);
         }
       } else if (metricType === 'appointments') {
+        console.log('📅 Loading appointments data...');
         const response = await fetch('/api/admin/appointments', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -265,9 +270,13 @@ export default function AdminDashboard() {
         });
         if (response.ok) {
           data = await response.json();
+          console.log('✅ Appointments data loaded:', data.length, 'items');
+        } else {
+          console.error('❌ Failed to load appointments:', response.status);
         }
       } else {
         // For visitors and orders, use sample data for now
+        console.log('📝 Using sample data for:', metricType);
         data = [
           { name: `Sample ${metricType} 1`, phoneNumber: '010-1111-1111', email: 'sample1@example.com' },
           { name: `Sample ${metricType} 2`, phoneNumber: '010-2222-2222', email: 'sample2@example.com' },
@@ -275,25 +284,23 @@ export default function AdminDashboard() {
         ];
       }
 
-      // Set modal state with real data
-      setDetailModal({
+      console.log('🎯 Setting modal state with data:', data.length, 'items');
+      
+      // Force modal to open with data
+      const modalState = {
         isOpen: true,
         metricType,
         title,
         data: data || [],
         totalCount
-      });
+      };
       
-      console.log('Modal opened with data:', { 
-        isOpen: true, 
-        metricType, 
-        title, 
-        dataLength: data.length, 
-        totalCount 
-      });
+      setDetailModal(modalState);
+      
+      console.log('✅ Modal state updated:', modalState);
       
     } catch (error) {
-      console.error('Error loading metric data:', error);
+      console.error('💥 Error in handleMetricClick:', error);
       
       // Show modal with error message
       setDetailModal({
@@ -301,7 +308,7 @@ export default function AdminDashboard() {
         metricType,
         title,
         data: [{ name: 'Failed to load data', error: String(error) }],
-        totalCount
+        totalCount: 1
       });
     }
   };
@@ -428,6 +435,26 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error('Error loading carousel images:', error);
+    }
+  };
+
+  const loadGalleryItems = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch('/api/admin/gallery', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setGalleryItems(data);
+      }
+    } catch (error) {
+      console.error('Error loading gallery items:', error);
     }
   };
 
