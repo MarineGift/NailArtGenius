@@ -597,7 +597,7 @@ export default function BookingPage() {
                     className={`w-full ${(bookingCompleted && completedBookingDetails) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
-                    결제 버튼
+                    Payment Button
                   </Button>
                 </div>
               </CardContent>
