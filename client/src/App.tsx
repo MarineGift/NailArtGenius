@@ -17,6 +17,7 @@ import DesignPreview from "@/pages/design-preview";
 import Payment from "@/pages/payment";
 import AppointmentBooking from "@/pages/appointment-booking-new";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminDashboardSimple from "@/pages/admin-dashboard-simple";
 import PrintingStatus from "@/pages/printing-status";
 import AdminPanel from "@/pages/admin-panel";
 import { EnhancedAdminPanel } from "@/components/enhanced-admin-panel";
@@ -80,6 +81,7 @@ function Router() {
         <Route path="/signup" component={SignUp} />
         <Route path="/password-reset" component={PasswordReset} />
         <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin-dashboard-simple" component={AdminDashboardSimple} />
         <Route path="/admin-test" component={AdminTest} />
         <Route path="/admin-panel" component={AdminPanel} />
         <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
