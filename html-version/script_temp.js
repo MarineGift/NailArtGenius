@@ -1092,8 +1092,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Service Carousel Functionality
-
-// Service Carousel Functionality
 let serviceSlideIndex = 1;
 const maxServiceSlides = 5;
 
@@ -1144,17 +1142,15 @@ function initializeServiceSelection() {
     const selectedServiceName = document.getElementById('selected-service-name');
     const selectedServicePrice = document.getElementById('selected-service-price');
     
-    if (!serviceButtons.length) return;
-    
     serviceButtons.forEach(button => {
         button.addEventListener('click', function() {
             const serviceName = this.closest('.service-card').querySelector('h3').textContent;
             const servicePrice = this.getAttribute('data-price');
             const serviceId = this.getAttribute('data-service');
             
-            if (selectedServiceName) selectedServiceName.textContent = serviceName;
-            if (selectedServicePrice) selectedServicePrice.textContent = '$' + servicePrice;
-            if (selectedServiceDisplay) selectedServiceDisplay.style.display = 'block';
+            selectedServiceName.textContent = serviceName;
+            selectedServicePrice.textContent = '$' + servicePrice;
+            selectedServiceDisplay.style.display = 'block';
             
             // Auto-fill booking form if available
             const bookingServiceSelect = document.getElementById('booking-service-select');
@@ -1163,18 +1159,14 @@ function initializeServiceSelection() {
             }
             
             // Scroll to selected service display
-            if (selectedServiceDisplay) {
-                selectedServiceDisplay.scrollIntoView({ behavior: 'smooth' });
-            }
+            selectedServiceDisplay.scrollIntoView({ behavior: 'smooth' });
         });
     });
 }
 
 function clearSelection() {
     const selectedServiceDisplay = document.getElementById('selected-service-display');
-    if (selectedServiceDisplay) {
-        selectedServiceDisplay.style.display = 'none';
-    }
+    selectedServiceDisplay.style.display = 'none';
     
     // Clear booking form selection
     const bookingServiceSelect = document.getElementById('booking-service-select');
@@ -1187,363 +1179,13 @@ function clearSelection() {
 function startServiceCarousel() {
     setInterval(() => {
         nextServiceSlide();
-    }, 5000); // Change slide every 5 seconds
+    }, 4000); // Change slide every 4 seconds
 }
 
-// Gallery Filter Functionality
-function initializeGalleryFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    
-    if (!filterButtons.length) return;
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            
-            // Update active filter button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Filter gallery items
-            galleryItems.forEach(item => {
-                if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    });
-}
-
-// Color Mixer Functionality
-let currentColor = { r: 255, g: 192, b: 203, a: 1 };
-let savedColors = JSON.parse(localStorage.getItem('savedNailColors') || '[]');
-
-function initializeColorMixer() {
-    const redSlider = document.getElementById('red-slider');
-    const greenSlider = document.getElementById('green-slider');
-    const blueSlider = document.getElementById('blue-slider');
-    const opacitySlider = document.getElementById('opacity-slider');
-    const hexInput = document.getElementById('hex-color');
-    const applyHexBtn = document.getElementById('apply-hex');
-    const saveColorBtn = document.getElementById('save-color');
-    const clearSavedBtn = document.getElementById('clear-saved');
-    const resetMixerBtn = document.getElementById('reset-mixer');
-    const bookWithColorBtn = document.getElementById('book-with-color');
-    
-    if (!redSlider) return; // Exit if color mixer not on page
-    
-    // Initialize sliders
-    [redSlider, greenSlider, blueSlider, opacitySlider].forEach(slider => {
-        if (slider) {
-            slider.addEventListener('input', updateColorFromSliders);
-        }
-    });
-    
-    // Hex input functionality
-    if (applyHexBtn) {
-        applyHexBtn.addEventListener('click', applyHexColor);
-    }
-    if (hexInput) {
-        hexInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                applyHexColor();
-            }
-        });
-    }
-    
-    // Color swatch functionality
-    const colorSwatches = document.querySelectorAll('.color-swatch');
-    colorSwatches.forEach(swatch => {
-        swatch.addEventListener('click', function() {
-            const color = this.getAttribute('data-color');
-            setColorFromHex(color);
-            
-            // Update selected state
-            colorSwatches.forEach(s => s.classList.remove('selected'));
-            this.classList.add('selected');
-        });
-    });
-    
-    // Combination cards functionality
-    const combinationCards = document.querySelectorAll('.combination-card');
-    combinationCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const colors = JSON.parse(this.getAttribute('data-colors'));
-            if (colors.length > 0) {
-                setColorFromHex(colors[0]);
-            }
-        });
-    });
-    
-    // Button functionality
-    if (saveColorBtn) {
-        saveColorBtn.addEventListener('click', saveCurrentColor);
-    }
-    if (clearSavedBtn) {
-        clearSavedBtn.addEventListener('click', clearSavedColors);
-    }
-    if (resetMixerBtn) {
-        resetMixerBtn.addEventListener('click', resetColorMixer);
-    }
-    if (bookWithColorBtn) {
-        bookWithColorBtn.addEventListener('click', bookWithCurrentColor);
-    }
-    
-    // Initialize saved colors display
-    updateSavedColorsDisplay();
-    
-    // Initial color update
-    updateColorDisplay();
-}
-
-function updateColorFromSliders() {
-    const redSlider = document.getElementById('red-slider');
-    const greenSlider = document.getElementById('green-slider');
-    const blueSlider = document.getElementById('blue-slider');
-    const opacitySlider = document.getElementById('opacity-slider');
-    
-    if (!redSlider || !greenSlider || !blueSlider || !opacitySlider) return;
-    
-    currentColor.r = parseInt(redSlider.value);
-    currentColor.g = parseInt(greenSlider.value);
-    currentColor.b = parseInt(blueSlider.value);
-    currentColor.a = parseFloat(opacitySlider.value) / 100;
-    
-    updateColorDisplay();
-    updateSliderValues();
-}
-
-function updateSliderValues() {
-    const redValue = document.getElementById('red-value');
-    const greenValue = document.getElementById('green-value');
-    const blueValue = document.getElementById('blue-value');
-    const opacityValue = document.getElementById('opacity-value');
-    
-    if (redValue) redValue.textContent = currentColor.r;
-    if (greenValue) greenValue.textContent = currentColor.g;
-    if (blueValue) blueValue.textContent = currentColor.b;
-    if (opacityValue) opacityValue.textContent = Math.round(currentColor.a * 100) + '%';
-}
-
-function updateColorDisplay() {
-    const colorDisplay = document.getElementById('color-display');
-    const nailPreview = document.getElementById('nail-preview');
-    const rgbDisplay = document.getElementById('rgb-display');
-    const hexDisplay = document.getElementById('hex-display');
-    const hslDisplay = document.getElementById('hsl-display');
-    const hexInput = document.getElementById('hex-color');
-    
-    const rgba = `rgba(${currentColor.r}, ${currentColor.g}, ${currentColor.b}, ${currentColor.a})`;
-    const rgb = `rgb(${currentColor.r}, ${currentColor.g}, ${currentColor.b})`;
-    const hex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
-    const hsl = rgbToHsl(currentColor.r, currentColor.g, currentColor.b);
-    
-    if (colorDisplay) colorDisplay.style.background = rgba;
-    if (nailPreview) nailPreview.style.background = rgba;
-    if (rgbDisplay) rgbDisplay.textContent = rgb;
-    if (hexDisplay) hexDisplay.textContent = hex;
-    if (hslDisplay) hslDisplay.textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-    if (hexInput) hexInput.value = hex;
-}
-
-function setColorFromHex(hexColor) {
-    const rgb = hexToRgb(hexColor);
-    if (rgb) {
-        currentColor.r = rgb.r;
-        currentColor.g = rgb.g;
-        currentColor.b = rgb.b;
-        
-        // Update sliders
-        const redSlider = document.getElementById('red-slider');
-        const greenSlider = document.getElementById('green-slider');
-        const blueSlider = document.getElementById('blue-slider');
-        
-        if (redSlider) redSlider.value = rgb.r;
-        if (greenSlider) greenSlider.value = rgb.g;
-        if (blueSlider) blueSlider.value = rgb.b;
-        
-        updateColorDisplay();
-        updateSliderValues();
-    }
-}
-
-function applyHexColor() {
-    const hexInput = document.getElementById('hex-color');
-    if (hexInput) {
-        const hexColor = hexInput.value.trim();
-        if (isValidHex(hexColor)) {
-            setColorFromHex(hexColor);
-        } else {
-            showToast('Invalid hex color format. Please use format: #RRGGBB', 'error');
-        }
-    }
-}
-
-function saveCurrentColor() {
-    const colorHex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
-    
-    // Check if color already saved
-    if (!savedColors.includes(colorHex)) {
-        savedColors.push(colorHex);
-        localStorage.setItem('savedNailColors', JSON.stringify(savedColors));
-        updateSavedColorsDisplay();
-        showToast('Color saved successfully!', 'success');
-    } else {
-        showToast('Color already saved!', 'info');
-    }
-}
-
-function clearSavedColors() {
-    savedColors = [];
-    localStorage.setItem('savedNailColors', JSON.stringify(savedColors));
-    updateSavedColorsDisplay();
-    showToast('All saved colors cleared!', 'success');
-}
-
-function updateSavedColorsDisplay() {
-    const savedColorsGrid = document.getElementById('saved-colors-grid');
-    if (!savedColorsGrid) return;
-    
-    savedColorsGrid.innerHTML = '';
-    
-    if (savedColors.length === 0) {
-        savedColorsGrid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No saved colors yet</p>';
-        return;
-    }
-    
-    savedColors.forEach((color, index) => {
-        const colorItem = document.createElement('div');
-        colorItem.className = 'saved-color-item';
-        colorItem.style.backgroundColor = color;
-        colorItem.title = color;
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-color';
-        deleteBtn.innerHTML = '×';
-        deleteBtn.onclick = (e) => {
-            e.stopPropagation();
-            removeSavedColor(index);
-        };
-        
-        colorItem.appendChild(deleteBtn);
-        colorItem.onclick = () => setColorFromHex(color);
-        
-        savedColorsGrid.appendChild(colorItem);
-    });
-}
-
-function removeSavedColor(index) {
-    savedColors.splice(index, 1);
-    localStorage.setItem('savedNailColors', JSON.stringify(savedColors));
-    updateSavedColorsDisplay();
-    showToast('Color removed!', 'success');
-}
-
-function resetColorMixer() {
-    currentColor = { r: 255, g: 192, b: 203, a: 1 };
-    
-    const redSlider = document.getElementById('red-slider');
-    const greenSlider = document.getElementById('green-slider');
-    const blueSlider = document.getElementById('blue-slider');
-    const opacitySlider = document.getElementById('opacity-slider');
-    
-    if (redSlider) redSlider.value = 255;
-    if (greenSlider) greenSlider.value = 192;
-    if (blueSlider) blueSlider.value = 203;
-    if (opacitySlider) opacitySlider.value = 100;
-    
-    // Remove selected state from swatches
-    document.querySelectorAll('.color-swatch').forEach(swatch => {
-        swatch.classList.remove('selected');
-    });
-    
-    updateColorDisplay();
-    updateSliderValues();
-    showToast('Color mixer reset!', 'success');
-}
-
-function bookWithCurrentColor() {
-    const colorHex = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
-    
-    // Store selected color in localStorage for booking form
-    localStorage.setItem('selectedNailColor', colorHex);
-    
-    // Navigate to booking section
-    document.querySelector('#booking').scrollIntoView({ behavior: 'smooth' });
-    
-    // Add color note to booking form if available
-    const bookingNotes = document.getElementById('booking-notes');
-    if (bookingNotes) {
-        const colorNote = `Custom Color: ${colorHex}`;
-        if (!bookingNotes.value.includes(colorNote)) {
-            bookingNotes.value = bookingNotes.value ? 
-                bookingNotes.value + '\n' + colorNote : 
-                colorNote;
-        }
-    }
-    
-    showToast(`Booking with color ${colorHex}. Please complete the booking form.`, 'success');
-}
-
-// Utility functions for color conversion
-function rgbToHex(r, g, b) {
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-}
-
-function hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-function rgbToHsl(r, g, b) {
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    let h, s, l = (max + min) / 2;
-    
-    if (max === min) {
-        h = s = 0;
-    } else {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        
-        switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-        }
-        h /= 6;
-    }
-    
-    return {
-        h: Math.round(h * 360),
-        s: Math.round(s * 100),
-        l: Math.round(l * 100)
-    };
-}
-
-function isValidHex(hex) {
-    return /^#[0-9A-F]{6}$/i.test(hex);
-}
-
-// Initialize all functionality
+// Initialize service functionality
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
-        initializeLoginSystem();
-        initializeBookingSystem();
         initializeServiceSelection();
-        initializeGalleryFilters();
-        initializeColorMixer();
         startServiceCarousel();
     }, 500);
 });
