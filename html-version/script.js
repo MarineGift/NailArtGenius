@@ -104,12 +104,10 @@ function updateLanguage(lang) {
     }
     
     // Update language selector
-    document.querySelectorAll('.language-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.lang === lang) {
-            btn.classList.add('active');
-        }
-    });
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+        languageSelect.value = lang;
+    }
 }
 
 // Initialize page
@@ -118,11 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLanguage('en');
     
     // Language selector functionality
-    document.querySelectorAll('.language-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            updateLanguage(btn.dataset.lang);
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+        languageSelect.addEventListener('change', (e) => {
+            updateLanguage(e.target.value);
         });
-    });
+    }
     
     // Initialize AI features
     initializeAIFeatures();
