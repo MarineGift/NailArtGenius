@@ -159,6 +159,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin logout route
+  app.post('/api/admin/logout', async (req, res) => {
+    try {
+      // Simply clear the session/token on the client side
+      res.json({ message: 'Logged out successfully' });
+    } catch (error) {
+      console.error('Admin logout error:', error);
+      res.status(500).json({ message: 'Error occurred during logout.' });
+    }
+  });
+
   // Admin registration route
   app.post('/api/admin/register', async (req, res) => {
     try {

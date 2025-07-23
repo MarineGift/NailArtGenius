@@ -154,10 +154,25 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    setLocation('/admin-login');
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        await fetch('/api/admin/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Always clear local storage and redirect
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      setLocation('/admin-login');
+    }
   };
 
   const handleCreateUser = async () => {
