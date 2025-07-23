@@ -33,13 +33,13 @@ export default function Gallery() {
   const nailArtGallery = [
     {
       id: 1,
-      title: "Classic French Manicure",
-      description: "Traditional French manicure style",
+      title: "클래식 프렌치 매니큐어",
+      description: "전통적인 프렌치 매니큐어 스타일",
       category: "classic",
       image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
       price: "$45",
-      duration: "45 minutes",
-      difficulty: "Beginner",
+      duration: "45분",
+      difficulty: "초급",
       rating: 4.8,
       reviews: 127,
       techniques: ["베이스 코팅", "화이트 팁", "탑 코팅"],
@@ -49,7 +49,7 @@ export default function Gallery() {
     },
     {
       id: 2,
-      title: "Floral Design",
+      title: "플로럴 디자인",
       description: "섬세한 꽃 무늬 네일아트",
       category: "floral",
       image: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop",
@@ -65,7 +65,7 @@ export default function Gallery() {
     },
     {
       id: 3,
-      title: "Geometric Patterns",
+      title: "지오메트릭 패턴",
       description: "모던한 기하학적 패턴",
       category: "modern", 
       image: "https://images.unsplash.com/photo-1610992015732-2449b76344bc?w=400&h=400&fit=crop",
@@ -81,7 +81,7 @@ export default function Gallery() {
     },
     {
       id: 4,
-      title: "Glitter & Sparkle",
+      title: "글리터 & 스파클",
       description: "화려한 글리터 네일아트",
       category: "glamour",
       image: "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=400&fit=crop",
@@ -89,7 +89,7 @@ export default function Gallery() {
     },
     {
       id: 5,
-      title: "Minimalist Style",
+      title: "미니멀리스트 스타일",
       description: "심플하고 세련된 미니멀 디자인",
       category: "minimalist",
       image: "https://images.unsplash.com/photo-1599948174842-84bf74a4b2c5?w=400&h=400&fit=crop",
@@ -97,7 +97,7 @@ export default function Gallery() {
     },
     {
       id: 6,
-      title: "Seasonal Design",
+      title: "시즌 디자인",
       description: "계절감 있는 특별 디자인",
       category: "seasonal",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop",
@@ -105,7 +105,7 @@ export default function Gallery() {
     },
     {
       id: 7,
-      title: "Wedding Special",
+      title: "웨딩 스페셜",
       description: "결혼식을 위한 우아한 네일아트",
       category: "wedding",
       image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop",
@@ -113,7 +113,7 @@ export default function Gallery() {
     },
     {
       id: 8,
-      title: "Ombre Effect",
+      title: "옴브레 이펙트",
       description: "부드러운 그라데이션 효과",
       category: "gradient",
       image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop",
@@ -121,7 +121,7 @@ export default function Gallery() {
     },
     {
       id: 9,
-      title: "3D Art Design",
+      title: "3D 아트 디자인",
       description: "입체적인 3D 네일아트",
       category: "3d",
       image: "https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&h=400&fit=crop",
