@@ -99,11 +99,14 @@ export default function AdminDashboard() {
   // Modal state for metric details
   const [detailModal, setDetailModal] = useState({
     isOpen: false,
-    metricType: '' as 'customers' | 'appointments' | 'visitors' | 'orders',
+    metricType: 'customers' as 'customers' | 'appointments' | 'visitors' | 'orders',
     title: '',
     data: [] as any[],
     totalCount: 0
   });
+  
+  // Test modal state
+  const [testModalOpen, setTestModalOpen] = useState(false);
 
   useEffect(() => {
     checkAdminAuth();
@@ -480,6 +483,24 @@ export default function AdminDashboard() {
             <AlertDescription className="text-red-800">{error}</AlertDescription>
           </Alert>
         )}
+
+        {/* Emergency Test Button */}
+        <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded">
+          <h3 className="font-bold text-red-800">Emergency Test Zone</h3>
+          <Button 
+            onClick={() => {
+              console.log('🆘 Emergency test button clicked!');
+              setTestModalOpen(true);
+              alert('Test click worked!');
+            }}
+            className="mt-2 bg-red-600 hover:bg-red-700"
+          >
+            Click Test (Should show alert)
+          </Button>
+          <p className="mt-2 text-sm text-red-700">
+            Modal Debug State: isOpen={detailModal.isOpen ? 'TRUE' : 'FALSE'}, type={detailModal.metricType}
+          </p>
+        </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-8">
@@ -1095,13 +1116,39 @@ export default function AdminDashboard() {
       
       <Footer />
       
-      {/* Metric Detail Modal - Always render for debugging */}
-      <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999 }}>
-        <div style={{ background: 'red', color: 'white', padding: '5px', fontSize: '12px' }}>
-          Modal Debug: isOpen={detailModal.isOpen ? 'true' : 'false'}, type={detailModal.metricType}
+      {/* Test Modal */}
+      {testModalOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          zIndex: 10000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            maxWidth: '500px'
+          }}>
+            <h2>Emergency Test Modal</h2>
+            <p>If you can see this, React is working!</p>
+            <button 
+              onClick={() => setTestModalOpen(false)}
+              style={{ marginTop: '10px', padding: '10px', backgroundColor: '#dc2626', color: 'white' }}
+            >
+              Close Test Modal
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       
+      {/* Metric Detail Modal */}
       <MetricDetailModal
         isOpen={detailModal.isOpen}
         onClose={closeDetailModal}
