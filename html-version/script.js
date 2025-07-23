@@ -2,6 +2,62 @@
 let currentLanguage = 'en';
 let uploadedPhotos = [];
 
+// Home Hero Carousel Functionality
+let heroSlideIndex = 1;
+
+function nextSlide() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const maxSlides = slides.length;
+    
+    if (heroSlideIndex >= maxSlides) {
+        heroSlideIndex = 1;
+    } else {
+        heroSlideIndex++;
+    }
+    showSlide(heroSlideIndex);
+}
+
+function previousSlide() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const maxSlides = slides.length;
+    
+    if (heroSlideIndex <= 1) {
+        heroSlideIndex = maxSlides;
+    } else {
+        heroSlideIndex--;
+    }
+    showSlide(heroSlideIndex);
+}
+
+function currentSlide(n) {
+    heroSlideIndex = n;
+    showSlide(heroSlideIndex);
+}
+
+function showSlide(n) {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.hero-carousel .indicator');
+    
+    if (slides.length === 0) return;
+    
+    slides.forEach(slide => slide.classList.remove('active'));
+    indicators.forEach(indicator => indicator.classList.remove('active'));
+    
+    if (slides[n-1]) {
+        slides[n-1].classList.add('active');
+    }
+    if (indicators[n-1]) {
+        indicators[n-1].classList.add('active');
+    }
+}
+
+// Auto-advance home carousel
+function startHeroCarousel() {
+    setInterval(() => {
+        nextSlide();
+    }, 4000); // Change slide every 4 seconds
+}
+
 // Translation data
 const translations = {
     // Navigation
@@ -1899,11 +1955,15 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeServiceSelection(); // For carousel services
         initializeGalleryFilters();
         initializeColorMixer();
-        startServiceCarousel();
+        startHeroCarousel(); // Start home carousel
+        startServiceCarousel(); // Start services carousel
     }, 500);
 });
 
 // Global functions for HTML onclick handlers
+window.nextSlide = nextSlide;
+window.previousSlide = previousSlide;
+window.currentSlide = currentSlide;
 window.nextServiceSlide = nextServiceSlide;
 window.previousServiceSlide = previousServiceSlide;
 window.currentServiceSlide = currentServiceSlide;
