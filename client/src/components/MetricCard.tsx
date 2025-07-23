@@ -19,19 +19,34 @@ const MetricCard: React.FC<MetricCardProps> = ({
   onClick
 }) => {
   const handleClick = (e: React.MouseEvent) => {
+    console.log(`🔥 ${title} card clicked BEFORE prevent!`);
     e.preventDefault();
     e.stopPropagation();
-    console.log(`🔥 ${title} card clicked!`);
+    console.log(`🔥 ${title} card clicked AFTER prevent!`);
     alert(`${title} card clicked directly!`);
+    console.log(`🔥 About to call onClick for ${title}`);
     onClick();
+    console.log(`🔥 onClick called for ${title}`);
   };
 
+  console.log(`MetricCard ${title} rendering`);
+  
   return (
-    <Card 
-      className={`cursor-pointer hover:shadow-lg transition-shadow border-2 hover:${borderColor}`}
+    <div 
       onClick={handleClick}
-      style={{ cursor: 'pointer' }}
+      style={{ 
+        cursor: 'pointer',
+        border: '3px solid red',
+        padding: '4px',
+        margin: '2px'
+      }}
+      onMouseEnter={() => console.log(`Mouse entered ${title}`)}
+      onMouseLeave={() => console.log(`Mouse left ${title}`)}
     >
+      <Card 
+        className={`hover:shadow-lg transition-shadow border-2 hover:${borderColor}`}
+        style={{ cursor: 'pointer', pointerEvents: 'none' }}
+      >
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon}
@@ -41,6 +56,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardContent>
     </Card>
+    </div>
   );
 };
 

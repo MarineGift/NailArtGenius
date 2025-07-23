@@ -473,22 +473,40 @@ export default function AdminDashboard() {
           </Alert>
         )}
 
-        {/* Emergency Test Button */}
-        <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded">
-          <h3 className="font-bold text-red-800">Emergency Test Zone</h3>
-          <Button 
-            onClick={() => {
-              console.log('🆘 Emergency test button clicked!');
-              setTestModalOpen(true);
-              alert('Test click worked!');
-            }}
-            className="mt-2 bg-red-600 hover:bg-red-700"
-          >
-            Click Test (Should show alert)
-          </Button>
-          <p className="mt-2 text-sm text-red-700">
-            Modal Debug State: isOpen={detailModal.isOpen ? 'TRUE' : 'FALSE'}, type={detailModal.metricType}
-          </p>
+        {/* Debug Section - Always Visible */}
+        <div className="mb-4 p-4 bg-blue-50 border border-blue-300 rounded">
+          <h3 className="font-bold text-blue-800">Debug Information</h3>
+          <div className="mt-2 space-y-2">
+            <p className="text-sm text-blue-700">
+              Stats loaded: {stats ? 'YES' : 'NO'}
+            </p>
+            <p className="text-sm text-blue-700">
+              Total customers: {stats?.totalCustomers || 'UNDEFINED'}
+            </p>
+            <p className="text-sm text-blue-700">
+              Modal state: isOpen={detailModal.isOpen ? 'TRUE' : 'FALSE'}
+            </p>
+            <button 
+              onClick={() => {
+                console.log('Direct button clicked!');
+                alert('Direct button works!');
+                setForceShowModal(true);
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Test Direct Click
+            </button>
+            <button 
+              onClick={() => {
+                console.log('Metric test clicked!');
+                alert('About to call handleMetricClick');
+                handleMetricClick('customers', 'Test Metric', 999);
+              }}
+              className="ml-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Test handleMetricClick
+            </button>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
