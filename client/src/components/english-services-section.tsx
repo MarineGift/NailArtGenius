@@ -232,7 +232,7 @@ export function EnglishServicesSection() {
               size="lg" 
               className="bg-white text-pink-600 hover:bg-gray-100 font-semibold px-8"
             >
-              Book Now
+              Book Appointment
             </Button>
             <Button 
               size="lg" 

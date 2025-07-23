@@ -39,6 +39,21 @@ Preferred communication style: Simple, everyday language.
     - Wedding Special ($80), Ombre Effect ($65), 3D Art Design ($90)
   - **Treatment Process Translation**: 4-step nail treatment process in English
     - Nail Preparation → Base Coating → Color Application → Finish Coating
+  - **Complete Services Section Translation**: All service content fully translated
+    - Classic French Manicure ($45) - Traditional French manicure style
+    - Floral Design ($65) - Delicate floral nail art  
+    - Geometric Pattern ($55) - Modern geometric patterns
+    - Glitter & Sparkle ($70) - Glamorous glitter nail art
+    - Minimalist Style ($40) - Simple and sophisticated minimal design
+    - Seasonal Design ($60) - Special seasonal designs
+    - Wedding Special ($80) - Elegant nail art for weddings
+    - Ombre Effect ($65) - Soft gradient effects
+    - 3D Art Design ($90) - Three-dimensional nail art
+  - **Updated Booking Process**: Changed from 3-step to 4-step process
+    - Step 1: Select Date & Time
+    - Step 2: Select Service  
+    - Step 3: Customer Information
+    - Step 4: Visit Store
 
 ### HTML/CSS/JavaScript Conversion (July 22, 2025)
 - **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
