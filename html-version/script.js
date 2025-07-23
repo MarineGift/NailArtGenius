@@ -62,6 +62,22 @@ const translations = {
     'ai.photo_guide.why_card': { ko: '카드가 왜 필요한가요?', en: 'Why is a card needed?', ja: 'なぜカードが必要ですか？', es: '¿Por qué se necesita una tarjeta?' },
     'ai.photo_guide.card_explanation_detail': { ko: '손톱 크기를 측정하기 위해서 기준이 되는 카드가 필요합니다. 아이네일에서 자체개발한 인공지능은 스마트웨어로 손톱의 크기를 측정해 드립니다.', en: 'A reference card is needed to measure nail size. Our AI developed in-house measures nail size using smart software.', ja: '爪のサイズを測定するために基準となるカードが必要です。アイネールで自社開発した人工知能はスマートウェアで爪のサイズを測定いたします。', es: 'Se necesita una tarjeta de referencia para medir el tamaño de las uñas. Nuestra IA desarrollada internamente mide el tamaño de las uñas usando software inteligente.' },
     
+    // Gallery section
+    'gallery.title': { ko: '네일아트 갤러리', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', es: 'Galería de Arte de Uñas' },
+    'gallery.subtitle': { ko: '전문 네일아트 디자인을 둘러보고 원하는 스타일을 선택하세요', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロのネイルアートデザインをご覧になり、お好みのスタイルをお選びください', es: 'Explora nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
+    'gallery.classic_french': { ko: '클래식 프렌치', en: 'Classic French', ja: 'クラシックフレンチ', es: 'Francés Clásico' },
+    'gallery.classic_french_desc': { ko: '전통적인 프렌치 매니큐어 스타일', en: 'Traditional French manicure style', ja: '伝統的なフレンチマニキュアスタイル', es: 'Estilo tradicional de manicura francesa' },
+    'gallery.artistic_designs': { ko: '아티스틱 디자인', en: 'Artistic Designs', ja: 'アーティスティックデザイン', es: 'Diseños Artísticos' },
+    'gallery.artistic_desc': { ko: '창의적이고 독특한 네일아트', en: 'Creative and unique nail art', ja: '創造的でユニークなネイルアート', es: 'Arte de uñas creativo y único' },
+    'gallery.elegant_styles': { ko: '우아한 스타일', en: 'Elegant Styles', ja: 'エレガントスタイル', es: 'Estilos Elegantes' },
+    'gallery.elegant_desc': { ko: '세련되고 고급스러운 디자인', en: 'Sophisticated and classy designs', ja: '洗練された上品なデザイン', es: 'Diseños sofisticados y elegantes' },
+    'gallery.modern_art': { ko: '모던 아트', en: 'Modern Art', ja: 'モダンアート', es: 'Arte Moderno' },
+    'gallery.modern_desc': { ko: '현대적인 네일아트 디자인', en: 'Contemporary nail art designs', ja: '現代的なネイルアートデザイン', es: 'Diseños contemporáneos de arte de uñas' },
+    'gallery.colorful': { ko: '다채로운 디자인', en: 'Colorful Designs', ja: 'カラフルデザイン', es: 'Diseños Coloridos' },
+    'gallery.colorful_desc': { ko: '생동감 있고 대담한 네일아트', en: 'Vibrant and bold nail art', ja: '鮮やかでボールドなネイルアート', es: 'Arte de uñas vibrante y audaz' },
+    'gallery.minimalist': { ko: '미니멀리스트 스타일', en: 'Minimalist Style', ja: 'ミニマリストスタイル', es: 'Estilo Minimalista' },
+    'gallery.minimalist_desc': { ko: '깔끔하고 심플한 디자인', en: 'Clean and simple designs', ja: 'クリーンでシンプルなデザイン', es: 'Diseños limpios y simples' },
+    
     // Contact section
     'contact.title': { ko: 'Connie\'s nail 위치', en: 'Connie\'s nail location', ja: 'Connie\'s nail 所在地', es: 'Ubicación de Connie\'s nail' },
     'contact.salon_name': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', es: 'Connie\'s Nail Salon' },
@@ -69,9 +85,17 @@ const translations = {
     'contact.hours': { ko: '운영시간: 월-금 오전 10시 - 오후 7시', en: 'We are here Monday - Friday from 10:00am to 7:00pm', ja: '営業時間：月-金 午前10時-午後7時', es: 'Estamos aquí Lunes - Viernes de 10:00am a 7:00pm' },
     'contact.send_message': { ko: '메시지 보내기', en: 'Send us a message', ja: 'メッセージを送る', es: 'Envíanos un mensaje' },
     'contact.form.name': { ko: '성명', en: 'Full Name', ja: '氏名', es: 'Nombre Completo' },
-    'contact.form.phone': { ko: '전화번호', en: 'Phone Number', ja: '電話番号', es: 'Número de Teléfono' },
+    'contact.form.phone': { ko: '전화번호', en: 'Phone Number', ja: '電話번호', es: 'Número de Teléfono' },
     'contact.form.inquiry': { ko: '문의사항', en: 'Inquiry', ja: 'お問い合わせ', es: 'Consulta' },
-    'contact.form.send': { ko: '메시지 전송', en: 'Send Message', ja: 'メッセージ送信', es: 'Enviar Mensaje' }
+    'contact.form.send': { ko: '메시지 전송', en: 'Send Message', ja: 'メッセージ送信', es: 'Enviar Mensaje' },
+    
+    // Additional carousel translations
+    'carousel.salon.title': { ko: 'Connie\'s Nail Salon', en: 'Connie\'s Nail Salon', ja: 'Connie\'s Nail Salon', es: 'Connie\'s Nail Salon' },
+    'carousel.salon.description': { ko: '워싱턴 DC의 프리미엄 네일 살롱', en: 'Premium Nail Salon in Washington DC', ja: 'ワシントンDCのプレミアムネイルサロン', es: 'Salón de Uñas Premium en Washington DC' },
+    'carousel.art1.title': { ko: '아름다운 네일아트', en: 'Beautiful Nail Art', ja: '美しいネイルアート', es: 'Arte de Uñas Hermoso' },
+    'carousel.art1.description': { ko: '전문가의 세심한 디자인', en: 'Expert meticulous design', ja: '専門家の細心なデザイン', es: 'Diseño meticuloso de expertos' },
+    'carousel.art2.title': { ko: 'AI 맞춤 네일', en: 'AI Custom Nails', ja: 'AIカスタムネイル', es: 'Uñas Personalizadas con IA' },
+    'carousel.art2.description': { ko: '혁신적인 AI 기술로 완성', en: 'Completed with innovative AI technology', ja: '革新的なAI技術で完成', es: 'Completado con tecnología IA innovadora' }
 };
 
 // Translation function
