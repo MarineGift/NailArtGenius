@@ -670,73 +670,222 @@
     <!-- Booking Section -->
     <section id="booking" class="booking-section">
         <div class="container">
-            <h2 class="section-title">Book Your Appointment</h2>
-            <p class="section-subtitle">Schedule your visit for premium nail care services</p>
+            <h2 class="section-title">Booking System</h2>
+            <p class="section-subtitle">Complete your appointment in 4 easy steps</p>
             
-            <form id="booking-form" class="booking-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="booking-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="booking-phone" required>
+            <div class="booking-steps-container">
+                <!-- Step 1: Select Service -->
+                <div class="booking-step active" id="step-1">
+                    <h3>1️⃣ Select Service</h3>
+                    <div class="services-grid">
+                        <!-- Spa Services -->
+                        <div class="service-category">
+                            <h4>Spa</h4>
+                            <div class="service-items">
+                                <div class="service-item" data-service="spa-manicure" data-price="25">
+                                    <span class="service-name">Spa Manicure</span>
+                                    <span class="service-desc">손톱 관리 + 큐티클 관리 + 마사지</span>
+                                    <span class="service-price">$25</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="eye-pedicure" data-price="35">
+                                    <span class="service-name">Eye Pedicure</span>
+                                    <span class="service-desc">발톱 관리 + 각질 제거 + 마사지</span>
+                                    <span class="service-price">$35</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Treatments -->
+                        <div class="service-category">
+                            <h4>Treatments</h4>
+                            <div class="service-items">
+                                <div class="service-item" data-service="regular-manicure" data-price="20">
+                                    <span class="service-name">Regular Manicure</span>
+                                    <span class="service-desc">기본적인 손톱 관리와 폴리쉬</span>
+                                    <span class="service-price">$20</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="french-manicure" data-price="30">
+                                    <span class="service-name">French Manicure</span>
+                                    <span class="service-desc">클래식 프렌치 스타일 네일</span>
+                                    <span class="service-price">$30</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="gel-manicure" data-price="40">
+                                    <span class="service-name">Gel Manicure</span>
+                                    <span class="service-desc">젤 네일로 오래 지속되는 마니큐어</span>
+                                    <span class="service-price">$40</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="regular-pedicure" data-price="25">
+                                    <span class="service-name">Regular Pedicure</span>
+                                    <span class="service-desc">기본적인 발톱 관리와 폴리쉬</span>
+                                    <span class="service-price">$25</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="gel-pedicure" data-price="35">
+                                    <span class="service-name">Gel Pedicure</span>
+                                    <span class="service-desc">젤로 마무리하는 페디큐어</span>
+                                    <span class="service-price">$35</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Design -->
+                        <div class="service-category">
+                            <h4>Design</h4>
+                            <div class="service-items">
+                                <div class="service-item" data-service="custom-nail-art" data-price="50">
+                                    <span class="service-name">Custom Nail Art</span>
+                                    <span class="service-desc">개인 맞춤형 네일 아트</span>
+                                    <span class="service-price">$50</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="simple-nail-design" data-price="30">
+                                    <span class="service-name">Simple Nail Design</span>
+                                    <span class="service-desc">간단한 네일 디자인</span>
+                                    <span class="service-price">$30</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Styling -->
+                        <div class="service-category">
+                            <h4>Styling</h4>
+                            <div class="service-items">
+                                <div class="service-item" data-service="paraffin-waxing" data-price="15">
+                                    <span class="service-name">Paraffin Waxing</span>
+                                    <span class="service-desc">파라핀 왁스 트리트먼트</span>
+                                    <span class="service-price">$15</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="lip-waxing" data-price="10">
+                                    <span class="service-name">Lip Waxing</span>
+                                    <span class="service-desc">입술 왁싱 서비스</span>
+                                    <span class="service-price">$10</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Massage -->
+                        <div class="service-category">
+                            <h4>Massage</h4>
+                            <div class="service-items">
+                                <div class="service-item" data-service="hand-arm-massage" data-price="20">
+                                    <span class="service-name">Hand & Arm Massage</span>
+                                    <span class="service-desc">손과 팔 마사지</span>
+                                    <span class="service-price">$20</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                                <div class="service-item" data-service="foot-leg-massage" data-price="25">
+                                    <span class="service-name">Foot & Leg Massage</span>
+                                    <span class="service-desc">발과 다리 마사지</span>
+                                    <span class="service-price">$25</span>
+                                    <button class="btn btn-primary btn-sm select-service-btn">SELECT</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="booking-email" required>
+
+                <!-- Step 2: Select Date -->
+                <div class="booking-step" id="step-2">
+                    <h3>2️⃣ Select Date</h3>
+                    <div id="date-picker" class="date-picker">
+                        <div class="calendar-header">
+                            <button id="prev-month" class="calendar-nav">‹</button>
+                            <span id="current-month">July 2025</span>
+                            <button id="next-month" class="calendar-nav">›</button>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day-header">Sun</div>
+                            <div class="calendar-day-header">Mon</div>
+                            <div class="calendar-day-header">Tue</div>
+                            <div class="calendar-day-header">Wed</div>
+                            <div class="calendar-day-header">Thu</div>
+                            <div class="calendar-day-header">Fri</div>
+                            <div class="calendar-day-header">Sat</div>
+                            <!-- Calendar days will be populated by JavaScript -->
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Service</label>
-                        <select id="booking-service-select" required>
-                            <option value="">Select Service</option>
-                            <option value="spa-manicure">Spa Manicure - $35</option>
-                            <option value="gel-manicure">Gel Manicure - $40</option>
-                            <option value="spa-pedicure">Spa Pedicure - $45</option>
-                            <option value="nail-art">Custom Nail Art - $50+</option>
-                            <option value="ai-nail-art">AI Custom Nail Art - $60</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Preferred Date</label>
-                        <input type="date" id="booking-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Preferred Time</label>
-                        <select id="booking-time" required>
-                            <option value="">Select Time</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="10:30">10:30 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="11:30">11:30 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="14:30">2:30 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="15:30">3:30 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="16:30">4:30 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                            <option value="17:30">5:30 PM</option>
-                            <option value="18:00">6:00 PM</option>
-                        </select>
+                    <div class="selected-date-info">
+                        <p>Selected Date: <span id="selected-date-display">선택된 날짜가 없습니다</span></p>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Special Requests</label>
-                    <textarea id="booking-notes" rows="4" placeholder="Any special requests or preferences..."></textarea>
+
+                <!-- Step 3: Select Time -->
+                <div class="booking-step" id="step-3">
+                    <h3>3️⃣ Select Time</h3>
+                    <div class="time-slots-grid">
+                        <button class="time-slot" data-time="10:00">10:00</button>
+                        <button class="time-slot" data-time="10:30">10:30</button>
+                        <button class="time-slot" data-time="11:00">11:00</button>
+                        <button class="time-slot" data-time="11:30">11:30</button>
+                        <button class="time-slot" data-time="12:00">12:00</button>
+                        <button class="time-slot" data-time="12:30">12:30</button>
+                        <button class="time-slot" data-time="13:00">13:00</button>
+                        <button class="time-slot" data-time="13:30">13:30</button>
+                        <button class="time-slot" data-time="14:00">14:00</button>
+                        <button class="time-slot" data-time="14:30">14:30</button>
+                        <button class="time-slot" data-time="15:00">15:00</button>
+                        <button class="time-slot" data-time="15:30">15:30</button>
+                        <button class="time-slot" data-time="16:00">16:00</button>
+                        <button class="time-slot" data-time="16:30">16:30</button>
+                        <button class="time-slot" data-time="17:00">17:00</button>
+                        <button class="time-slot" data-time="17:30">17:30</button>
+                        <button class="time-slot" data-time="18:00">18:00</button>
+                        <button class="time-slot" data-time="18:30">18:30</button>
+                    </div>
                 </div>
-                
-                <button type="submit" class="btn btn-primary btn-large">Book Appointment</button>
-            </form>
+
+                <!-- Step 4: Customer Information -->
+                <div class="booking-step" id="step-4">
+                    <h3>4️⃣ Customer Information</h3>
+                    <div class="customer-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customer-name">Name *</label>
+                                <input type="text" id="customer-name" name="name" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-phone">Phone *</label>
+                                <input type="tel" id="customer-phone" name="phone" placeholder="010-0000-0000" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email">Email</label>
+                            <input type="email" id="customer-email" name="email" placeholder="example@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-notes">Notes</label>
+                            <textarea id="customer-notes" name="notes" rows="4" placeholder="Any special requests..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Summary -->
+                <div class="booking-summary">
+                    <h4>Booking Summary</h4>
+                    <div class="summary-details">
+                        <p><strong>Service:</strong> <span id="summary-service">Not selected</span></p>
+                        <p><strong>Date:</strong> <span id="summary-date">Not selected</span></p>
+                        <p><strong>Time:</strong> <span id="summary-time">Not selected</span></p>
+                        <p><strong>Price:</strong> <span id="summary-price">$0</span></p>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="booking-navigation">
+                    <button id="prev-step" class="btn btn-secondary">Previous</button>
+                    <button id="next-step" class="btn btn-primary">Next</button>
+                    <button id="submit-booking" class="btn btn-success" style="display: none;">Complete Booking</button>
+                </div>
+            </div>
         </div>
     </section>
 

@@ -1536,12 +1536,367 @@ function isValidHex(hex) {
     return /^#[0-9A-F]{6}$/i.test(hex);
 }
 
+// New Step-by-Step Booking System
+let bookingData = {
+    service: null,
+    serviceName: '',
+    price: 0,
+    date: null,
+    time: null,
+    customer: {}
+};
+
+let currentStep = 1;
+let currentDate = new Date();
+let selectedDate = null;
+
+function initializeNewBookingSystem() {
+    if (!document.getElementById('step-1')) return; // Exit if new booking system not present
+    
+    // Initialize service selection
+    initializeServiceSelection();
+    
+    // Initialize date picker
+    initializeDatePicker();
+    
+    // Initialize time slots
+    initializeTimeSlots();
+    
+    // Initialize navigation
+    initializeBookingNavigation();
+    
+    // Show first step
+    showStep(1);
+}
+
+function initializeServiceSelection() {
+    const serviceButtons = document.querySelectorAll('.select-service-btn');
+    
+    serviceButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const serviceItem = this.closest('.service-item');
+            const service = serviceItem.getAttribute('data-service');
+            const serviceName = serviceItem.querySelector('.service-name').textContent;
+            const price = parseInt(serviceItem.getAttribute('data-price'));
+            
+            // Remove previous selection
+            document.querySelectorAll('.service-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Add selection to current item
+            serviceItem.classList.add('selected');
+            
+            // Update booking data
+            bookingData.service = service;
+            bookingData.serviceName = serviceName;
+            bookingData.price = price;
+            
+            // Update summary
+            updateBookingSummary();
+            
+            // Enable next button
+            enableNextButton();
+            
+            showToast(`${serviceName} selected!`, 'success');
+        });
+    });
+}
+
+function initializeDatePicker() {
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+    }
+    
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+    }
+    
+    renderCalendar();
+}
+
+function renderCalendar() {
+    const monthDisplay = document.getElementById('current-month');
+    const calendarGrid = document.querySelector('.calendar-grid');
+    
+    if (!monthDisplay || !calendarGrid) return;
+    
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    monthDisplay.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    
+    // Clear previous calendar days (keep headers)
+    const dayHeaders = calendarGrid.querySelectorAll('.calendar-day-header');
+    calendarGrid.innerHTML = '';
+    dayHeaders.forEach(header => calendarGrid.appendChild(header));
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+    const startDate = firstDay.getDay();
+    const daysInMonth = lastDay.getDate();
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < startDate; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'calendar-day disabled';
+        calendarGrid.appendChild(emptyCell);
+    }
+    
+    // Add days of month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day';
+        dayCell.textContent = day;
+        
+        const cellDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        const today = new Date();
+        
+        // Disable past dates
+        if (cellDate < today.setHours(0, 0, 0, 0)) {
+            dayCell.classList.add('disabled');
+        } else {
+            dayCell.addEventListener('click', () => selectDate(cellDate, dayCell));
+        }
+        
+        calendarGrid.appendChild(dayCell);
+    }
+}
+
+function selectDate(date, element) {
+    // Remove previous selection
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove('selected');
+    });
+    
+    // Add selection
+    element.classList.add('selected');
+    
+    selectedDate = date;
+    bookingData.date = date;
+    
+    // Update display
+    const selectedDateDisplay = document.getElementById('selected-date-display');
+    if (selectedDateDisplay) {
+        selectedDateDisplay.textContent = date.toLocaleDateString('ko-KR');
+    }
+    
+    updateBookingSummary();
+    enableNextButton();
+    
+    showToast('Date selected!', 'success');
+}
+
+function initializeTimeSlots() {
+    const timeSlots = document.querySelectorAll('.time-slot');
+    
+    timeSlots.forEach(slot => {
+        slot.addEventListener('click', function() {
+            if (this.classList.contains('unavailable')) return;
+            
+            // Remove previous selection
+            timeSlots.forEach(s => s.classList.remove('selected'));
+            
+            // Add selection
+            this.classList.add('selected');
+            
+            const time = this.getAttribute('data-time');
+            bookingData.time = time;
+            
+            updateBookingSummary();
+            enableNextButton();
+            
+            showToast(`${time} selected!`, 'success');
+        });
+    });
+}
+
+function initializeBookingNavigation() {
+    const prevBtn = document.getElementById('prev-step');
+    const nextBtn = document.getElementById('next-step');
+    const submitBtn = document.getElementById('submit-booking');
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < 4) {
+                showStep(currentStep + 1);
+            }
+        });
+    }
+    
+    if (submitBtn) {
+        submitBtn.addEventListener('click', () => {
+            submitBooking();
+        });
+    }
+}
+
+function showStep(step) {
+    // Hide all steps
+    document.querySelectorAll('.booking-step').forEach(s => {
+        s.classList.remove('active');
+    });
+    
+    // Show current step
+    const currentStepElement = document.getElementById(`step-${step}`);
+    if (currentStepElement) {
+        currentStepElement.classList.add('active');
+    }
+    
+    currentStep = step;
+    
+    // Update navigation buttons
+    updateNavigationButtons();
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prev-step');
+    const nextBtn = document.getElementById('next-step');
+    const submitBtn = document.getElementById('submit-booking');
+    
+    if (prevBtn) {
+        prevBtn.style.display = currentStep === 1 ? 'none' : 'block';
+    }
+    
+    if (nextBtn) {
+        nextBtn.style.display = currentStep === 4 ? 'none' : 'block';
+        nextBtn.disabled = !canProceedToNextStep();
+    }
+    
+    if (submitBtn) {
+        submitBtn.style.display = currentStep === 4 ? 'block' : 'none';
+    }
+}
+
+function canProceedToNextStep() {
+    switch (currentStep) {
+        case 1: return bookingData.service !== null;
+        case 2: return bookingData.date !== null;
+        case 3: return bookingData.time !== null;
+        case 4: return true;
+        default: return false;
+    }
+}
+
+function enableNextButton() {
+    const nextBtn = document.getElementById('next-step');
+    if (nextBtn) {
+        nextBtn.disabled = !canProceedToNextStep();
+    }
+}
+
+function updateBookingSummary() {
+    const summaryService = document.getElementById('summary-service');
+    const summaryDate = document.getElementById('summary-date');
+    const summaryTime = document.getElementById('summary-time');
+    const summaryPrice = document.getElementById('summary-price');
+    
+    if (summaryService) {
+        summaryService.textContent = bookingData.serviceName || 'Not selected';
+    }
+    
+    if (summaryDate) {
+        summaryDate.textContent = bookingData.date ? 
+            bookingData.date.toLocaleDateString('ko-KR') : 'Not selected';
+    }
+    
+    if (summaryTime) {
+        summaryTime.textContent = bookingData.time || 'Not selected';
+    }
+    
+    if (summaryPrice) {
+        summaryPrice.textContent = `$${bookingData.price}`;
+    }
+}
+
+function submitBooking() {
+    const customerName = document.getElementById('customer-name').value;
+    const customerPhone = document.getElementById('customer-phone').value;
+    const customerEmail = document.getElementById('customer-email').value;
+    const customerNotes = document.getElementById('customer-notes').value;
+    
+    if (!customerName || !customerPhone) {
+        showToast('Please fill in required fields (Name and Phone)', 'error');
+        return;
+    }
+    
+    bookingData.customer = {
+        name: customerName,
+        phone: customerPhone,
+        email: customerEmail,
+        notes: customerNotes
+    };
+    
+    // Simulate booking submission
+    showToast('Booking submitted successfully! We will contact you soon.', 'success');
+    
+    // Reset form after 2 seconds
+    setTimeout(() => {
+        resetBookingForm();
+    }, 2000);
+}
+
+function resetBookingForm() {
+    bookingData = {
+        service: null,
+        serviceName: '',
+        price: 0,
+        date: null,
+        time: null,
+        customer: {}
+    };
+    
+    currentStep = 1;
+    selectedDate = null;
+    
+    // Clear selections
+    document.querySelectorAll('.service-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    document.querySelectorAll('.calendar-day').forEach(day => {
+        day.classList.remove('selected');
+    });
+    
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('selected');
+    });
+    
+    // Clear form fields
+    document.getElementById('customer-name').value = '';
+    document.getElementById('customer-phone').value = '';
+    document.getElementById('customer-email').value = '';
+    document.getElementById('customer-notes').value = '';
+    
+    // Reset to step 1
+    showStep(1);
+    updateBookingSummary();
+}
+
 // Initialize all functionality
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initializeLoginSystem();
-        initializeBookingSystem();
-        initializeServiceSelection();
+        initializeNewBookingSystem(); // New booking system
+        initializeServiceSelection(); // For carousel services
         initializeGalleryFilters();
         initializeColorMixer();
         startServiceCarousel();
