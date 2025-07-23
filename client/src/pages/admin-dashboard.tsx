@@ -35,7 +35,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
 import SimpleMetricModal from "@/components/SimpleMetricModal";
-import MetricCard from "@/components/MetricCard";
+import DirectMetricCard from "@/components/DirectMetricCard";
 
 interface AdminStats {
   totalCustomers: number;
@@ -547,39 +547,39 @@ export default function AdminDashboard() {
 
           <TabsContent value="dashboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <MetricCard
+              <DirectMetricCard
                 title="Total Customers"
                 value={stats?.totalCustomers || 0}
                 description="All registered customers - Click for details"
-                icon={<Users className="h-4 w-4 text-muted-foreground" />}
-                borderColor="border-blue-300"
+                iconComponent={<Users className="h-4 w-4 text-gray-500" />}
+                borderClass="border-blue-300"
                 onClick={() => handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0)}
               />
 
-              <MetricCard
+              <DirectMetricCard
                 title="Total Appointments"
                 value={stats?.totalAppointments || 0}
                 description="All appointment bookings - Click for details"
-                icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
-                borderColor="border-green-300"
+                iconComponent={<Calendar className="h-4 w-4 text-gray-500" />}
+                borderClass="border-green-300"
                 onClick={() => handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0)}
               />
 
-              <MetricCard
+              <DirectMetricCard
                 title="Today's Visitors"
                 value={stats?.todayAppointments || 12}
                 description="Today's website visitors - Click for details"
-                icon={<Clock className="h-4 w-4 text-muted-foreground" />}
-                borderColor="border-yellow-300"
+                iconComponent={<Clock className="h-4 w-4 text-gray-500" />}
+                borderClass="border-yellow-300"
                 onClick={() => handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12)}
               />
 
-              <MetricCard
+              <DirectMetricCard
                 title="Total Orders"
                 value={stats?.totalOrders || 0}
                 description="All order transactions - Click for details"
-                icon={<ShoppingBag className="h-4 w-4 text-muted-foreground" />}
-                borderColor="border-red-300"
+                iconComponent={<ShoppingBag className="h-4 w-4 text-gray-500" />}
+                borderClass="border-red-300"
                 onClick={() => handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0)}
               />
             </div>
