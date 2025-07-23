@@ -741,15 +741,15 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
-              <span>User Management</span>
+              <span>User</span>
             </TabsTrigger>
             <TabsTrigger value="customers" className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
-              <span>Customer Management</span>
+              <span>Customer</span>
             </TabsTrigger>
             <TabsTrigger value="appointments" className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
-              <span>Appointment Management</span>
+              <span>Appointment</span>
             </TabsTrigger>
             <TabsTrigger value="contact" className="flex items-center space-x-2">
               <MessageSquare className="h-4 w-4" />
@@ -761,7 +761,7 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="carousel" className="flex items-center space-x-2">
               <Eye className="h-4 w-4" />
-              <span>Carousel Images</span>
+              <span>Carousel</span>
             </TabsTrigger>
             <TabsTrigger value="gallery" className="flex items-center space-x-2">
               <Image className="h-4 w-4" />
@@ -963,7 +963,7 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  User Management
+                  User
                   <Button 
                     onClick={() => setShowCreateUserForm(!showCreateUserForm)}
                     className="flex items-center space-x-2"
@@ -1066,7 +1066,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="gallery" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Gallery Management</h2>
+              <h2 className="text-2xl font-bold">Gallery</h2>
               <Button onClick={() => setShowCreateGalleryForm(true)} className="flex items-center space-x-2">
                 <Plus className="h-4 w-4" />
                 <span>Add Gallery Item</span>
@@ -1212,7 +1212,7 @@ export default function AdminDashboard() {
 
           <TabsContent value="ai-nail-art" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">AI Nail Art Management</h2>
+              <h2 className="text-2xl font-bold">AI Nail Art</h2>
               <Button onClick={() => setShowCreateAiNailForm(true)} className="flex items-center space-x-2">
                 <Plus className="h-4 w-4" />
                 <span>Add AI Nail Art</span>
@@ -1483,7 +1483,7 @@ export default function AdminDashboard() {
           <TabsContent value="carousel" className="space-y-6">
             <div className="grid gap-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Carousel Images Management</h2>
+                <h2 className="text-2xl font-bold">Carousel</h2>
                 <Button 
                   onClick={() => setShowCreateImageForm(true)}
                   className="flex items-center space-x-2"
@@ -1496,7 +1496,7 @@ export default function AdminDashboard() {
               {showCreateImageForm && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Add New Carousel Image</CardTitle>
+                    <CardTitle>Add New Carousel</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -1595,7 +1595,7 @@ export default function AdminDashboard() {
               )}
 
               <div className="grid gap-4">
-                <h3 className="text-lg font-semibold">Current Carousel Images</h3>
+                <h3 className="text-lg font-semibold">Current Carousel</h3>
                 {carouselImages.length === 0 ? (
                   <Card>
                     <CardContent className="py-8 text-center">
