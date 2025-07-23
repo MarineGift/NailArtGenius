@@ -128,6 +128,15 @@ const translations = {
     // Contact form translations
     'contact.send_message': { ko: '메시지 보내기', en: 'Send us a message', ja: 'メッセージを送る', es: 'Envíanos un mensaje' },
     
+    // Missing booking form translations
+    'booking.name': { ko: '이름', en: 'Name', ja: '名前', es: 'Nombre' },
+    'booking.phone': { ko: '전화번호', en: 'Phone', ja: '電話番号', es: 'Teléfono' },
+    'booking.email': { ko: '이메일', en: 'Email', ja: 'メール', es: 'Correo' },
+    'booking.notes': { ko: '메모', en: 'Notes', ja: 'メモ', es: 'Notas' },
+    'booking.confirm_booking': { ko: '예약 확인', en: 'Confirm Booking', ja: '予約確認', es: 'Confirmar Reserva' },
+    'booking.name_placeholder': { ko: '성함을 입력하세요', en: 'Enter your name', ja: 'お名前を入力', es: 'Ingrese su nombre' },
+    'booking.notes_placeholder': { ko: '추가 요청사항이 있으시면 입력해주세요', en: 'Any special requests or notes', ja: '特別なリクエストやメモ', es: 'Solicitudes especiales o notas' },
+    
     // Additional missing translations
     'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado Premium' },
     'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' }
@@ -198,23 +207,17 @@ function updateLanguage(lang) {
 
 // Initialize language system
 function initializeLanguage() {
-    // Force English as default regardless of saved preference initially
+    // Force English as default - completely override any existing preferences
     currentLanguage = 'en';
-    const savedLang = loadLanguage();
     
-    // Clear any existing Korean preferences and force English
-    localStorage.removeItem('preferred-language');
+    // Clear all language storage and force English
+    localStorage.clear();
     localStorage.setItem('preferred-language', 'en');
     
-    // Update to English first
+    // Force immediate English update
     updateLanguage('en');
     
-    // If user had a different preference, respect it after initial load
-    if (savedLang && savedLang !== 'en') {
-        setTimeout(() => {
-            updateLanguage(savedLang);
-        }, 100);
-    }
+    console.log('Language system initialized with English as default');
 }
 
 // Carousel functionality
@@ -425,6 +428,7 @@ function initializeAnimations() {
 document.addEventListener('DOMContentLoaded', function() {
     // Force immediate English initialization
     currentLanguage = 'en';
+    localStorage.clear();
     localStorage.setItem('preferred-language', 'en');
     
     // Initialize all components
@@ -448,10 +452,16 @@ document.addEventListener('DOMContentLoaded', function() {
     window.previousSlide = previousSlide;
     window.currentSlide = currentSlideIndex;
     
-    // Force update all text elements to English immediately
+    // Force multiple English updates to ensure complete translation
     setTimeout(() => {
         updateLanguage('en');
-    }, 50);
+    }, 100);
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 500);
+    setTimeout(() => {
+        updateLanguage('en');
+    }, 1000);
 });
 
 // AI Nail Art Generation functionality
