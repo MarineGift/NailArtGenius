@@ -42,6 +42,11 @@ Preferred communication style: Simple, everyday language.
     - Added 12 customer users with level "Customer" including names, phone numbers, emails, workplace info
     - Added corresponding customer records with categories (VIP, General, Mailing List), visit history, and spending data
     - Created sample appointments with various service types and booking statuses for testing
+  - **Logout Button Fix**: Resolved logout functionality issues
+    - Fixed admin authentication system to use admin_users table consistently
+    - Corrected JWT token generation with proper numeric ID instead of username
+    - Fixed API request parameter order in admin auth hook
+    - Logout button now works correctly with proper authentication flow
   - **AI Nail Art Translation**: Revolutionary AI service description fully translated
     - Korean: "손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요" 
     - English: "Register your nails → select nail art design → payment → visit date process"

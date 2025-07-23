@@ -49,9 +49,8 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const res = await apiRequest("POST", "/api/admin/login", credentials);
-      const data = await res.json();
-      return data;
+      const res = await apiRequest("/api/admin/login", "POST", credentials);
+      return res;
     },
     onSuccess: (data) => {
       setAdminUser(data.admin);
@@ -69,7 +68,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/admin/logout");
+      await apiRequest("/api/admin/logout", "POST");
     },
     onSuccess: () => {
       setAdminUser(null);
