@@ -5,6 +5,7 @@ import { ImageCarousel } from '@/components/image-carousel';
 import { BookingHeroSection } from '@/components/booking-hero-section';
 import { PremiumServicesSection } from '@/components/premium-services-section';
 import { AINailArtSection } from '@/components/ai-nail-art-section';
+import { TreatmentProcessSection } from '@/components/treatment-process-section';
 import { EnglishServicesSection } from '@/components/english-services-section';
 import { ContactUsForm } from '@/components/contact-us-form';
 import { LocationMap } from '@/components/location-map';
@@ -29,6 +30,9 @@ export default function Home() {
 
         {/* AI Nail Art Section */}
         <AINailArtSection />
+
+        {/* Treatment Process Section */}
+        <TreatmentProcessSection />
 
         {/* Booking Hero Section */}
         <BookingHeroSection />

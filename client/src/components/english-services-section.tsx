@@ -115,28 +115,7 @@ export function EnglishServicesSection() {
     }
   ];
 
-  const treatmentSteps = [
-    {
-      step: 1,
-      title: "Nail Preparation",
-      description: "Cuticle care and nail trimming"
-    },
-    {
-      step: 2,
-      title: "Base Coating",
-      description: "Base work for healthy nails"
-    },
-    {
-      step: 3,
-      title: "Color Application",
-      description: "Precise color application process"
-    },
-    {
-      step: 4,
-      title: "Finish Coating",
-      description: "Top coating for long-lasting shine"
-    }
-  ];
+
 
   return (
     <section className="py-16 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
@@ -203,46 +182,7 @@ export function EnglishServicesSection() {
           ))}
         </div>
 
-        {/* Treatment Process */}
-        <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
-          <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">Treatment Process</h3>
-          <div className="grid md:grid-cols-4 gap-6">
-            {treatmentSteps.map((step) => (
-              <div key={step.step} className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-xl font-bold text-white">Step {step.step}</span>
-                </div>
-                <h4 className="font-semibold text-lg mb-2">{step.title}</h4>
-                <p className="text-gray-600 text-sm">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-8 text-white">
-          <h3 className="text-2xl font-bold mb-4">
-            Do you have a design you like?
-          </h3>
-          <p className="text-lg mb-6 opacity-90">
-            Book now and experience professional nail art services
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              className="bg-white text-pink-600 hover:bg-gray-100 font-semibold px-8"
-            >
-              Book Appointment
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-pink-600 font-semibold px-8"
-            >
-              Get Consultation
-            </Button>
-          </div>
-        </div>
       </div>
     </section>
   );
