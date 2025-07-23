@@ -249,9 +249,7 @@ const translations = {
   'carousel.art3.title': { ko: '프리미엄 케어', en: 'Premium Care', ja: 'プレミアムケア', es: 'Cuidado premium' },
   'carousel.art3.description': { ko: '최고급 네일 서비스 경험', en: 'Premium nail service experience', ja: '最高級ネイルサービス体験', es: 'Experiencia de servicio de uñas premium' },
 
-  // Gallery page
-  'gallery.title': { ko: 'Nail Art Gallery', en: 'Nail Art Gallery', ja: 'ネイルアートギャラリー', es: 'Galería de Arte de Uñas' },
-  'gallery.subtitle': { ko: 'Browse our professional nail art designs and choose your preferred style', en: 'Browse our professional nail art designs and choose your preferred style', ja: 'プロのネイルアートデザインを閲覧し、お好みのスタイルをお選びください', es: 'Explora nuestros diseños profesionales de arte de uñas y elige tu estilo preferido' },
+
   'gallery.design_gallery': { ko: '네일아트 디자인 갤러리', en: 'Nail Art Design Gallery', ja: 'ネイルアートデザインギャラリー', es: 'Galería de Diseños de Arte de Uñas' },
   'gallery.classic_french_desc': { ko: '전통적인 프렌치 매니큐어 스타일', en: 'Traditional French manicure style', ja: '伝統的なフレンチマニキュアスタイル', es: 'Estilo tradicional de manicura francesa' },
   'gallery.duration_45min': { ko: '45분', en: '45 minutes', ja: '45分', es: '45 minutos' },
@@ -306,7 +304,7 @@ export function loadLanguagePreference(): Language {
     // Silent fail for environments without localStorage
   }
   
-  // For Connie's Nail, default to English
+  // FORCE English as absolute default - no Korean fallback
   return 'en';
 }
 

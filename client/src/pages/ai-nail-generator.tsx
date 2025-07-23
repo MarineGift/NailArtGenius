@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/lib/i18n';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Sparkles, Download, Heart, Share2, Wand2, Palette, Info } from 'lucide-react';
+import { Sparkles, Download, Heart, Share2, Wand2, Palette, Upload } from 'lucide-react';
 
 interface GeneratedDesign {
   id: string;
@@ -23,7 +24,7 @@ interface GeneratedDesign {
 }
 
 export default function AITailGenerator() {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   const { toast } = useToast();
   
   const [prompt, setPrompt] = useState('');
@@ -35,14 +36,14 @@ export default function AITailGenerator() {
 
   // Style options
   const styleOptions = [
-    { value: 'minimalist', label: 'Minimalist', description: 'Simple and elegant style' },
-    { value: 'floral', label: 'Floral', description: 'Flower and nature motifs' },
-    { value: 'geometric', label: 'Geometric', description: 'Geometric patterns' },
-    { value: 'abstract', label: 'Abstract', description: 'Abstract art' },
-    { value: 'vintage', label: 'Vintage', description: 'Classic and elegant style' },
-    { value: 'modern', label: 'Modern', description: 'Modern and trendy style' },
-    { value: 'cute', label: 'Cute', description: 'Cute and lovely design' },
-    { value: 'elegant', label: 'Elegant', description: 'Elegant and luxurious style' }
+    { value: 'minimalist', label: 'Minimalist', description: '심플하고 세련된 스타일' },
+    { value: 'floral', label: 'Floral', description: '꽃과 자연 모티브' },
+    { value: 'geometric', label: 'Geometric', description: '기하학적 패턴' },
+    { value: 'abstract', label: 'Abstract', description: '추상적 아트' },
+    { value: 'vintage', label: 'Vintage', description: '클래식하고 우아한 스타일' },
+    { value: 'modern', label: 'Modern', description: '현대적이고 트렌디한 스타일' },
+    { value: 'cute', label: 'Cute', description: '귀엽고 사랑스러운 디자인' },
+    { value: 'elegant', label: 'Elegant', description: '우아하고 고급스러운 스타일' }
   ];
 
   // Color options
@@ -79,15 +80,15 @@ export default function AITailGenerator() {
       setIsGenerating(false);
       
       toast({
-        title: 'AI Nail Art Generation Complete!',
-        description: 'New design has been generated.',
+        title: 'AI 네일아트 생성 완료!',
+        description: '새로운 디자인이 생성되었습니다.',
       });
     },
     onError: (error) => {
       setIsGenerating(false);
       toast({
-        title: 'Generation Failed',
-        description: 'An error occurred during AI nail art generation.',
+        title: '생성 실패',
+        description: 'AI 네일아트 생성 중 오류가 발생했습니다.',
         variant: 'destructive',
       });
     }
@@ -96,8 +97,8 @@ export default function AITailGenerator() {
   const handleGenerate = () => {
     if (!prompt.trim()) {
       toast({
-        title: 'Prompt Required',
-        description: 'Please describe your desired nail art design.',
+        title: '프롬프트 필요',
+        description: '원하는 네일아트 디자인을 설명해 주세요.',
         variant: 'destructive',
       });
       return;
@@ -130,10 +131,10 @@ export default function AITailGenerator() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             <Sparkles className="inline-block w-8 h-8 mr-2 text-purple-500" />
-            AI Nail Art Generator
+            AI 네일아트 생성기
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Create unique nail art designs with AI technology
+            AI 기술로 당신만의 독특한 네일아트 디자인을 만들어보세요
           </p>
         </div>
 
@@ -144,17 +145,17 @@ export default function AITailGenerator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Wand2 className="w-5 h-5" />
-                  Design Generation
+                  디자인 생성
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Prompt Input */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Design Description</label>
+                  <label className="text-sm font-medium">디자인 설명</label>
                   <Textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="e.g., Elegant nail art with pastel flower patterns and gold accents"
+                    placeholder="예: 파스텔 톤의 꽃 무늬와 골드 액센트가 있는 우아한 네일아트"
                     rows={4}
                     className="resize-none"
                   />
@@ -162,10 +163,10 @@ export default function AITailGenerator() {
 
                 {/* Style Selection */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Style</label>
+                  <label className="text-sm font-medium">스타일</label>
                   <Select value={selectedStyle} onValueChange={setSelectedStyle}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Style" />
+                      <SelectValue placeholder="스타일 선택" />
                     </SelectTrigger>
                     <SelectContent>
                       {styleOptions.map((style) => (
@@ -182,7 +183,7 @@ export default function AITailGenerator() {
 
                 {/* Color Selection */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Preferred Colors</label>
+                  <label className="text-sm font-medium">선호 색상</label>
                   <div className="grid grid-cols-6 gap-2">
                     {colorOptions.map((color) => (
                       <button
@@ -216,15 +217,15 @@ export default function AITailGenerator() {
 
                 {/* Complexity */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Complexity</label>
+                  <label className="text-sm font-medium">복잡도</label>
                   <Select value={complexity} onValueChange={setComplexity}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="simple">Simple - Minimal and clean</SelectItem>
-                      <SelectItem value="medium">Medium - Moderate detail</SelectItem>
-                      <SelectItem value="complex">Complex - Intricate and elaborate</SelectItem>
+                      <SelectItem value="simple">Simple - 간단하고 미니멀</SelectItem>
+                      <SelectItem value="medium">Medium - 적당한 디테일</SelectItem>
+                      <SelectItem value="complex">Complex - 복잡하고 화려한</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -239,26 +240,26 @@ export default function AITailGenerator() {
                   {isGenerating ? (
                     <>
                       <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
-                      Generating...
+                      생성 중...
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />
-                      Generate with AI
+                      AI로 생성하기
                     </>
                   )}
                 </Button>
 
                 {/* Quick Prompts */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Quick Prompts</label>
+                  <label className="text-sm font-medium">빠른 프롬프트</label>
                   <div className="space-y-1">
                     {[
-                      'Elegant French manicure',
-                      'Glitter gradient sparkle',
-                      'Modern geometric pattern',
-                      'Romantic rose flower design',
-                      'Minimal line art'
+                      '우아한 프렌치 매니큐어',
+                      '화려한 글리터 그라데이션',
+                      '모던한 기하학 패턴',
+                      '로맨틱한 장미 꽃무늬',
+                      '미니멀 라인 아트'
                     ].map((quickPrompt) => (
                       <Button
                         key={quickPrompt}
@@ -282,7 +283,7 @@ export default function AITailGenerator() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Palette className="w-5 h-5" />
-                  Generated Designs
+                  생성된 디자인
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -290,10 +291,10 @@ export default function AITailGenerator() {
                   <div className="text-center py-12">
                     <Wand2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                      No designs generated yet
+                      아직 생성된 디자인이 없습니다
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400">
-                      Describe your desired design in the left panel and generate
+                      왼쪽 패널에서 원하는 디자인을 설명하고 생성해보세요
                     </p>
                   </div>
                 ) : (
@@ -340,7 +341,7 @@ export default function AITailGenerator() {
                               className="flex-1"
                             >
                               <Download className="w-4 h-4 mr-1" />
-                              Download
+                              다운로드
                             </Button>
                             <Button variant="outline" size="sm">
                               <Heart className="w-4 h-4" />
@@ -357,51 +358,6 @@ export default function AITailGenerator() {
               </CardContent>
             </Card>
           </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-6 mt-8">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6 text-purple-600" />
-                </div>
-                <h3 className="font-semibold mb-2">AI-Powered Design</h3>
-                <p className="text-sm text-gray-600">
-                  Advanced artificial intelligence creates unique nail art designs based on your preferences
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Palette className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="font-semibold mb-2">Custom Styles</h3>
-                <p className="text-sm text-gray-600">
-                  Choose from multiple design styles including minimalist, floral, geometric, and abstract
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Download className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="font-semibold mb-2">Instant Download</h3>
-                <p className="text-sm text-gray-600">
-                  Download your generated designs immediately for inspiration or to show your nail technician
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
       

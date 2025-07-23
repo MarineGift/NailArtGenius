@@ -13,6 +13,29 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### HTML/CSS/JavaScript Conversion (July 22, 2025)
+- **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
+  - Created fully functional HTML version in `html-version/` directory
+  - Implemented proper English-default language system with Korean/Japanese/Spanish support
+  - Fixed language switching functionality - English now displays correctly when selected
+  - No external dependencies except Font Awesome and Google Fonts via CDN
+  - Responsive design with mobile-first approach
+  - Complete carousel functionality with auto-advance and manual controls
+  - Working booking and contact forms with validation and toast notifications
+  - All original features preserved in vanilla JavaScript implementation
+
+### AI Nail Art Generator Integration (July 22, 2025)
+- **Full AI Nail Art System**: Complete smartphone nail analysis and design generation system
+  - Added prominent AI Nail Art navigation menu with special highlighting
+  - 6-photo upload system with drag-and-drop functionality
+  - AI analysis simulation measuring nail size and curvature from smartphone photos
+  - Automatic design generation with 3-second processing simulation
+  - Interactive design gallery with selection and download features
+  - Complete language support for all AI features in 4 languages
+  - Mobile-responsive photo upload and preview system
+  - Seamless integration with booking system for AI-generated designs
+  - Revolutionary nail salon workflow optimization tool
+
 ### Real-Time Booking System Implementation (July 22, 2025)
 - **Advanced Real-Time Booking Platform**: Live appointment management system
   - Real-time availability checking with automatic 30-second refresh

@@ -6,7 +6,6 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
-import { analyzeNailMeasurement, uploadHandler, ensureUploadDirectory } from "./nailMeasurementAnalysis";
 import { insertCustomerSchema, insertAppointmentSchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
@@ -623,12 +622,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch design" });
     }
   });
-
-  // Initialize nail analysis upload directory
-  ensureUploadDirectory().catch(console.error);
-
-  // New API route for nail measurement analysis
-  app.post('/api/analyze-nail-measurement', uploadHandler, analyzeNailMeasurement);
 
   // Orders routes
   app.post('/api/orders', isAuthenticated, async (req: any, res) => {
@@ -1987,6 +1980,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files
   app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+  
+  // Serve HTML version for testing
+  app.use('/html-version', express.static(path.join(process.cwd(), 'html-version')));
 
   // Contact inquiries API
   app.post('/api/contact-inquiries', async (req, res) => {
@@ -2025,49 +2021,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching inquiries:', error);
       res.status(500).json({ error: 'Failed to fetch inquiries' });
-    }
-  });
-
-  // AI Nail Art Generation endpoint
-  app.post('/api/ai/generate-nail-art', async (req, res) => {
-    try {
-      const { prompt, style, colors, complexity } = req.body;
-
-      // Validate input
-      if (!prompt || !prompt.trim()) {
-        return res.status(400).json({ error: 'Prompt is required' });
-      }
-
-      // Enhanced prompt with style and complexity
-      const enhancedPrompt = `Create a beautiful nail art design: ${prompt}. Style: ${style || 'modern'}. Complexity: ${complexity || 'medium'}. Colors: ${colors?.join(', ') || 'colorful'}. High quality, detailed, professional nail art photography.`;
-
-      // Call OpenAI DALL-E API
-      const response = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: enhancedPrompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "standard",
-      });
-
-      const imageUrl = response.data[0].url;
-
-      res.json({
-        success: true,
-        imageUrl,
-        prompt: enhancedPrompt,
-        originalPrompt: prompt,
-        style,
-        colors,
-        complexity
-      });
-
-    } catch (error) {
-      console.error('AI nail art generation error:', error);
-      res.status(500).json({
-        error: 'Failed to generate nail art design',
-        message: error.message
-      });
     }
   });
 

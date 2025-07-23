@@ -34,10 +34,19 @@ export function useLanguage() {
 export function useLanguageProvider() {
   const [language, setLanguageState] = useState<Language>('en');
 
-  // Initialize language from localStorage or browser
+  // Initialize language from localStorage or browser - FORCE ENGLISH
   useEffect(() => {
-    const savedLanguage = loadLanguagePreference();
-    setLanguageState(savedLanguage);
+    // Force English as absolute default
+    localStorage.setItem('preferred-language', 'en');
+    setLanguageState('en');
+    
+    // Only load saved preference after ensuring English is default
+    setTimeout(() => {
+      const savedLanguage = loadLanguagePreference();
+      if (savedLanguage && savedLanguage !== 'en') {
+        setLanguageState(savedLanguage);
+      }
+    }, 100);
   }, []);
 
   // Set language and save preference
