@@ -7,7 +7,7 @@ export function AINailArtSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <section className="py-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="container mx-auto px-6">
         {/* AI Nail Art Feature Highlight */}
         <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
