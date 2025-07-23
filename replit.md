@@ -37,6 +37,11 @@ Preferred communication style: Simple, everyday language.
     - Booking guidance: Added English booking information panel with business hours and policies
   - **Header Welcome Text**: Removed "Welcome, admin admin" text after admin login for cleaner interface
   - **Navigation Cleanup**: Removed "Customer Management", "Admin Panel", "Analytics", and duplicate "Logout" button from navigation menu for streamlined interface
+  - **Database Test Data**: Added comprehensive test data with 10+ customer records and admin distinction
+    - Created admin user with username "admin", password "1111", level "admin" 
+    - Added 12 customer users with level "Customer" including names, phone numbers, emails, workplace info
+    - Added corresponding customer records with categories (VIP, General, Mailing List), visit history, and spending data
+    - Created sample appointments with various service types and booking statuses for testing
   - **AI Nail Art Translation**: Revolutionary AI service description fully translated
     - Korean: "손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요" 
     - English: "Register your nails → select nail art design → payment → visit date process"
