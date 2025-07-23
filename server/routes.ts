@@ -311,6 +311,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Appointments management routes  
+  app.get('/api/admin/appointments', authenticateAdmin, async (req: any, res) => {
+    try {
+      const appointments = await storage.getAllAppointments();
+      
+      // Transform appointments to include customer information
+      const appointmentsWithCustomers = appointments.map(apt => ({
+        id: apt.id,
+        customerName: apt.customerName || 'Unknown',
+        customerPhone: apt.customerPhone || 'N/A',
+        service: apt.service || apt.visitReason || 'General Service',
+        appointmentDate: apt.appointmentDate,
+        timeSlot: apt.timeSlot,
+        status: apt.status || 'confirmed',
+        totalAmount: apt.finalPrice || 0,
+        createdAt: apt.createdAt || new Date(),
+        notes: apt.notes || ''
+      }));
+
+      res.json(appointmentsWithCustomers);
+    } catch (error) {
+      console.error('Get appointments error:', error);
+      res.status(500).json({ message: 'Failed to load appointments.' });
+    }
+  });
+
   // Stripe payment routes
   app.post("/api/create-payment-intent", async (req, res) => {
     const Stripe = (await import('stripe')).default;

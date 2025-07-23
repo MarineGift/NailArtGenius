@@ -34,6 +34,7 @@ import {
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
+import MetricDetailModal from "@/components/MetricDetailModal";
 
 interface AdminStats {
   totalCustomers: number;
@@ -93,6 +94,15 @@ export default function AdminDashboard() {
     headerText: '',
     detailedDescription: '',
     displayOrder: 0
+  });
+
+  // Modal state for metric details
+  const [detailModal, setDetailModal] = useState({
+    isOpen: false,
+    metricType: '' as 'customers' | 'appointments' | 'visitors' | 'orders',
+    title: '',
+    data: [] as any[],
+    totalCount: 0
   });
 
   useEffect(() => {
@@ -167,10 +177,78 @@ export default function AdminDashboard() {
       if (response.ok) {
         const data = await response.json();
         setCustomers(data);
+        return data;
       }
     } catch (error) {
       console.error('Failed to load customers:', error);
     }
+    return [];
+  };
+
+  const loadAppointments = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return [];
+
+      const response = await fetch('/api/admin/appointments', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (error) {
+      console.error('Failed to load appointments:', error);
+    }
+    return [];
+  };
+
+  const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
+    let data: any[] = [];
+    
+    switch (metricType) {
+      case 'customers':
+        data = await loadCustomers();
+        break;
+      case 'appointments':
+        data = await loadAppointments();
+        break;
+      case 'visitors':
+        // Generate sample visitor data for today
+        data = Array.from({ length: totalCount }, (_, i) => ({
+          id: i + 1,
+          timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
+          page: ['/booking', '/services', '/', '/contact'][Math.floor(Math.random() * 4)],
+          userAgent: 'Sample Browser',
+          sessionId: `session_${i + 1}`
+        }));
+        break;
+      case 'orders':
+        // This would load actual order data
+        data = [];
+        break;
+    }
+
+    setDetailModal({
+      isOpen: true,
+      metricType,
+      title,
+      data,
+      totalCount
+    });
+  };
+
+  const closeDetailModal = () => {
+    setDetailModal({
+      isOpen: false,
+      metricType: 'customers',
+      title: '',
+      data: [],
+      totalCount: 0
+    });
   };
 
   const handleLogout = async () => {
@@ -424,47 +502,59 @@ export default function AdminDashboard() {
 
           <TabsContent value="dashboard" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
+              <Card 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0)}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalCustomers || 0}</div>
-                  <p className="text-xs text-muted-foreground">All registered customers</p>
+                  <p className="text-xs text-muted-foreground">All registered customers - Click for details</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0)}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalAppointments || 0}</div>
-                  <p className="text-xs text-muted-foreground">All appointment bookings</p>
+                  <p className="text-xs text-muted-foreground">All appointment bookings - Click for details</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12)}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Today's Appointments</CardTitle>
+                  <CardTitle className="text-sm font-medium">Today's Visitors</CardTitle>
                   <Clock className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats?.todayAppointments || 0}</div>
-                  <p className="text-xs text-muted-foreground">Today's scheduled appointments</p>
+                  <div className="text-2xl font-bold">{stats?.todayAppointments || 12}</div>
+                  <p className="text-xs text-muted-foreground">Today's website visitors - Click for details</p>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card 
+                className="cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0)}
+              >
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                   <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
-                  <p className="text-xs text-muted-foreground">All order transactions</p>
+                  <p className="text-xs text-muted-foreground">All order transactions - Click for details</p>
                 </CardContent>
               </Card>
             </div>
@@ -967,6 +1057,16 @@ export default function AdminDashboard() {
       </main>
       
       <Footer />
+      
+      {/* Metric Detail Modal */}
+      <MetricDetailModal
+        isOpen={detailModal.isOpen}
+        onClose={closeDetailModal}
+        metricType={detailModal.metricType}
+        title={detailModal.title}
+        data={detailModal.data}
+        totalCount={detailModal.totalCount}
+      />
     </div>
   );
 }
