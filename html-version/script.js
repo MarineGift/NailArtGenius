@@ -327,16 +327,16 @@ function displayAnalysisResults(results, container) {
     
     // Use exact measured finger data from photo analysis
     const fingerMeasurements = [
-        { name: '왼손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
-        { name: '왼손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
-        { name: '왼손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
-        { name: '왼손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
-        { name: '왼손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
-        { name: '오른손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
-        { name: '오른손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
-        { name: '오른손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
-        { name: '오른손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
-        { name: '오른손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
+        { name: 'Left Thumb', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: 'Left Index', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: 'Left Middle', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: 'Left Ring', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: 'Left Pinky', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
+        { name: 'Right Thumb', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: 'Right Index', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: 'Right Middle', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: 'Right Ring', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: 'Right Pinky', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
     ];
     
     container.innerHTML = `
@@ -389,16 +389,16 @@ function generate10CustomDesigns(container) {
     
     // Use exact measured finger data
     const measurements = window.fingerMeasurements || [
-        { name: '왼손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
-        { name: '왼손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
-        { name: '왼손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
-        { name: '왼손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
-        { name: '왼손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
-        { name: '오른손 엄지', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
-        { name: '오른손 검지', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
-        { name: '오른손 중지', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
-        { name: '오른손 약지', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
-        { name: '오른손 새끼', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
+        { name: 'Left Thumb', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: 'Left Index', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: 'Left Middle', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: 'Left Ring', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: 'Left Pinky', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 },
+        { name: 'Right Thumb', width: 14.2, length: 18.5, shape: 'oval', curvature: 0.85 },
+        { name: 'Right Index', width: 12.8, length: 16.3, shape: 'oval', curvature: 0.92 },
+        { name: 'Right Middle', width: 13.1, length: 17.1, shape: 'oval', curvature: 0.88 },
+        { name: 'Right Ring', width: 12.5, length: 16.8, shape: 'oval', curvature: 0.90 },
+        { name: 'Right Pinky', width: 10.9, length: 14.2, shape: 'round', curvature: 0.95 }
     ];
     
     container.innerHTML = `
@@ -489,7 +489,7 @@ function generateIndividualNailShape(finger, index) {
                 ${finger.width}×${finger.length}mm
             </text>
             <text x="${centerX}" y="125" text-anchor="middle" style="font-size: 7px; fill: #666;">
-                곡률: ${finger.curvature}
+                Curvature: ${finger.curvature}
             </text>
         </svg>
     `;
