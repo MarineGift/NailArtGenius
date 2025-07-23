@@ -91,17 +91,7 @@ export default function Header() {
             
             {isAdminAuthenticated && (
               <div className="flex items-center space-x-4">
-                <Link href="/analytics">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-600 hover:text-secondary"
-                  >
-                    <BarChart3 className="h-4 w-4" />
-                    <span className="ml-1 hidden sm:inline">Analytics</span>
-                  </Button>
-                </Link>
-                
+
 
                 
                 <div className="flex items-center space-x-3">
