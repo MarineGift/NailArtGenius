@@ -24,9 +24,6 @@ export default function Home() {
           <ImageCarousel />
         </section>
 
-        {/* English Services Section */}
-        <EnglishServicesSection />
-
         {/* Premium Services Section */}
         <PremiumServicesSection />
 
@@ -35,6 +32,9 @@ export default function Home() {
 
         {/* Booking Hero Section */}
         <BookingHeroSection />
+        
+        {/* English Services Section */}
+        <EnglishServicesSection />
 
         {/* Contact Us Form */}
         <ContactUsForm />
