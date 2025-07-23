@@ -42,6 +42,7 @@ export default function BookingPage() {
   const [onlineBookingDiscount] = useState(0.10); // 10% discount for online booking
   const [isOnlinePayment, setIsOnlinePayment] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [bookingCompleted, setBookingCompleted] = useState(false);
 
   // Fetch services
   const { data: services = [] } = useQuery({
@@ -85,6 +86,9 @@ export default function BookingPage() {
         description: message + paymentInfo,
         duration: 6000,
       });
+      
+      // Mark booking as completed to enable payment button
+      setBookingCompleted(true);
       
       // Reset form
       setSelectedService(null);
@@ -163,6 +167,15 @@ export default function BookingPage() {
 
   // Handle online payment
   const handleOnlinePayment = () => {
+    if (!bookingCompleted) {
+      toast({
+        title: "Booking Required",
+        description: "Please complete your booking first before making payment.",
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
       toast({
         title: "Validation Error",
@@ -172,13 +185,20 @@ export default function BookingPage() {
       return;
     }
 
+    const selectedServiceData = services.find(s => s.id === selectedService);
+    const discountedPrice = ((selectedServiceData?.price || 0) * (1 - onlineBookingDiscount)).toFixed(2);
+
     setShowPaymentModal(true);
     setIsOnlinePayment(true);
 
-    // Simulate payment processing and then submit booking
+    // Simulate payment processing
     setTimeout(() => {
-      handleSubmit();
       setShowPaymentModal(false);
+      toast({
+        title: "Payment Successful!",
+        description: `Online payment of $${discountedPrice} completed with 10% discount. Your booking is confirmed!`,
+        duration: 6000,
+      });
     }, 3000);
   };
 
@@ -489,7 +509,7 @@ export default function BookingPage() {
                 <div className="space-y-3">
                   <Button
                     onClick={handleSubmit}
-                    disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
+                    disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone || bookingCompleted}
                     className="w-full bg-blue-600 hover:bg-blue-700"
                     size="lg"
                   >
@@ -498,6 +518,8 @@ export default function BookingPage() {
                         <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
                         Booking...
                       </>
+                    ) : bookingCompleted ? (
+                      'Booking Completed'
                     ) : (
                       'Book Appointment'
                     )}
@@ -505,11 +527,11 @@ export default function BookingPage() {
                   
                   <Button
                     onClick={handleOnlinePayment}
-                    disabled={!selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
+                    disabled={!bookingCompleted || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
                     className="w-full bg-green-600 hover:bg-green-700"
                     size="lg"
                   >
-                    Online Payment (10% Discount Applied)
+                    {bookingCompleted ? 'Online Payment (10% Discount Applied)' : 'Complete Booking First'}
                   </Button>
                 </div>
               </CardContent>
