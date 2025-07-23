@@ -1,459 +1,375 @@
-import { useState, useRef } from "react";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useState } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  Camera, 
-  Upload, 
-  Zap, 
-  Download, 
-  Star, 
-  Clock, 
-  CheckCircle, 
-  ArrowRight,
-  CreditCard,
-  Image as ImageIcon,
-  AlertCircle,
-  Loader2,
-  Info,
-  Target,
-  Ruler,
-  Eye,
-  Fingerprint
-} from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import { Sparkles, Download, Heart, Share2, Wand2, Palette, Info } from 'lucide-react';
 
-interface NailPhoto {
+interface GeneratedDesign {
   id: string;
-  file: File | null;
-  fingerType: string;
-  preview: string | null;
-  analyzed: boolean;
-}
-
-interface AnalysisResult {
-  fingerId: string;
-  nailLength: number;
-  nailWidth: number;
-  nailArea: number;
-  shape: string;
-  confidence: number;
+  imageUrl: string;
+  prompt: string;
+  style: string;
+  colors: string[];
+  complexity: string;
+  timestamp: Date;
 }
 
 export default function AITailGenerator() {
   const { t } = useLanguage();
   const { toast } = useToast();
-  const [photos, setPhotos] = useState<NailPhoto[]>([
-    { id: "1", file: null, fingerType: "Left Thumb", preview: null, analyzed: false },
-    { id: "2", file: null, fingerType: "Left Index", preview: null, analyzed: false },
-    { id: "3", file: null, fingerType: "Left Middle", preview: null, analyzed: false },
-    { id: "4", file: null, fingerType: "Right Thumb", preview: null, analyzed: false },
-    { id: "5", file: null, fingerType: "Right Index", preview: null, analyzed: false },
-    { id: "6", file: null, fingerType: "Right Middle", preview: null, analyzed: false }
-  ]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
-  const [analysisStep, setAnalysisStep] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  
+  const [prompt, setPrompt] = useState('');
+  const [selectedStyle, setSelectedStyle] = useState('');
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [complexity, setComplexity] = useState('medium');
+  const [generatedDesigns, setGeneratedDesigns] = useState<GeneratedDesign[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handlePhotoUpload = (photoId: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  // Style options
+  const styleOptions = [
+    { value: 'minimalist', label: 'Minimalist', description: 'Simple and elegant style' },
+    { value: 'floral', label: 'Floral', description: 'Flower and nature motifs' },
+    { value: 'geometric', label: 'Geometric', description: 'Geometric patterns' },
+    { value: 'abstract', label: 'Abstract', description: 'Abstract art' },
+    { value: 'vintage', label: 'Vintage', description: 'Classic and elegant style' },
+    { value: 'modern', label: 'Modern', description: 'Modern and trendy style' },
+    { value: 'cute', label: 'Cute', description: 'Cute and lovely design' },
+    { value: 'elegant', label: 'Elegant', description: 'Elegant and luxurious style' }
+  ];
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload an image file",
-        variant: "destructive"
-      });
-      return;
-    }
+  // Color options
+  const colorOptions = [
+    '#FF6B9D', '#8B5CF6', '#06B6D4', '#10B981', 
+    '#F59E0B', '#EF4444', '#EC4899', '#6366F1',
+    '#000000', '#FFFFFF', '#9CA3AF', '#F3F4F6'
+  ];
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please upload an image smaller than 10MB",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setPhotos(prev => prev.map(photo => 
-        photo.id === photoId 
-          ? { ...photo, file, preview: e.target?.result as string, analyzed: false }
-          : photo
-      ));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const removePhoto = (photoId: string) => {
-    setPhotos(prev => prev.map(photo => 
-      photo.id === photoId 
-        ? { ...photo, file: null, preview: null, analyzed: false }
-        : photo
-    ));
-  };
-
-  const analyzeNails = async () => {
-    const uploadedPhotos = photos.filter(p => p.file);
-    if (uploadedPhotos.length === 0) {
-      toast({
-        title: "No photos uploaded",
-        description: "Please upload at least one nail photo to analyze",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsAnalyzing(true);
-    setProgress(0);
-    setAnalysisStep(0);
-
-    try {
-      const results: AnalysisResult[] = [];
+  // Generate AI nail art
+  const generateNailArt = useMutation({
+    mutationFn: async (params: {
+      prompt: string;
+      style: string;
+      colors: string[];
+      complexity: string;
+    }) => {
+      setIsGenerating(true);
+      const response = await apiRequest('/api/ai/generate-nail-art', 'POST', params);
+      return response;
+    },
+    onSuccess: (data) => {
+      const newDesign: GeneratedDesign = {
+        id: Date.now().toString(),
+        imageUrl: data.imageUrl,
+        prompt,
+        style: selectedStyle,
+        colors: selectedColors,
+        complexity,
+        timestamp: new Date()
+      };
       
-      for (let i = 0; i < uploadedPhotos.length; i++) {
-        const photo = uploadedPhotos[i];
-        setAnalysisStep(i + 1);
-        setProgress(((i + 1) / uploadedPhotos.length) * 100);
-
-        // Create FormData for the API request
-        const formData = new FormData();
-        formData.append('image', photo.file!);
-        formData.append('fingerType', photo.fingerType);
-
-        // Call the nail measurement API
-        const response = await fetch('/api/analyze-nail-measurement', {
-          method: 'POST',
-          body: formData
-        });
-
-        if (!response.ok) {
-          throw new Error(`Analysis failed for ${photo.fingerType}`);
-        }
-
-        const result = await response.json();
-        results.push({
-          fingerId: photo.id,
-          nailLength: result.nailLength,
-          nailWidth: result.nailWidth,
-          nailArea: result.nailArea,
-          shape: result.shape,
-          confidence: result.confidence
-        });
-
-        // Mark photo as analyzed
-        setPhotos(prev => prev.map(p => 
-          p.id === photo.id ? { ...p, analyzed: true } : p
-        ));
-
-        // Small delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-
-      setAnalysisResults(results);
+      setGeneratedDesigns(prev => [newDesign, ...prev]);
+      setIsGenerating(false);
+      
       toast({
-        title: "Analysis Complete",
-        description: `Successfully analyzed ${results.length} nail photos`,
+        title: 'AI Nail Art Generation Complete!',
+        description: 'New design has been generated.',
       });
-
-    } catch (error) {
-      console.error('Analysis error:', error);
+    },
+    onError: (error) => {
+      setIsGenerating(false);
       toast({
-        title: "Analysis Failed", 
-        description: "Unable to analyze nail measurements. Please try again.",
-        variant: "destructive"
+        title: 'Generation Failed',
+        description: 'An error occurred during AI nail art generation.',
+        variant: 'destructive',
       });
-    } finally {
-      setIsAnalyzing(false);
-      setProgress(0);
-      setAnalysisStep(0);
     }
+  });
+
+  const handleGenerate = () => {
+    if (!prompt.trim()) {
+      toast({
+        title: 'Prompt Required',
+        description: 'Please describe your desired nail art design.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    generateNailArt.mutate({
+      prompt: prompt.trim(),
+      style: selectedStyle,
+      colors: selectedColors,
+      complexity
+    });
   };
 
-  const downloadResults = () => {
-    const dataStr = JSON.stringify(analysisResults, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
+  const downloadDesign = (design: GeneratedDesign) => {
+    // Create download link
     const link = document.createElement('a');
-    link.href = url;
-    link.download = 'nail-measurements.json';
+    link.href = design.imageUrl;
+    link.download = `nail-art-${design.id}.png`;
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
   };
-
-  const allPhotosUploaded = photos.every(p => p.file);
-  const hasUploadedPhotos = photos.some(p => p.file);
-  const hasAnalysisResults = analysisResults.length > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            AI Nail Measurement Analysis
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <Sparkles className="inline-block w-8 h-8 mr-2 text-purple-500" />
+            AI Nail Art Generator
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Upload 6 photos of your nails with a credit card for scale reference. 
-            Our AI will precisely measure nail dimensions and recommend perfect custom designs.
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            Create unique nail art designs with AI technology
           </p>
-          <Badge variant="secondary" className="mt-4">
-            <Star className="w-4 h-4 mr-1" />
-            Precision Analysis with OpenAI
-          </Badge>
         </div>
 
-        {/* How It Works Section */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Info className="w-5 h-5" />
-              How the 6-Photo System Works
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Camera className="w-6 h-6 text-purple-600" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Generation Panel */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wand2 className="w-5 h-5" />
+                  Design Generation
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Prompt Input */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Design Description</label>
+                  <Textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="e.g., Elegant nail art with pastel flower patterns and gold accents"
+                    rows={4}
+                    className="resize-none"
+                  />
                 </div>
-                <h3 className="font-semibold mb-2">1. Photo Capture</h3>
-                <p className="text-sm text-gray-600">
-                  Take photos of 6 different nails with a credit card placed for scale reference
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Eye className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="font-semibold mb-2">2. AI Analysis</h3>
-                <p className="text-sm text-gray-600">
-                  OpenAI analyzes each photo to measure nail dimensions with millimeter precision
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="font-semibold mb-2">3. Custom Recommendations</h3>
-                <p className="text-sm text-gray-600">
-                  Get personalized nail design recommendations based on your exact measurements
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Photo Upload Grid */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Upload className="w-5 h-5" />
-                Upload Nail Photos ({photos.filter(p => p.file).length}/6)
-              </span>
-              {hasUploadedPhotos && (
-                <Badge variant={allPhotosUploaded ? "default" : "secondary"}>
-                  {allPhotosUploaded ? "Complete" : "In Progress"}
-                </Badge>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              {photos.map((photo) => (
-                <div key={photo.id} className="space-y-3">
-                  <Label className="text-sm font-medium">{photo.fingerType}</Label>
-                  <div className="relative">
-                    {photo.preview ? (
-                      <div className="relative group">
-                        <img
-                          src={photo.preview}
-                          alt={`${photo.fingerType} nail`}
-                          className="w-full h-48 object-cover rounded-lg border-2 border-gray-200"
-                        />
-                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 rounded-lg flex items-center justify-center">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => removePhoto(photo.id)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                        {photo.analyzed && (
-                          <Badge className="absolute top-2 right-2 bg-green-500">
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Analyzed
-                          </Badge>
-                        )}
-                      </div>
-                    ) : (
-                      <div
-                        className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-purple-400 transition-colors"
-                        onClick={() => fileInputRefs.current[photo.id]?.click()}
+                {/* Style Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Style</label>
+                  <Select value={selectedStyle} onValueChange={setSelectedStyle}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Style" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {styleOptions.map((style) => (
+                        <SelectItem key={style.value} value={style.value}>
+                          <div>
+                            <div className="font-medium">{style.label}</div>
+                            <div className="text-xs text-gray-500">{style.description}</div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Color Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Preferred Colors</label>
+                  <div className="grid grid-cols-6 gap-2">
+                    {colorOptions.map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => {
+                          if (selectedColors.includes(color)) {
+                            setSelectedColors(prev => prev.filter(c => c !== color));
+                          } else {
+                            setSelectedColors(prev => [...prev, color]);
+                          }
+                        }}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${
+                          selectedColors.includes(color) 
+                            ? 'border-blue-500 scale-110' 
+                            : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                  {selectedColors.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {selectedColors.map((color) => (
+                        <Badge key={color} variant="secondary" className="text-xs">
+                          {color}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Complexity */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Complexity</label>
+                  <Select value={complexity} onValueChange={setComplexity}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="simple">Simple - Minimal and clean</SelectItem>
+                      <SelectItem value="medium">Medium - Moderate detail</SelectItem>
+                      <SelectItem value="complex">Complex - Intricate and elaborate</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Generate Button */}
+                <Button 
+                  onClick={handleGenerate}
+                  disabled={isGenerating || !prompt.trim()}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isGenerating ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate with AI
+                    </>
+                  )}
+                </Button>
+
+                {/* Quick Prompts */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Quick Prompts</label>
+                  <div className="space-y-1">
+                    {[
+                      'Elegant French manicure',
+                      'Glitter gradient sparkle',
+                      'Modern geometric pattern',
+                      'Romantic rose flower design',
+                      'Minimal line art'
+                    ].map((quickPrompt) => (
+                      <Button
+                        key={quickPrompt}
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start text-left"
+                        onClick={() => setPrompt(quickPrompt)}
                       >
-                        <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-500 text-center">
-                          Click to upload<br />{photo.fingerType}
-                        </p>
-                      </div>
-                    )}
-                    <Input
-                      ref={(el) => { fileInputRefs.current[photo.id] = el; }}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handlePhotoUpload(photo.id, e)}
-                    />
+                        {quickPrompt}
+                      </Button>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-              <div className="flex items-start gap-3">
-                <CreditCard className="w-5 h-5 text-yellow-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-yellow-800 mb-1">Important: Credit Card Required</h4>
-                  <p className="text-sm text-yellow-700">
-                    Place a standard credit card (85.60mm × 53.98mm) next to your nail in each photo for accurate scale measurement.
-                    This ensures our AI can calculate precise nail dimensions.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <Button
-              onClick={analyzeNails}
-              disabled={!hasUploadedPhotos || isAnalyzing}
-              className="w-full h-12 text-lg"
-            >
-              {isAnalyzing ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Analyzing Photo {analysisStep} of {photos.filter(p => p.file).length}...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-5 h-5 mr-2" />
-                  Analyze Nail Measurements
-                </>
-              )}
-            </Button>
-
-            {isAnalyzing && (
-              <div className="mt-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Analysis Progress</span>
-                  <span>{Math.round(progress)}%</span>
-                </div>
-                <Progress value={progress} className="w-full" />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Analysis Results */}
-        {hasAnalysisResults && (
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <Ruler className="w-5 h-5" />
-                  Analysis Results
-                </span>
-                <Button onClick={downloadResults} variant="outline" size="sm">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Results
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                {analysisResults.map((result, index) => {
-                  const photo = photos.find(p => p.id === result.fingerId);
-                  return (
-                    <div key={result.fingerId} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-medium">{photo?.fingerType}</h4>
-                        <Badge variant="outline">
-                          {Math.round(result.confidence * 100)}% confidence
-                        </Badge>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Nail Length:</span>
-                          <span className="font-medium">{result.nailLength.toFixed(2)}mm</span>
+          {/* Generated Designs Gallery */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="w-5 h-5" />
+                  Generated Designs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {generatedDesigns.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Wand2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                      No designs generated yet
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Describe your desired design in the left panel and generate
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {generatedDesigns.map((design) => (
+                      <Card key={design.id} className="overflow-hidden">
+                        <div className="aspect-square relative">
+                          <img
+                            src={design.imageUrl}
+                            alt={design.prompt}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 right-2">
+                            <Badge className="bg-black/70 text-white">
+                              {design.style}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span>Nail Width:</span>
-                          <span className="font-medium">{result.nailWidth.toFixed(2)}mm</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Nail Area:</span>
-                          <span className="font-medium">{result.nailArea.toFixed(2)}mm²</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Shape:</span>
-                          <span className="font-medium capitalize">{result.shape}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+                            {design.prompt}
+                          </p>
+                          <div className="flex items-center gap-2 mb-3">
+                            <Badge variant="secondary" className="text-xs">
+                              {design.complexity}
+                            </Badge>
+                            {design.colors.length > 0 && (
+                              <div className="flex gap-1">
+                                {design.colors.slice(0, 3).map((color, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="w-4 h-4 rounded-full border"
+                                    style={{ backgroundColor: color }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => downloadDesign(design)}
+                              className="flex-1"
+                            >
+                              <Download className="w-4 h-4 mr-1" />
+                              Download
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Heart className="w-4 h-4" />
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              <Share2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
-              <Separator className="my-6" />
-
-              <div className="text-center">
-                <h3 className="text-lg font-semibold mb-4">Ready for Custom Design?</h3>
-                <p className="text-gray-600 mb-6">
-                  Based on your nail measurements, we can create perfectly fitted custom nail designs.
-                </p>
-                <div className="flex justify-center gap-4">
-                  <Button className="flex items-center gap-2">
-                    <ArrowRight className="w-4 h-4" />
-                    View Design Recommendations
-                  </Button>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    Book Appointment
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* Features Section */}
+        <div className="grid md:grid-cols-3 gap-6 mt-8">
           <Card>
             <CardContent className="pt-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Fingerprint className="w-6 h-6 text-purple-600" />
+                  <Sparkles className="w-6 h-6 text-purple-600" />
                 </div>
-                <h3 className="font-semibold mb-2">Precision Measurement</h3>
+                <h3 className="font-semibold mb-2">AI-Powered Design</h3>
                 <p className="text-sm text-gray-600">
-                  AI-powered analysis with millimeter accuracy using credit card scale reference
+                  Advanced artificial intelligence creates unique nail art designs based on your preferences
                 </p>
               </div>
             </CardContent>
@@ -463,11 +379,11 @@ export default function AITailGenerator() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Star className="w-6 h-6 text-blue-600" />
+                  <Palette className="w-6 h-6 text-blue-600" />
                 </div>
-                <h3 className="font-semibold mb-2">Custom Recommendations</h3>
+                <h3 className="font-semibold mb-2">Custom Styles</h3>
                 <p className="text-sm text-gray-600">
-                  Personalized design suggestions based on your unique nail dimensions
+                  Choose from multiple design styles including minimalist, floral, geometric, and abstract
                 </p>
               </div>
             </CardContent>
@@ -477,11 +393,11 @@ export default function AITailGenerator() {
             <CardContent className="pt-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <Download className="w-6 h-6 text-green-600" />
                 </div>
-                <h3 className="font-semibold mb-2">Professional Results</h3>
+                <h3 className="font-semibold mb-2">Instant Download</h3>
                 <p className="text-sm text-gray-600">
-                  Get salon-quality measurements for perfect-fitting nail designs
+                  Download your generated designs immediately for inspiration or to show your nail technician
                 </p>
               </div>
             </CardContent>

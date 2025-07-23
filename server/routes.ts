@@ -2028,11 +2028,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Initialize nail analysis upload directory
-  ensureUploadDirectory().catch(console.error);
+  // AI Nail Art Generation endpoint
+  app.post('/api/ai/generate-nail-art', async (req, res) => {
+    try {
+      const { prompt, style, colors, complexity } = req.body;
 
-  // New API route for nail measurement analysis
-  app.post('/api/analyze-nail-measurement', uploadHandler, analyzeNailMeasurement);
+      // Validate input
+      if (!prompt || !prompt.trim()) {
+        return res.status(400).json({ error: 'Prompt is required' });
+      }
+
+      // Enhanced prompt with style and complexity
+      const enhancedPrompt = `Create a beautiful nail art design: ${prompt}. Style: ${style || 'modern'}. Complexity: ${complexity || 'medium'}. Colors: ${colors?.join(', ') || 'colorful'}. High quality, detailed, professional nail art photography.`;
+
+      // Call OpenAI DALL-E API
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: enhancedPrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+      });
+
+      const imageUrl = response.data[0].url;
+
+      res.json({
+        success: true,
+        imageUrl,
+        prompt: enhancedPrompt,
+        originalPrompt: prompt,
+        style,
+        colors,
+        complexity
+      });
+
+    } catch (error) {
+      console.error('AI nail art generation error:', error);
+      res.status(500).json({
+        error: 'Failed to generate nail art design',
+        message: error.message
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
