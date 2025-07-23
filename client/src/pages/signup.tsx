@@ -1,178 +1,244 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useLanguage } from "@/hooks/useLanguage";
-import { Link } from "wouter";
+import { useState } from 'react';
+import { useLocation } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { UserPlus, User, Mail, Phone, Lock, AlertCircle, ArrowLeft } from 'lucide-react';
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
-const signupSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phoneNumber: z.string().min(10, "Please enter a valid phone number"),
-  workplace: z.string().min(2, "Workplace must be at least 2 characters"),
-  region: z.string().min(2, "Region must be at least 2 characters"),
-  postalCode: z.string().min(5, "Postal code must be at least 5 characters"),
-});
-
-type SignupFormData = z.infer<typeof signupSchema>;
-
-export default function Signup() {
-  const { t } = useLanguage();
+export default function SignUp() {
+  const [, setLocation] = useLocation();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phoneNumber: '',
+    username: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      workplace: "",
-      region: "",
-      postalCode: "",
-    },
-  });
-
-  const onSubmit = async (data: SignupFormData) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      // For now, redirect to login since we use Replit Auth
-      // In a real implementation, you would save this additional info
-      console.log("Signup data:", data);
-      
-      // Store signup data in localStorage temporarily
-      localStorage.setItem("pendingSignupData", JSON.stringify(data));
-      
-      // Redirect to Replit auth login
-      window.location.href = "/api/login";
+      const response = await fetch('/api/admin/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          username: formData.username,
+          password: formData.password
+        })
+      });
+
+      if (response.ok) {
+        setSuccess('Account created successfully! Please contact an administrator to activate your account.');
+        setTimeout(() => {
+          setLocation('/admin-login');
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Registration failed.');
+      }
     } catch (error) {
-      console.error("Signup error:", error);
+      setError('Server connection failed.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-            {t('signup.title')}
-          </CardTitle>
-          <CardDescription>
-            {t('signup.subtitle')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.fullName')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('signup.fullName')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+      <Header />
+      
+      <main className="flex items-center justify-center px-4 py-16">
+        <Card className="w-full max-w-md shadow-2xl">
+          <CardHeader className="text-center pb-6">
+            <div className="flex justify-center mb-4">
+              <UserPlus className="h-12 w-12 text-purple-600" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-gray-800">
+              Sign Up
+            </CardTitle>
+            <p className="text-gray-600 mt-2">
+              Create your admin account
+            </p>
+          </CardHeader>
+          
+          <CardContent>
+            {error && (
+              <Alert className="mb-4 bg-red-50 border-red-200">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
+              </Alert>
+            )}
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.email')}</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder={t('signup.email')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {success && (
+              <Alert className="mb-4 bg-green-50 border-green-200">
+                <AlertCircle className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800">{success}</AlertDescription>
+              </Alert>
+            )}
 
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.phoneNumber')}</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder={t('signup.phoneNumber')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="workplace"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.workplace')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('signup.workplace')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="region"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.region')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('signup.region')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="postalCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('signup.postalCode')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('signup.postalCode')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="Choose a username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
 
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                 disabled={isLoading}
               >
-                {isLoading ? "Processing..." : t('signup.submit')}
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
-          </Form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              {t('signup.alreadyHaveAccount')}{" "}
-              <Link href="/api/login" className="text-pink-600 hover:text-pink-700 font-medium">
-                {t('signup.signIn')}
-              </Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="mt-6 text-center">
+              <Button 
+                variant="ghost" 
+                onClick={() => setLocation('/admin-login')}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back to Login</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+      
+      <Footer />
     </div>
   );
 }

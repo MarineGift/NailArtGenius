@@ -210,7 +210,7 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p className="text-gray-600 mt-2">
-              Welcome, {adminUser?.name || adminUser?.username}
+              Welcome
             </p>
           </div>
           <Button onClick={handleLogout} variant="outline" className="flex items-center space-x-2">

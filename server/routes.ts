@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
-import { storage, enhancedStorage } from "./storage";
+import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToken, hashPassword } from "./admin-auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
@@ -98,21 +98,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { username, password } = req.body;
       
       if (!username || !password) {
-        return res.status(400).json({ message: '사용자명과 비밀번호가 필요합니다.' });
+        return res.status(400).json({ message: 'Username and password are required.' });
       }
 
       const admin = await storage.getAdminByUsername(username);
       if (!admin) {
-        return res.status(401).json({ message: '잘못된 사용자명 또는 비밀번호입니다.' });
+        return res.status(401).json({ message: 'Invalid username or password.' });
       }
 
       const isValidPassword = await verifyPassword(password, admin.password);
       if (!isValidPassword) {
-        return res.status(401).json({ message: '잘못된 사용자명 또는 비밀번호입니다.' });
+        return res.status(401).json({ message: 'Invalid username or password.' });
       }
 
       if (!admin.isActive) {
-        return res.status(401).json({ message: '비활성화된 계정입니다.' });
+        return res.status(401).json({ message: 'Account is deactivated.' });
       }
 
       // Update last login time
@@ -133,7 +133,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Admin login error:', error);
-      res.status(500).json({ message: '로그인 처리 중 오류가 발생했습니다.' });
+      res.status(500).json({ message: 'Error occurred during login process.' });
+    }
+  });
+
+  // Admin registration route
+  app.post('/api/admin/register', async (req, res) => {
+    try {
+      const { name, email, phoneNumber, username, password } = req.body;
+      
+      if (!name || !email || !username || !password) {
+        return res.status(400).json({ message: 'All fields are required.' });
+      }
+
+      // Check if username already exists
+      const existingAdmin = await storage.getAdminByUsername(username);
+      if (existingAdmin) {
+        return res.status(400).json({ message: 'Username already exists.' });
+      }
+
+      // Hash password and create admin (inactive by default)
+      const hashedPassword = await hashPassword(password);
+      const newAdmin = await storage.createAdmin({
+        name,
+        email,
+        phoneNumber,
+        username,
+        password: hashedPassword,
+        role: 'admin',
+        isActive: false, // Needs admin activation
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      res.status(201).json({
+        message: 'Admin account created successfully. Please contact an administrator to activate your account.',
+        admin: {
+          id: newAdmin.id,
+          username: newAdmin.username,
+          name: newAdmin.name,
+          email: newAdmin.email
+        }
+      });
+    } catch (error) {
+      console.error('Admin registration error:', error);
+      res.status(500).json({ message: 'Error occurred during registration.' });
+    }
+  });
+
+  // Password reset route
+  app.post('/api/admin/password-reset', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: 'Email is required.' });
+      }
+
+      // In a real application, you would send an email here
+      // For now, we'll just return a success message
+      res.json({
+        message: 'If an account with that email exists, password reset instructions have been sent.'
+      });
+    } catch (error) {
+      console.error('Password reset error:', error);
+      res.status(500).json({ message: 'Error occurred during password reset.' });
     }
   });
 
@@ -163,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       console.error('Admin dashboard error:', error);
-      res.status(500).json({ message: '대시보드 데이터를 가져오는 중 오류가 발생했습니다.' });
+      res.status(500).json({ message: 'Error occurred while fetching dashboard data.' });
     }
   });
 

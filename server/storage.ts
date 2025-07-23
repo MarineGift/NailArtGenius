@@ -753,12 +753,10 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
-
 // Additional Customer Methods for Enhanced Admin Panel
 export class EnhancedDatabaseStorage extends DatabaseStorage {
   async getAllCustomers(): Promise<Customer[]> {
-    return db.select().from(customers).orderBy(customers.createdAt);
+    return await db.select().from(customers).orderBy(desc(customers.createdAt));
   }
 
   async updateCustomerCategory(customerId: number, category: string): Promise<void> {
@@ -769,9 +767,24 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
   }
 
   async getCustomersByIds(customerIds: number[]): Promise<Customer[]> {
-    return db.select().from(customers).where(inArray(customers.id, customerIds));
+    const { inArray } = await import("drizzle-orm");
+    return await db.select().from(customers).where(inArray(customers.id, customerIds));
+  }
+
+  async getCustomersByCategory(category: string): Promise<Customer[]> {
+    return await db.select().from(customers)
+      .where(eq(customers.category, category))
+      .orderBy(desc(customers.createdAt));
+  }
+
+  async updateCustomer(id: number, updates: Partial<Customer>): Promise<Customer> {
+    const [updatedCustomer] = await db
+      .update(customers)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(customers.id, id))
+      .returning();
+    return updatedCustomer;
   }
 }
 
-// Use enhanced storage
-export const enhancedStorage = new EnhancedDatabaseStorage();
+export const storage = new EnhancedDatabaseStorage();

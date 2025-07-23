@@ -40,6 +40,8 @@ import Services from "@/pages/services";
 import Contact from "@/pages/contact";
 import AdminTest from "@/pages/admin-test";
 import AdminLogin from "@/pages/admin-login";
+import SignUp from "@/pages/signup";
+import PasswordReset from "@/pages/password-reset";
 
 // Lazy load AI Nail System
 const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
@@ -68,6 +70,8 @@ function Router() {
         
         {/* Admin routes - temporarily public for testing */}
         <Route path="/admin-login" component={AdminLogin} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/password-reset" component={PasswordReset} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-test" component={AdminTest} />
         <Route path="/admin-panel" component={AdminPanel} />

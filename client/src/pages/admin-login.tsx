@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Lock, User, AlertCircle } from 'lucide-react';
+import { Lock, User, AlertCircle, UserPlus, Key } from 'lucide-react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -71,6 +71,26 @@ export default function AdminLogin() {
             <p className="text-gray-600 mt-2">
               Please login with your admin account
             </p>
+            <div className="flex justify-center space-x-4 mt-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setLocation('/signup')}
+                className="flex items-center space-x-2 text-purple-600 hover:text-purple-800"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span>Sign Up</span>
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setLocation('/password-reset')}
+                className="flex items-center space-x-2 text-purple-600 hover:text-purple-800"
+              >
+                <Key className="h-4 w-4" />
+                <span>Password Find</span>
+              </Button>
+            </div>
           </CardHeader>
           
           <CardContent>
