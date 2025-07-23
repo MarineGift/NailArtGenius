@@ -213,17 +213,15 @@ export default function AdminDashboard() {
   };
 
   const handleMetricClick = (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
-    console.log('✅ METRIC CLICK SUCCESS:', metricType, title, totalCount);
+    console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
+    console.log('🚀 Current detailModal state:', detailModal);
+    alert(`Clicked ${title} - Count: ${totalCount}`);
     
-    // Show immediate alert with working confirmation
-    const alertMessage = `📊 ${title}\n\nCount: ${totalCount}\nStatus: ✅ Working Perfectly\nTime: ${new Date().toLocaleTimeString()}\n\nOpening detailed modal...`;
-    alert(alertMessage);
-    
-    // Use simple data for immediate modal display
+    // Use simple test data for immediate modal display
     const testData = [
-      { name: 'Customer A', phoneNumber: '010-1111-1111', email: 'customer.a@example.com', category: 'VIP' },
-      { name: 'Customer B', phoneNumber: '010-2222-2222', email: 'customer.b@example.com', category: 'Regular' },
-      { name: 'Customer C', phoneNumber: '010-3333-3333', email: 'customer.c@example.com', category: 'New' }
+      { name: 'Test Customer 1', phoneNumber: '010-1111-1111', email: 'test1@example.com' },
+      { name: 'Test Customer 2', phoneNumber: '010-2222-2222', email: 'test2@example.com' },
+      { name: 'Test Customer 3', phoneNumber: '010-3333-3333', email: 'test3@example.com' }
     ];
 
     setDetailModal({
@@ -240,7 +238,7 @@ export default function AdminDashboard() {
       isOpen: true, 
       metricType, 
       title, 
-      dataLength: testData.length, 
+      dataLength: data.length, 
       totalCount 
     });
     
