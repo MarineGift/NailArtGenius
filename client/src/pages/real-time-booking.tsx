@@ -52,10 +52,7 @@ export default function RealTimeBookingPage() {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [customerInfo, setCustomerInfo] = useState({
-    name: '',
     phone: '',
-    email: '',
-    visitType: 'first-time',
     notes: ''
   });
 
@@ -142,7 +139,7 @@ export default function RealTimeBookingPage() {
       // Reset form
       setSelectedService(null);
       setSelectedTimeSlot('');
-      setCustomerInfo({ name: '', phone: '', email: '', visitType: 'first-time', notes: '' });
+      setCustomerInfo({ phone: '', notes: '' });
       
       // Refresh availability
       refetchAvailability();
@@ -154,7 +151,7 @@ export default function RealTimeBookingPage() {
   });
 
   const handleBooking = () => {
-    if (!selectedService || !selectedTimeSlot || !customerInfo.name || !customerInfo.phone) {
+    if (!selectedService || !selectedTimeSlot || !customerInfo.phone) {
       toast({
         title: t('booking.validation_error'),
         description: t('booking.required_fields'),
@@ -242,27 +239,32 @@ export default function RealTimeBookingPage() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <FileText className="w-5 h-5 mr-2" />
-                {t('booking.select_service')}
+                Select Service
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Select value={selectedService?.toString() || ''} onValueChange={(value) => setSelectedService(parseInt(value))}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('booking.select_service')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {services.map((service) => (
-                    <SelectItem key={service.id} value={service.id.toString()}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{service.name}</span>
-                        <span className="text-sm text-gray-500">
-                          ${service.price} • {service.duration}분
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                {services.map((service) => (
+                  <button
+                    key={service.id}
+                    onClick={() => setSelectedService(service.id)}
+                    className={`w-full p-3 rounded-md border text-left transition-colors ${
+                      selectedService === service.id
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-white hover:bg-blue-50 border-gray-300 text-gray-900'
+                    }`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{service.name}</span>
+                      <span className={`text-sm ${
+                        selectedService === service.id ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
+                        ${service.price} • {service.duration}min
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -384,68 +386,29 @@ export default function RealTimeBookingPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <User className="w-5 h-5 mr-2" />
-              {t('booking.customer_info')}
+              Customer Information
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t('booking.name')} *
-              </label>
-              <Input
-                value={customerInfo.name}
-                onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-                placeholder={t('booking.name_placeholder')}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t('booking.phone')} *
+                Phone Number * <span className="text-xs text-gray-500">(회원가입 되지 않은 고객은 회원가입 후 사용하세요.)</span>
               </label>
               <Input
                 value={customerInfo.phone}
                 onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder={t('booking.phone')}
+                placeholder="Enter your phone number"
               />
             </div>
             
             <div>
               <label className="block text-sm font-medium mb-1">
-                {t('booking.email')}
-              </label>
-              <Input
-                type="email"
-                value={customerInfo.email}
-                onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
-                placeholder={t('booking.email')}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {t('booking.visit_type')}
-              </label>
-              <Select value={customerInfo.visitType} onValueChange={(value) => setCustomerInfo(prev => ({ ...prev, visitType: value }))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="first-time">{t('booking.visit_types.first_time')}</SelectItem>
-                  <SelectItem value="returning">{t('booking.visit_types.returning')}</SelectItem>
-                  <SelectItem value="regular">{t('booking.visit_types.regular')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium mb-1">
-                {t('booking.notes')}
+                Additional Notes
               </label>
               <Textarea
                 value={customerInfo.notes}
                 onChange={(e) => setCustomerInfo(prev => ({ ...prev, notes: e.target.value }))}
-                placeholder={t('booking.notes_placeholder')}
+                placeholder="Any special requests or notes..."
                 rows={3}
               />
             </div>
@@ -464,14 +427,14 @@ export default function RealTimeBookingPage() {
                 <div>{t('realtime.service_label')}: {services.find(s => s.id === selectedService)?.name || t('realtime.not_selected')}</div>
                 <div>{t('realtime.date_label')}: {selectedDate ? format(selectedDate, 'yyyy년 MM월 dd일', { locale: ko }) : t('realtime.not_selected')}</div>
                 <div>{t('realtime.time_label')}: {selectedTimeSlot || t('realtime.not_selected')}</div>
-                <div>{t('realtime.customer_label')}: {customerInfo.name || t('realtime.not_entered')}</div>
+                <div>Customer Phone: {customerInfo.phone || 'Not entered'}</div>
                 <div>{t('realtime.contact_label')}: {customerInfo.phone || t('realtime.not_entered')}</div>
               </div>
             </div>
             
             <Button 
               onClick={handleBooking}
-              disabled={createAppointmentMutation.isPending || !selectedService || !selectedTimeSlot || !customerInfo.name || !customerInfo.phone}
+              disabled={createAppointmentMutation.isPending || !selectedService || !selectedTimeSlot || !customerInfo.phone}
               className="w-full"
             >
               {createAppointmentMutation.isPending ? t('booking.submitting') : t('booking.confirm_booking')}

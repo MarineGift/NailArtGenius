@@ -36,9 +36,7 @@ export default function BookingPage() {
   const [selectedService, setSelectedService] = useState<number | null>(null);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [customerInfo, setCustomerInfo] = useState({
-    name: '',
     phone: '',
-    email: '',
     notes: ''
   });
 
@@ -69,7 +67,7 @@ export default function BookingPage() {
       // Reset form
       setSelectedService(null);
       setSelectedTimeSlot('');
-      setCustomerInfo({ name: '', phone: '', email: '', notes: '' });
+      setCustomerInfo({ phone: '', notes: '' });
       setSelectedDate(null);
       
       // Refetch availability
@@ -109,7 +107,7 @@ export default function BookingPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.name || !customerInfo.phone) {
+    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -127,9 +125,9 @@ export default function BookingPage() {
       serviceId: selectedService,
       appointmentDate: appointmentDateTime.toISOString(),
       timeSlot: selectedTimeSlot,
-      customerName: customerInfo.name,
+      customerName: customerInfo.phone, // Using phone as identifier
       customerPhone: customerInfo.phone,
-      customerEmail: customerInfo.email,
+      customerEmail: '', // Not required anymore
       notes: customerInfo.notes,
       visitReason: selectedServiceData?.name || 'General visit'
     });
@@ -294,28 +292,37 @@ export default function BookingPage() {
                 <CardTitle>Select Service</CardTitle>
               </CardHeader>
               <CardContent>
-                <Select value={selectedService?.toString() || ''} onValueChange={(value) => setSelectedService(Number(value))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a service" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(servicesByCategory).map(([category, categoryServices]) => (
-                      <div key={category}>
-                        <div className="px-2 py-1 text-sm font-semibold text-gray-500 uppercase">
-                          {category}
-                        </div>
+                <div className="space-y-3">
+                  {Object.entries(servicesByCategory).map(([category, categoryServices]) => (
+                    <div key={category}>
+                      <h4 className="text-sm font-semibold text-gray-500 uppercase mb-2">
+                        {category}
+                      </h4>
+                      <div className="space-y-2">
                         {categoryServices.map(service => (
-                          <SelectItem key={service.id} value={service.id.toString()}>
-                            <div className="flex justify-between items-center w-full">
-                              <span>{service.name}</span>
-                              <span className="text-sm text-gray-500 ml-2">${service.price}</span>
+                          <button
+                            key={service.id}
+                            onClick={() => setSelectedService(service.id)}
+                            className={`w-full p-3 rounded-md border text-left transition-colors ${
+                              selectedService === service.id
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-white hover:bg-blue-50 border-gray-300 text-gray-900'
+                            }`}
+                          >
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium">{service.name}</span>
+                              <span className={`text-sm ${
+                                selectedService === service.id ? 'text-blue-100' : 'text-gray-500'
+                              }`}>
+                                ${service.price}
+                              </span>
                             </div>
-                          </SelectItem>
+                          </button>
                         ))}
                       </div>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
@@ -327,37 +334,12 @@ export default function BookingPage() {
               <CardContent className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <Input
-                    value={customerInfo.name}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Enter your full name"
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
+                    Phone Number * <span className="text-xs text-gray-500">(회원가입 되지 않은 고객은 회원가입 후 사용하세요.)</span>
                   </label>
                   <Input
                     value={customerInfo.phone}
                     onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
                     placeholder="Enter your phone number"
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <Input
-                    value={customerInfo.email}
-                    onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="Enter your email address"
-                    type="email"
                     className="w-full"
                   />
                 </div>
@@ -410,7 +392,7 @@ export default function BookingPage() {
 
                 <Button
                   onClick={handleSubmit}
-                  disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.name || !customerInfo.phone}
+                  disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
                   className="w-full"
                   size="lg"
                 >
