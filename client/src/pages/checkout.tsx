@@ -16,10 +16,10 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 interface BookingDetails {
   service: number;
-  date: Date;
+  date: string; // Date is stored as ISO string in sessionStorage
   timeSlot: string;
   phone: string;
-  originalPrice: number;
+  originalPrice: string | number;
   discountedPrice: number;
 }
 
@@ -91,7 +91,7 @@ const CheckoutForm = ({ bookingDetails }: { bookingDetails: BookingDetails }) =>
             </div>
             <div className="flex justify-between">
               <span>Date & Time:</span>
-              <span>{bookingDetails.date.toLocaleDateString()} at {bookingDetails.timeSlot}</span>
+              <span>{new Date(bookingDetails.date).toLocaleDateString()} at {bookingDetails.timeSlot}</span>
             </div>
             <div className="flex justify-between">
               <span>Phone:</span>
@@ -107,7 +107,7 @@ const CheckoutForm = ({ bookingDetails }: { bookingDetails: BookingDetails }) =>
               <span>${bookingDetails.discountedPrice}</span>
             </div>
             <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
-              💳 You saved ${bookingDetails.originalPrice - bookingDetails.discountedPrice} with online payment!
+              💳 You saved ${Number(bookingDetails.originalPrice) - bookingDetails.discountedPrice} with online payment!
             </div>
           </div>
         </CardContent>
