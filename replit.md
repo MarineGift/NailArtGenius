@@ -25,6 +25,7 @@ Preferred communication style: Simple, everyday language.
   - Secure payment processing with 10% discount calculation
   - Fixed navigation using wouter routing for seamless page transitions
   - Payment intent creation with booking metadata for transaction tracking
+  - English-only interface with locale settings for consistent user experience
 
 ### User Management System Implementation (July 23, 2025)
 - **Complete User Level System**: Added comprehensive user management with level-based access control
