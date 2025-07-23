@@ -140,9 +140,7 @@ const CheckoutForm = ({ bookingDetails }: { bookingDetails: BookingDetails }) =>
                 wallets: {
                   applePay: 'auto',
                   googlePay: 'auto'
-                },
-                // Force English language
-                locale: 'en'
+                }
               }}
             />
             
