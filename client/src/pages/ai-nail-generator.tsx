@@ -109,8 +109,8 @@ export default function AITailGenerator() {
     setIsAnalyzing(false);
 
     toast({
-      title: "AI 분석 완료!",
-      description: "전문 AI 분석이 완료되었습니다. 10개의 맞춤형 디자인이 생성되었습니다.",
+      title: "AI Analysis Complete!",
+      description: "Professional AI analysis completed. 10 custom designs have been generated.",
     });
   };
 
@@ -204,21 +204,21 @@ export default function AITailGenerator() {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            🤖 전문 AI 손톱 촬영 분석
+            🤖 Professional AI Nail Photography Analysis
           </h1>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-            스마트폰으로 손톱을 촬영하여 전문 AI가 분석하고 맞춤형 네일아트를 생성합니다
+            Take photos of your nails with your smartphone and let our professional AI analyze them to generate custom nail art designs
           </p>
         </div>
 
         {/* Photography Guide */}
         <div className="mb-8">
-          <h3 className="text-2xl font-semibold text-blue-600 mb-6">촬영 안내</h3>
+          <h3 className="text-2xl font-semibold text-blue-600 mb-6">Photography Guide</h3>
           
           <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-red-600" />
-              <p className="text-red-700 font-semibold">⚠️ 아래 촬영 예시를 꼭 확인해 주세요.</p>
+              <p className="text-red-700 font-semibold">⚠️ Please check the photography examples below.</p>
             </div>
           </div>
 
@@ -227,39 +227,39 @@ export default function AITailGenerator() {
               <div className="bg-gray-100 h-48 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 mb-4">
                 <div className="text-center">
                   <Camera className="w-12 h-12 text-gray-500 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">네 손톱, 엄지 손톱</p>
+                  <p className="text-sm text-gray-600">Four fingers, thumb</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-600">카메라와 카드가 수평이 되도록 촬영해 주세요.</p>
+              <p className="text-xs text-gray-600">Please take photos with the camera and card level.</p>
             </div>
             
             <div className="text-center">
               <div className="bg-gray-100 h-48 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 mb-4">
                 <div className="text-center">
                   <Camera className="w-12 h-12 text-gray-500 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">정면 촬영</p>
+                  <p className="text-sm text-gray-600">Front view photo</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-600">손톱 끝이 잘 보이도록 정면에서 촬영해 주세요.</p>
+              <p className="text-xs text-gray-600">Take photos from the front so nail tips are clearly visible.</p>
             </div>
             
             <div className="text-center">
               <div className="bg-gray-100 h-48 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 mb-4">
                 <div className="text-center">
                   <CreditCard className="w-12 h-12 text-gray-500 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">참조 카드</p>
+                  <p className="text-sm text-gray-600">Reference card</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-600">민감한 개인정보는 가려주세요.</p>
+              <p className="text-xs text-gray-600">Please cover sensitive personal information.</p>
             </div>
           </div>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h4 className="text-blue-800 font-semibold mb-4">정확한 손톱 형상 측정을 위해 네일아트를 제거하시고 촬영해주세요</h4>
+            <h4 className="text-blue-800 font-semibold mb-4">For accurate nail shape measurement, please remove nail art before photographing</h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h5 className="text-green-600 font-medium mb-3">✅ 신용/체크/교통/멤버십 카드</h5>
+                <h5 className="text-green-600 font-medium mb-3">✅ Credit/Debit/Transit/Membership Cards</h5>
                 <div className="flex gap-3 mb-3">
                   <div className="w-20 h-12 bg-gradient-to-r from-blue-700 to-blue-500 rounded-md flex items-center justify-center text-white text-xs font-bold">
                     VISA
@@ -269,16 +269,16 @@ export default function AITailGenerator() {
                   </div>
                 </div>
                 <p className="text-xs text-gray-600">
-                  * 카드 규격은 가로 8.6cm 세로 5.35cm로 국제규격을 따르고 있는 모든 카드를 쓸 수 있습니다.
+                  * Card specifications: 8.6cm wide x 5.35cm tall - all cards following international standards can be used.
                 </p>
               </div>
               
               <div>
-                <h5 className="text-red-600 font-medium mb-3">⛔ 측정이 불가능한 카드 - 명함 등</h5>
-                <p className="text-sm text-gray-700 mb-2">카드가 왜 필요한가요?</p>
+                <h5 className="text-red-600 font-medium mb-3">⛔ Unmeasurable cards - Business cards, etc.</h5>
+                <p className="text-sm text-gray-700 mb-2">Why do I need a card?</p>
                 <p className="text-xs text-gray-600">
-                  손톱 크기를 측정하기 위해서 기준이 되는 카드가 필요합니다. 
-                  자체개발한 인공지능은 스마트웨어로 손톱의 크기를 측정해 드립니다.
+                  A reference card is needed to measure nail size. 
+                  Our proprietary AI uses smart technology to measure your nail dimensions accurately.
                 </p>
               </div>
             </div>
@@ -290,13 +290,13 @@ export default function AITailGenerator() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Upload className="w-5 h-5" />
-              손톱 사진 업로드
+              Nail Photo Upload
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <p className="text-gray-600">
-                스마트폰으로 촬영한 손톱 사진을 업로드하세요 (최대 6장)
+                Upload nail photos taken with your smartphone (maximum 6 photos)
               </p>
               
               <div 
@@ -304,8 +304,8 @@ export default function AITailGenerator() {
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-lg font-medium text-gray-700 mb-2">사진 선택</p>
-                <p className="text-sm text-gray-500">클릭하여 파일을 선택하거나 드래그하여 업로드</p>
+                <p className="text-lg font-medium text-gray-700 mb-2">Select Photos</p>
+                <p className="text-sm text-gray-500">Click to select files or drag and drop to upload</p>
               </div>
               
               <input
@@ -352,12 +352,12 @@ export default function AITailGenerator() {
                     {isAnalyzing ? (
                       <>
                         <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
-                        AI로 분석하기 {analysisProgress}%
+                        Analyzing with AI {analysisProgress}%
                       </>
                     ) : (
                       <>
                         <Camera className="w-5 h-5 mr-2" />
-                        AI로 분석하기
+                        Start AI Analysis
                       </>
                     )}
                   </Button>
@@ -379,7 +379,7 @@ export default function AITailGenerator() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
-                AI 분석 결과
+                AI Analysis Results
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -387,20 +387,20 @@ export default function AITailGenerator() {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <CheckCircle className="w-5 h-5 text-green-600" />
-                    <h4 className="font-semibold text-green-800">분석 완료!</h4>
+                    <h4 className="font-semibold text-green-800">Analysis Complete!</h4>
                   </div>
                   <p className="text-green-700">
-                    전문 AI 분석이 완료되었습니다. 손가락별 정확한 치수를 측정했습니다.
+                    Professional AI analysis is complete. Accurate measurements have been taken for each finger.
                   </p>
                 </div>
 
                 {/* Finger Measurements Display */}
                 <div>
-                  <h4 className="text-blue-600 font-semibold mb-4">📏 AI가 측정한 손가락별 정확한 치수</h4>
+                  <h4 className="text-blue-600 font-semibold mb-4">📏 Accurate Finger Measurements by AI</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Left Hand */}
                     <div>
-                      <h5 className="text-center mb-4 text-green-600 font-medium">👈 왼손 측정 결과</h5>
+                      <h5 className="text-center mb-4 text-green-600 font-medium">👈 Left Hand Measurements</h5>
                       <div className="space-y-3">
                         {fingerMeasurements.slice(0, 5).map((finger, index) => (
                           <div key={index} className="bg-gray-50 p-3 rounded-lg border-l-4 border-green-500">
@@ -420,7 +420,7 @@ export default function AITailGenerator() {
 
                     {/* Right Hand */}
                     <div>
-                      <h5 className="text-center mb-4 text-blue-600 font-medium">👉 오른손 측정 결과</h5>
+                      <h5 className="text-center mb-4 text-blue-600 font-medium">👉 Right Hand Measurements</h5>
                       <div className="space-y-3">
                         {fingerMeasurements.slice(5, 10).map((finger, index) => (
                           <div key={index} className="bg-gray-50 p-3 rounded-lg border-l-4 border-blue-500">

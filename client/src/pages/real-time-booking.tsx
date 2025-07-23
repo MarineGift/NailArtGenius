@@ -263,20 +263,20 @@ export default function RealTimeBookingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {services.map((service) => (
                   <button
                     key={service.id}
                     onClick={() => setSelectedService(service.id)}
-                    className={`w-full p-3 rounded-md border text-left transition-colors ${
+                    className={`w-full p-2 rounded-md border text-left transition-colors ${
                       selectedService === service.id
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white hover:bg-blue-50 border-gray-300 text-gray-900'
                     }`}
                   >
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">{service.name}</span>
-                      <span className={`text-sm ${
+                      <span className="text-sm font-medium">{service.name}</span>
+                      <span className={`text-xs ${
                         selectedService === service.id ? 'text-blue-100' : 'text-gray-500'
                       }`}>
                         ${service.price} • {service.duration}min
@@ -412,7 +412,7 @@ export default function RealTimeBookingPage() {
           <CardContent className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">
-                Phone Number * <span className="text-xs text-gray-500">(회원가입 되지 않은 고객은 회원가입 후 사용하세요.)</span>
+                Phone Number * <span className="text-xs text-gray-500">(Non-members must register before using the service.)</span>
               </label>
               <Input
                 value={customerInfo.phone}
