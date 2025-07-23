@@ -242,7 +242,8 @@ export default function AdminDashboard() {
   };
 
   const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
-    console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
+    console.log('🚀🚀🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
+    console.log('🎯 Current detailModal state:', detailModal);
     
     try {
       let data = [];
@@ -276,21 +277,18 @@ export default function AdminDashboard() {
       }
 
       // Set modal state with real data
-      setDetailModal({
+      const newModalState = {
         isOpen: true,
         metricType,
         title,
         data: data || [],
         totalCount
-      });
+      };
       
-      console.log('🎯 Modal opened with data:', { 
-        isOpen: true, 
-        metricType, 
-        title, 
-        dataLength: data.length, 
-        totalCount 
-      });
+      console.log('🎯🎯🎯 SETTING MODAL STATE:', newModalState);
+      setDetailModal(newModalState);
+      
+      console.log('✅ Modal state set - should trigger re-render');
       
     } catch (error) {
       console.error('Error loading metric data:', error);

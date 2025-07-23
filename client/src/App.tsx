@@ -80,6 +80,7 @@ function Router() {
         <Route path="/signup" component={SignUp} />
         <Route path="/password-reset" component={PasswordReset} />
         <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin-dashboard" component={AdminDashboard} />
         <Route path="/admin-test" component={AdminTest} />
         <Route path="/admin-panel" component={AdminPanel} />
         <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
