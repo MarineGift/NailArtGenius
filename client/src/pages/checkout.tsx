@@ -180,9 +180,14 @@ export default function Checkout() {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('Checkout page loaded, checking for booking details...');
+    
     // Get booking details from sessionStorage
     const savedBookingDetails = sessionStorage.getItem('pendingBookingPayment');
+    console.log('Saved booking details:', savedBookingDetails);
+    
     if (!savedBookingDetails) {
+      console.log('No booking details found, redirecting to booking page');
       toast({
         title: "No Payment Required",
         description: "No pending payment found. Redirecting to booking page.",
@@ -193,9 +198,11 @@ export default function Checkout() {
     }
 
     const booking = JSON.parse(savedBookingDetails);
+    console.log('Parsed booking:', booking);
     setBookingDetails(booking);
 
     // Create payment intent
+    console.log('Creating payment intent...');
     apiRequest("/api/create-payment-intent", "POST", { 
       amount: booking.discountedPrice,
       currency: 'usd',
@@ -203,6 +210,7 @@ export default function Checkout() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log('Payment intent created:', data);
         setClientSecret(data.clientSecret);
       })
       .catch((error) => {
