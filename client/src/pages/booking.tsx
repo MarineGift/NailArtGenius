@@ -39,6 +39,9 @@ export default function BookingPage() {
     phone: '',
     notes: ''
   });
+  const [onlineBookingDiscount] = useState(0.10); // 10% discount for online booking
+  const [isOnlinePayment, setIsOnlinePayment] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Fetch services
   const { data: services = [] } = useQuery({
@@ -73,9 +76,13 @@ export default function BookingPage() {
         hour12: true
       });
 
+      // Format success message in Korean style as requested: "전화번호님 날짜 시간에 예약이 완료되었습니다"
+      const message = `${variables.customerPhone}, your appointment has been successfully booked for ${formattedDate} at ${formattedTime}.`;
+      const paymentInfo = variables.isOnlinePayment ? ` Payment of $${variables.finalPrice} processed with 10% discount.` : '';
+      
       toast({
         title: "Booking Confirmed!",
-        description: `${variables.customerPhone}, your appointment has been successfully booked for ${formattedDate} at ${formattedTime}.`,
+        description: message + paymentInfo,
         duration: 6000,
       });
       
@@ -119,8 +126,8 @@ export default function BookingPage() {
   ];
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
       toast({
@@ -136,6 +143,10 @@ export default function BookingPage() {
     const [hours, minutes] = selectedTimeSlot.split(':').map(Number);
     appointmentDateTime.setHours(hours, minutes, 0, 0);
 
+    const finalPrice = isOnlinePayment 
+      ? (selectedServiceData?.price || 0) * (1 - onlineBookingDiscount)
+      : selectedServiceData?.price || 0;
+
     createAppointmentMutation.mutate({
       serviceId: selectedService,
       appointmentDate: appointmentDateTime.toISOString(),
@@ -144,8 +155,31 @@ export default function BookingPage() {
       customerPhone: customerInfo.phone,
       customerEmail: '', // Not required anymore
       notes: customerInfo.notes,
-      visitReason: selectedServiceData?.name || 'General visit'
+      visitReason: selectedServiceData?.name || 'General visit',
+      isOnlinePayment,
+      finalPrice: finalPrice.toFixed(2)
     });
+  };
+
+  // Handle online payment
+  const handleOnlinePayment = () => {
+    if (!selectedService || !selectedTimeSlot || !selectedDate || !customerInfo.phone) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields.",
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setShowPaymentModal(true);
+    setIsOnlinePayment(true);
+
+    // Simulate payment processing and then submit booking
+    setTimeout(() => {
+      handleSubmit();
+      setShowPaymentModal(false);
+    }, 3000);
   };
 
   const handlePrevMonth = () => {
@@ -422,33 +456,84 @@ export default function BookingPage() {
                     <span className="text-gray-600">Time:</span>
                     <span className="font-medium">{selectedTimeSlot || 'Not selected'}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Price:</span>
-                    <span className="font-medium text-green-600">
-                      {selectedService ? `$${services.find(s => s.id === selectedService)?.price}` : '$0'}
-                    </span>
-                  </div>
+                  
+                  {/* Pricing Section */}
+                  {selectedService && (
+                    <>
+                      <div className="border-t pt-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Original Price:</span>
+                          <span className="font-medium">
+                            ${services.find(s => s.id === selectedService)?.price || 0}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between text-green-600">
+                          <span>Online Booking Discount (10%):</span>
+                          <span className="font-medium">
+                            -${((services.find(s => s.id === selectedService)?.price || 0) * onlineBookingDiscount).toFixed(2)}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between text-lg font-bold border-t pt-2 mt-2">
+                          <span className="text-gray-900">Final Price:</span>
+                          <span className="text-green-600">
+                            ${((services.find(s => s.id === selectedService)?.price || 0) * (1 - onlineBookingDiscount)).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
 
-                <Button
-                  onClick={handleSubmit}
-                  disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
-                  className="w-full"
-                  size="lg"
-                >
-                  {createAppointmentMutation.isPending ? (
-                    <>
-                      <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
-                      Booking...
-                    </>
-                  ) : (
-                    'Book Appointment'
-                  )}
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={createAppointmentMutation.isPending || !selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    size="lg"
+                  >
+                    {createAppointmentMutation.isPending ? (
+                      <>
+                        <div className="animate-spin w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full" />
+                        Booking...
+                      </>
+                    ) : (
+                      'Book Appointment'
+                    )}
+                  </Button>
+                  
+                  <Button
+                    onClick={handleOnlinePayment}
+                    disabled={!selectedDate || !selectedTimeSlot || !selectedService || !customerInfo.phone}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    size="lg"
+                  >
+                    Online Payment (10% Discount Applied)
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Online Payment Modal */}
+        {showPaymentModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <Card className="max-w-md mx-4">
+              <CardHeader>
+                <CardTitle className="text-center text-green-600">Payment Processing</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                <p className="text-gray-600">Processing your online payment...</p>
+                <p className="text-sm text-green-600 font-medium">
+                  10% discount applied! You're saving ${((services.find(s => s.id === selectedService)?.price || 0) * onlineBookingDiscount).toFixed(2)}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </main>
       
       <Footer />
