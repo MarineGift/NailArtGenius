@@ -196,7 +196,7 @@ export default function Checkout() {
     setBookingDetails(booking);
 
     // Create payment intent
-    apiRequest("POST", "/api/create-payment-intent", { 
+    apiRequest("/api/create-payment-intent", "POST", { 
       amount: booking.discountedPrice,
       currency: 'usd',
       bookingDetails: booking
