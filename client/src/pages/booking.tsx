@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { CalendarDays, Clock, Phone, Mail, User, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocation } from 'wouter';
 import { format, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, parseISO } from 'date-fns';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -30,6 +31,7 @@ interface TimeSlot {
 export default function BookingPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -291,9 +293,10 @@ export default function BookingPage() {
       description: "Opening secure Stripe checkout with card scanning functionality...",
     });
     
-    // Redirect to Stripe checkout page
+    // Redirect to Stripe checkout page using wouter navigation
     setTimeout(() => {
-      window.location.href = '/checkout';
+      console.log('Redirecting to /checkout with payment data:', paymentData);
+      setLocation('/checkout');
     }, 1000);
   };
 
