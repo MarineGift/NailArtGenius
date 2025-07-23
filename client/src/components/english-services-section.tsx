@@ -118,25 +118,25 @@ export function EnglishServicesSection() {
 
 
   return (
-    <section className="py-16 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
             💅 Professional Nail Art Services
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-2">
             Choose from our premium collection of nail art designs, each crafted with precision and care
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-16">
           {services.map((service) => (
             <Card key={service.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{service.emoji}</span>
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="text-xl sm:text-2xl">{service.emoji}</span>
                     <div>
                       <Badge variant="outline" className="text-xs">
                         {service.category}
@@ -144,37 +144,37 @@ export function EnglishServicesSection() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-pink-600">${service.price}</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl font-bold text-pink-600">${service.price}</p>
                   </div>
                 </div>
 
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-800 mb-2">
                   {service.name}
                 </h3>
                 
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
                   {service.description}
                 </p>
 
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="font-medium text-sm">{service.rating}</span>
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current" />
+                    <span className="font-medium text-xs sm:text-sm">{service.rating}</span>
                     <span className="text-gray-500 text-xs">({service.reviews})</span>
                   </div>
                   
                   <div className="flex items-center space-x-1 text-gray-500">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">{service.duration}min</span>
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="text-xs sm:text-sm">{service.duration}min</span>
                   </div>
                 </div>
 
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="w-full border-pink-200 text-pink-600 hover:bg-pink-50"
+                  className="w-full border-pink-200 text-pink-600 hover:bg-pink-50 text-xs sm:text-sm"
                 >
-                  <Eye className="w-4 h-4 mr-1" />
+                  <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                   View Details
                 </Button>
               </CardContent>
