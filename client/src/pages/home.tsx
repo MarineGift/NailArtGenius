@@ -19,16 +19,16 @@ export default function Home() {
       <Header />
       
       <main>
+        {/* Hero Carousel Section */}
+        <section className="mb-0">
+          <ImageCarousel />
+        </section>
+
         {/* Premium Services Section */}
         <PremiumServicesSection />
 
         {/* AI Nail Art Section */}
         <AINailArtSection />
-
-        {/* Hero Carousel Section */}
-        <section className="mb-0">
-          <ImageCarousel />
-        </section>
 
         {/* Booking Hero Section */}
         <BookingHeroSection />
