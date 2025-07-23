@@ -107,6 +107,9 @@ export default function AdminDashboard() {
   
   // Test modal state
   const [testModalOpen, setTestModalOpen] = useState(false);
+  
+  // Debug: Force modal to show for testing
+  const [forceShowModal, setForceShowModal] = useState(false);
 
   useEffect(() => {
     checkAdminAuth();
@@ -209,42 +212,27 @@ export default function AdminDashboard() {
     return [];
   };
 
-  const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
+  const handleMetricClick = (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
     console.log('🚀 METRIC CLICK HANDLER CALLED:', metricType, title, totalCount);
     console.log('🚀 Current detailModal state:', detailModal);
+    alert(`Clicked ${title} - Count: ${totalCount}`);
     
-    let data: any[] = [];
-    
-    switch (metricType) {
-      case 'customers':
-        data = await loadCustomers();
-        break;
-      case 'appointments':
-        data = await loadAppointments();
-        break;
-      case 'visitors':
-        // Generate sample visitor data for today
-        data = Array.from({ length: totalCount }, (_, i) => ({
-          id: i + 1,
-          timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
-          page: ['/booking', '/services', '/', '/contact'][Math.floor(Math.random() * 4)],
-          userAgent: 'Sample Browser',
-          sessionId: `session_${i + 1}`
-        }));
-        break;
-      case 'orders':
-        // This would load actual order data
-        data = [];
-        break;
-    }
+    // Use simple test data for immediate modal display
+    const testData = [
+      { name: 'Test Customer 1', phoneNumber: '010-1111-1111', email: 'test1@example.com' },
+      { name: 'Test Customer 2', phoneNumber: '010-2222-2222', email: 'test2@example.com' },
+      { name: 'Test Customer 3', phoneNumber: '010-3333-3333', email: 'test3@example.com' }
+    ];
 
     setDetailModal({
       isOpen: true,
       metricType,
       title,
-      data,
+      data: testData,
       totalCount
     });
+    
+    setForceShowModal(true);
     
     console.log('🎯 Modal state set:', { 
       isOpen: true, 
@@ -1140,6 +1128,51 @@ export default function AdminDashboard() {
         </div>
       )}
       
+      {/* Force Show Modal for Testing */}
+      {forceShowModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.8)',
+          zIndex: 50000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            maxWidth: '500px',
+            textAlign: 'center'
+          }}>
+            <h2>Test Modal Working!</h2>
+            <p>Metric: {detailModal.title}</p>
+            <p>Count: {detailModal.totalCount}</p>
+            <button 
+              onClick={() => {
+                setForceShowModal(false);
+                closeDetailModal();
+              }}
+              style={{ 
+                marginTop: '10px', 
+                padding: '10px 20px', 
+                backgroundColor: '#dc2626', 
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Close Modal
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Simple Metric Modal */}
       <SimpleMetricModal
         isOpen={detailModal.isOpen}
