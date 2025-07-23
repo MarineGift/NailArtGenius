@@ -157,7 +157,7 @@ export default function BookingPage() {
       notes: customerInfo.notes,
       visitReason: selectedServiceData?.name || 'General visit',
       isOnlinePayment,
-      finalPrice: finalPrice.toFixed(2)
+      finalPrice: Number(finalPrice).toFixed(2)
     });
   };
 
