@@ -58,9 +58,12 @@ export default function BookingPage() {
     }
   };
 
-  // Add useEffect to reset booking when form fields change
+  // Add useEffect to reset booking when form fields change - but only if user actively changes them
   useEffect(() => {
-    resetBookingState();
+    // Only reset if user is actively making changes (not on initial load or automatic resets)
+    if (selectedService || selectedDate || selectedTimeSlot || customerInfo.phone.trim()) {
+      resetBookingState();
+    }
   }, [selectedService, selectedDate, selectedTimeSlot, customerInfo.phone]);
 
   // Fetch services
@@ -106,7 +109,7 @@ export default function BookingPage() {
         duration: 6000,
       });
       
-      // Mark booking as completed and store booking details
+      // Mark booking as completed and store booking details - CRITICAL: Do this BEFORE form reset
       setBookingCompleted(true);
       setCompletedBookingDetails({
         service: variables.serviceId,
@@ -115,11 +118,24 @@ export default function BookingPage() {
         phone: variables.customerPhone
       });
       
-      // Reset form
-      setSelectedService(null);
-      setSelectedTimeSlot('');
-      setCustomerInfo({ phone: '', notes: '' });
-      setSelectedDate(null);
+      console.log('Booking completed, Payment button should activate:', {
+        bookingCompleted: true,
+        completedBookingDetails: {
+          service: variables.serviceId,
+          date: variables.appointmentDate,
+          timeSlot: variables.timeSlot,
+          phone: variables.customerPhone
+        }
+      });
+      
+      // Don't reset form immediately - this was causing the payment button issue
+      // Instead, only reset when user starts a new booking
+      setTimeout(() => {
+        setSelectedService(null);
+        setSelectedTimeSlot('');
+        setCustomerInfo({ phone: '', notes: '' });
+        setSelectedDate(null);
+      }, 100);
       
       // Refetch availability
       refetchAvailability();

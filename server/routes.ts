@@ -1013,6 +1013,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notes: appointmentNotes || null,
       });
       
+      // Send SMS confirmation to customer
+      try {
+        const appointmentDateTime = new Date(appointmentDate);
+        const formattedDate = appointmentDateTime.toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long'
+        });
+        const formattedTime = appointmentDateTime.toLocaleTimeString('ko-KR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        
+        const smsMessage = `[Connie's Nail] ${savedCustomer.phoneNumber}님, ${formattedDate} ${formattedTime}에 예약이 완료되었습니다. 문의: 02-1234-5678`;
+        
+        await smsService.sendSMS(savedCustomer.phoneNumber, smsMessage);
+        console.log(`SMS sent successfully to ${savedCustomer.phoneNumber}`);
+      } catch (smsError) {
+        console.error('Failed to send SMS:', smsError);
+        // Don't fail the appointment creation if SMS fails
+      }
+      
       res.json({ appointment, customer: savedCustomer });
     } catch (error) {
       console.error("Error creating appointment:", error);
