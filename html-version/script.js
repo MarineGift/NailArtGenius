@@ -845,3 +845,248 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeAdminPanel();
     }, 500);
 });
+
+// Login functionality
+function initializeLoginSystem() {
+    const adminLoginBtn = document.getElementById('admin-login-btn');
+    const loginModal = document.getElementById('login-modal');
+    const closeModal = document.getElementById('close-login-modal');
+    const loginForm = document.getElementById('login-form');
+    
+    if (adminLoginBtn) {
+        adminLoginBtn.addEventListener('click', function() {
+            loginModal.style.display = 'block';
+        });
+    }
+    
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            loginModal.style.display = 'none';
+        });
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === loginModal) {
+            loginModal.style.display = 'none';
+        }
+    });
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Simple authentication (in real app, this would be server-side)
+            if (username === 'admin' && password === 'connie2025') {
+                showToast('Login successful!', 'success');
+                loginModal.style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('admin-panel').scrollIntoView();
+                
+                // Store login state
+                sessionStorage.setItem('adminLoggedIn', 'true');
+            } else {
+                showToast('Invalid credentials. Try admin/connie2025', 'error');
+            }
+        });
+    }
+    
+    // Check if already logged in
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+        document.getElementById('admin-panel').style.display = 'block';
+    }
+}
+
+// Enhanced booking system
+function initializeBookingSystem() {
+    generateBookingCalendar();
+    generateBookingTimeSlots();
+    setupBookingForm();
+}
+
+function generateBookingCalendar() {
+    const calendarWidget = document.getElementById('booking-calendar');
+    if (!calendarWidget) return;
+    
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    
+    let calendarHTML = '<div class="calendar-header">';
+    calendarHTML += '<h4>' + today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) + '</h4>';
+    calendarHTML += '</div>';
+    calendarHTML += '<div class="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center;">';
+    
+    // Days of week header
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(day => {
+        calendarHTML += '<div style="font-weight: 600; color: #666; padding: 8px; font-size: 0.8rem;">' + day + '</div>';
+    });
+    
+    // Empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+        calendarHTML += '<div style="padding: 8px;"></div>';
+    }
+    
+    // Days of month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const isToday = date.toDateString() === today.toDateString();
+        const isFuture = date >= today;
+        const isWeekday = date.getDay() >= 1 && date.getDay() <= 6; // Monday to Saturday
+        
+        let dayClass = 'calendar-day-btn';
+        let style = 'padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s ease;';
+        
+        if (isFuture && isWeekday) {
+            style += 'background: #f0f9ff; border: 1px solid #e0f2fe; color: #0369a1;';
+            dayClass += ' available';
+        } else {
+            style += 'background: #f8f9fa; color: #9ca3af; cursor: not-allowed;';
+        }
+        
+        if (isToday) {
+            style += 'border: 2px solid #e91e63;';
+        }
+        
+        calendarHTML += '<div class="' + dayClass + '" style="' + style + '" data-date="' + date.toISOString().split('T')[0] + '">' + day + '</div>';
+    }
+    
+    calendarHTML += '</div>';
+    calendarWidget.innerHTML = calendarHTML;
+    
+    // Add click handlers
+    document.querySelectorAll('.calendar-day-btn.available').forEach(dayBtn => {
+        dayBtn.addEventListener('click', function() {
+            document.querySelectorAll('.calendar-day-btn').forEach(btn => {
+                btn.style.background = btn.classList.contains('available') ? '#f0f9ff' : '#f8f9fa';
+            });
+            this.style.background = '#e91e63';
+            this.style.color = 'white';
+            
+            const selectedDate = this.getAttribute('data-date');
+            document.getElementById('selected-booking-date').value = new Date(selectedDate).toLocaleDateString();
+            generateBookingTimeSlots(selectedDate);
+        });
+    });
+}
+
+function generateBookingTimeSlots(selectedDate = null) {
+    const timesContainer = document.getElementById('available-times');
+    if (!timesContainer) return;
+    
+    const businessHours = [
+        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM',
+        '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM',
+        '4:30 PM', '5:00 PM', '5:30 PM', '6:00 PM'
+    ];
+    
+    const bookedTimes = ['2:00 PM', '4:30 PM']; // Example booked times
+    
+    let timesHTML = '';
+    businessHours.forEach(time => {
+        const isBooked = bookedTimes.includes(time);
+        const btnClass = isBooked ? 'time-slot-btn booked' : 'time-slot-btn';
+        
+        timesHTML += '<button class="' + btnClass + '" data-time="' + time + '"' + 
+                    (isBooked ? ' disabled' : '') + '>' + time + '</button>';
+    });
+    
+    timesContainer.innerHTML = timesHTML;
+    
+    // Add click handlers
+    document.querySelectorAll('.time-slot-btn:not(.booked)').forEach(timeBtn => {
+        timeBtn.addEventListener('click', function() {
+            document.querySelectorAll('.time-slot-btn').forEach(btn => btn.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('selected-booking-time').value = this.textContent;
+            updateBookingSummary();
+        });
+    });
+}
+
+function setupBookingForm() {
+    const form = document.getElementById('booking-form');
+    const serviceSelect = document.getElementById('booking-service-select');
+    
+    if (serviceSelect) {
+        serviceSelect.addEventListener('change', updateBookingSummary);
+    }
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                date: document.getElementById('selected-booking-date').value,
+                time: document.getElementById('selected-booking-time').value,
+                service: document.getElementById('booking-service-select').value,
+                name: document.getElementById('booking-name').value,
+                phone: document.getElementById('booking-phone').value,
+                email: document.getElementById('booking-email').value,
+                notes: document.getElementById('booking-notes').value
+            };
+            
+            if (!formData.date || !formData.time || !formData.service) {
+                showToast('Please select date, time, and service', 'error');
+                return;
+            }
+            
+            showToast('Booking confirmed successfully!', 'success');
+            form.reset();
+            document.getElementById('selected-booking-date').value = '';
+            document.getElementById('selected-booking-time').value = '';
+            updateBookingSummary();
+            
+            // Update admin bookings if logged in
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                updateAdminBookings(formData);
+            }
+        });
+    }
+}
+
+function updateBookingSummary() {
+    const service = document.getElementById('booking-service-select').value;
+    const date = document.getElementById('selected-booking-date').value;
+    const time = document.getElementById('selected-booking-time').value;
+    
+    const servicePrices = {
+        'spa-manicure': { name: 'Spa Manicure', price: 35 },
+        'gel-manicure': { name: 'Gel Manicure', price: 40 },
+        'spa-pedicure': { name: 'Spa Pedicure', price: 45 },
+        'nail-art': { name: 'Custom Nail Art', price: 50 },
+        'ai-nail-art': { name: 'AI Custom Nail Art', price: 60 }
+    };
+    
+    const summaryService = document.getElementById('summary-service');
+    const summaryDateTime = document.getElementById('summary-datetime');
+    const summaryPrice = document.getElementById('summary-price');
+    
+    if (service && servicePrices[service]) {
+        summaryService.textContent = servicePrices[service].name;
+        summaryPrice.textContent = '$' + servicePrices[service].price;
+    } else {
+        summaryService.textContent = '-';
+        summaryPrice.textContent = '$0';
+    }
+    
+    if (date && time) {
+        summaryDateTime.textContent = date + ' at ' + time;
+    } else {
+        summaryDateTime.textContent = '-';
+    }
+}
+
+// Initialize all functionality when DOM loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        initializeLoginSystem();
+        initializeBookingSystem();
+    }, 500);
+});

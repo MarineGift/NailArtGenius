@@ -1233,3 +1233,468 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Footer Styles */
+.footer {
+    background: var(--text-primary);
+    color: white;
+    padding: 60px 0 20px;
+    margin-top: 80px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.footer-section h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: var(--primary-color);
+}
+
+.footer-social {
+    margin-top: 1rem;
+}
+
+.footer-social a {
+    color: #ccc;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: var(--primary-color);
+}
+
+.contact-info p, .business-hours p {
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.contact-info i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+    width: 15px;
+}
+
+.btn-admin-access {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    transition: background 0.3s ease;
+}
+
+.btn-admin-access:hover {
+    background: var(--secondary-color);
+}
+
+.footer-bottom {
+    border-top: 1px solid #444;
+    padding-top: 2rem;
+    text-align: center;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    margin: 15% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: var(--primary-color);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Font Size Fixes */
+body {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.4rem; }
+h4 { font-size: 1.1rem; }
+h5 { font-size: 1rem; }
+h6 { font-size: 0.9rem; }
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 2.8rem !important;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem !important;
+}
+
+.carousel-content h2 {
+    font-size: 2.5rem !important;
+}
+
+.carousel-content p {
+    font-size: 1.1rem !important;
+}
+
+.ai-service-title {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.ai-service-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.btn {
+    font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+}
+
+.btn-large {
+    font-size: 1rem;
+    padding: 1rem 2rem;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+}
+
+/* AI Intro Content Styles */
+.ai-intro-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+}
+
+.ai-steps {
+    list-style: none;
+    counter-reset: step-counter;
+}
+
+.ai-steps li {
+    counter-increment: step-counter;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 3rem;
+    font-size: 0.95rem;
+}
+
+.ai-steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: var(--primary-color);
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.ai-benefits ul {
+    list-style: none;
+    padding: 0;
+}
+
+.ai-benefits li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.ai-benefits li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.location-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.address-card,
+.contact-card,
+.hours-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--surface-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.address-card i,
+.contact-card i,
+.hours-card i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin-top: 0.2rem;
+}
+
+.address-card h4,
+.contact-card h4,
+.hours-card h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.address-card p,
+.contact-card p,
+.hours-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Booking System Styles */
+.booking-system {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.booking-calendar,
+.booking-details {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.calendar-widget {
+    margin: 1.5rem 0;
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.time-slot-btn {
+    padding: 0.6rem;
+    border: 1px solid var(--border-color);
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.time-slot-btn:hover,
+.time-slot-btn.selected {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.time-slot-btn.booked {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.selected-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.selected-item label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
+}
+
+.selected-item input {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.booking-summary {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.booking-summary h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.summary-item:last-child {
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .ai-intro-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .booking-system {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .selected-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-title {
+        font-size: 2rem !important;
+    }
+    
+    .carousel-content h2 {
+        font-size: 1.8rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}

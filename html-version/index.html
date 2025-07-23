@@ -89,32 +89,66 @@
             </div>
         </div>
         
-        <!-- Premium Service Booking Section -->
+        <!-- AI Nail System Introduction -->
         <div class="ai-service-section">
             <div class="container">
-                <h2 class="ai-service-title" data-key="ai.service_title">⭐ Premium Nail Service Booking ⭐</h2>
-                <p class="ai-service-subtitle" data-key="ai.service_subtitle">Perfect nail care experience with expert touch and innovative AI technology</p>
+                <h2 class="ai-service-title">🤖 Revolutionary AI Nail Art System</h2>
+                <p class="ai-service-subtitle">Transform your nail care experience with cutting-edge AI technology</p>
                 
-                <div class="ai-features-grid">
-                    <div class="ai-feature">
-                        <div class="ai-icon">📅</div>
-                        <h3 data-key="ai.instant_booking">Instant Booking</h3>
-                        <p data-key="ai.realtime_desc">Book online easily and receive exclusive booking discounts</p>
+                <div class="ai-intro-content">
+                    <div class="ai-intro-text">
+                        <h3>How Our AI System Works</h3>
+                        <ol class="ai-steps">
+                            <li><strong>Photo Analysis:</strong> Take photos of your nails with your smartphone</li>
+                            <li><strong>AI Measurement:</strong> Our AI precisely measures each finger's dimensions</li>
+                            <li><strong>Custom Design:</strong> Generate 10 individual nail designs perfectly sized for you</li>
+                            <li><strong>Professional Application:</strong> Visit our salon for expert application</li>
+                        </ol>
+                        
+                        <div class="ai-benefits">
+                            <h4>Benefits of AI Custom Nails</h4>
+                            <ul>
+                                <li>Perfect fit for each individual finger</li>
+                                <li>Precise measurements using smartphone technology</li>
+                                <li>Unlimited design possibilities</li>
+                                <li>Professional quality guaranteed</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="ai-feature">
-                        <div class="ai-icon">💖</div>
-                        <h3 data-key="ai.special_offer">Special Offer</h3>
-                        <p data-key="ai.special_desc">10% discount on online bookings</p>
+                    
+                    <div class="location-info">
+                        <h3>Visit Our Salon</h3>
+                        <div class="location-details">
+                            <div class="address-card">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <h4>Connie's Nail Salon</h4>
+                                    <p>1300 Pennsylvania Avenue NW<br>Washington, DC 20004</p>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-card">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <h4>Call Us</h4>
+                                    <p>202.898.0826</p>
+                                </div>
+                            </div>
+                            
+                            <div class="hours-card">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <h4>Business Hours</h4>
+                                    <p>Mon-Fri: 10AM-7PM<br>Sat: 9AM-6PM<br>Sun: Closed</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cta-section">
+                            <a href="#ai-generator" class="btn btn-primary btn-large">Try AI Analysis</a>
+                            <a href="#booking" class="btn btn-secondary btn-large">Book Appointment</a>
+                        </div>
                     </div>
-                    <div class="ai-feature">
-                        <div class="ai-icon">🤖</div>
-                        <h3 data-key="ai.ai_technology">AI Technology</h3>
-                        <p data-key="ai.ai_desc">Smartphone nail analysis and custom design generation</p>
-                    </div>
-                </div>
-                
-                <div class="cta-section">
-                    <a href="#booking" class="btn btn-primary btn-large" data-key="ai.book_now">Book Now</a>
                 </div>
             </div>
         </div>
@@ -521,72 +555,90 @@
     <!-- Booking Section -->
     <section id="booking" class="booking-section">
         <div class="container">
-            <h2 class="section-title" data-key="booking.title">Booking System</h2>
+            <h2 class="section-title">Book Your Appointment</h2>
+            <p class="section-subtitle">Schedule your visit for premium nail care services</p>
             
-            <div class="booking-form-container">
-                <form id="booking-form" class="booking-form">
-                    <div class="form-group">
-                        <label data-key="booking.select_service">Select Service</label>
-                        <select id="service-select" required>
-                            <option value="" data-key="booking.choose_service">Choose a service...</option>
-                            <option value="spa-manicure">Spa Manicure - $35</option>
-                            <option value="spa-pedicure">Spa Pedicure - $45</option>
-                            <option value="regular-manicure">Regular Manicure - $20</option>
-                            <option value="french-manicure">French Manicure - $25</option>
-                            <option value="gel-manicure">Color Gel Manicure - $30</option>
-                            <option value="gel-pedicure">Gel Pedicure - $40</option>
-                            <option value="eyebrows">Eyebrows Waxing - $15</option>
-                            <option value="lip">Lip Waxing - $10</option>
-                            <option value="chin">Chin Waxing - $12</option>
-                            <option value="full-legs">Full Legs Waxing - $60</option>
-                        </select>
+            <div class="booking-system">
+                <div class="booking-calendar">
+                    <h3>Select Date & Time</h3>
+                    <div class="calendar-widget" id="booking-calendar">
+                        <!-- Calendar will be generated by JavaScript -->
                     </div>
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-key="booking.select_date">Select Date</label>
-                            <input type="date" id="booking-date" required>
+                    <div class="time-selection">
+                        <h4>Available Times</h4>
+                        <div class="time-grid" id="available-times">
+                            <!-- Time slots will be populated by JavaScript -->
                         </div>
+                    </div>
+                </div>
+                
+                <div class="booking-details">
+                    <h3>Booking Information</h3>
+                    <form id="booking-form" class="booking-form">
+                        <div class="selected-info">
+                            <div class="selected-item">
+                                <label>Selected Date:</label>
+                                <input type="text" id="selected-booking-date" readonly>
+                            </div>
+                            <div class="selected-item">
+                                <label>Selected Time:</label>
+                                <input type="text" id="selected-booking-time" readonly>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
-                            <label data-key="booking.select_time">Select Time</label>
-                            <select id="time-select" required>
-                                <option value="" data-key="booking.choose_time">Choose a time...</option>
-                                <option value="10:00">10:00 AM</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="12:00">12:00 PM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="14:00">2:00 PM</option>
-                                <option value="15:00">3:00 PM</option>
-                                <option value="16:00">4:00 PM</option>
-                                <option value="17:00">5:00 PM</option>
-                                <option value="18:00">6:00 PM</option>
+                            <label>Service</label>
+                            <select id="booking-service-select" required>
+                                <option value="">Select Service</option>
+                                <option value="spa-manicure">Spa Manicure - $35</option>
+                                <option value="gel-manicure">Gel Manicure - $40</option>
+                                <option value="spa-pedicure">Spa Pedicure - $45</option>
+                                <option value="nail-art">Custom Nail Art - $50+</option>
+                                <option value="ai-nail-art">AI Custom Nail Art - $60</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label data-key="booking.name">Name</label>
-                            <input type="text" id="customer-name" data-key="booking.name_placeholder" placeholder="Enter your name" required>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="booking-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="booking-phone" required>
+                            </div>
                         </div>
+                        
                         <div class="form-group">
-                            <label data-key="booking.phone">Phone</label>
-                            <input type="tel" id="customer-phone" placeholder="202-898-0826" required>
+                            <label>Email</label>
+                            <input type="email" id="booking-email" required>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label data-key="booking.email">Email</label>
-                        <input type="email" id="customer-email" placeholder="customer@example.com" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label data-key="booking.notes">Notes</label>
-                        <textarea id="booking-notes" rows="3" data-key="booking.notes_placeholder" placeholder="Any special requests or notes"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary btn-full" data-key="booking.confirm_booking">Confirm Booking</button>
-                </form>
+                        
+                        <div class="form-group">
+                            <label>Special Requests</label>
+                            <textarea id="booking-notes" rows="3" placeholder="Any special requests or preferences..."></textarea>
+                        </div>
+                        
+                        <div class="booking-summary">
+                            <h4>Booking Summary</h4>
+                            <div class="summary-item">
+                                <span>Service:</span>
+                                <span id="summary-service">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Date & Time:</span>
+                                <span id="summary-datetime">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Total:</span>
+                                <span id="summary-price">$0</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-large">Confirm Booking</button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -706,6 +758,81 @@
             </div>
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>💅 Connie's Nail</h3>
+                    <p>Premium nail care with innovative AI technology</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Spa Manicure</a></li>
+                        <li><a href="#services">Gel Manicure</a></li>
+                        <li><a href="#ai-generator">AI Nail Art</a></li>
+                        <li><a href="#services">Spa Pedicure</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 1300 Pennsylvania Avenue NW, Washington, DC 20004</p>
+                        <p><i class="fas fa-phone"></i> 202.898.0826</p>
+                        <p><i class="fas fa-envelope"></i> info@conniesnail.com</p>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Business Hours</h4>
+                    <div class="business-hours">
+                        <p>Monday - Friday: 10:00 AM - 7:00 PM</p>
+                        <p>Saturday: 9:00 AM - 6:00 PM</p>
+                        <p>Sunday: Closed</p>
+                    </div>
+                    <div class="admin-access">
+                        <button id="admin-login-btn" class="btn-admin-access">Admin Login</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Connie's Nail. All rights reserved. | Powered by AI Technology</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Admin Login</h2>
+                <span class="close" id="close-login-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="login-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="script.js"></script>
