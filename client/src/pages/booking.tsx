@@ -255,7 +255,7 @@ export default function BookingPage() {
       setShowPaymentModal(false);
       toast({
         title: "Payment Successful!",
-        description: `Online payment of $${discountedPrice} completed with 10% discount. Your booking is confirmed!`,
+        description: `온라인 결제 완료! $${discountedPrice} (10% 할인 적용) - Online payment completed with 10% discount applied!`,
         duration: 6000,
       });
     }, 3000);
@@ -590,8 +590,20 @@ export default function BookingPage() {
                     className={`w-full ${(bookingCompleted && completedBookingDetails) ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-400 cursor-not-allowed'}`}
                     size="lg"
                   >
-                    {(bookingCompleted && completedBookingDetails) ? 'Online Payment (10% Discount Applied)' : 'Complete Booking First'}
+                    {(bookingCompleted && completedBookingDetails) ? '결제 버튼' : 'Complete Booking First'}
                   </Button>
+                  
+                  {/* Discount Message */}
+                  {(bookingCompleted && completedBookingDetails) && (
+                    <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-700 text-center font-medium">
+                        💳 온라인으로 결제시 10% 추가할인을 해 드립니다!
+                      </p>
+                      <p className="text-xs text-green-600 text-center mt-1">
+                        Online payment provides an additional 10% discount!
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -607,9 +619,13 @@ export default function BookingPage() {
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-                <p className="text-gray-600">Processing your online payment...</p>
+                <p className="text-gray-600">온라인 결제 처리중...</p>
+                <p className="text-xs text-gray-500">Processing your online payment...</p>
                 <p className="text-sm text-green-600 font-medium">
-                  10% discount applied! You're saving ${((services.find(s => s.id === selectedService)?.price || 0) * onlineBookingDiscount).toFixed(2)}
+                  💳 10% 할인 적용! ${((services.find(s => s.id === completedBookingDetails?.service)?.price || 0) * onlineBookingDiscount).toFixed(2)} 절약
+                </p>
+                <p className="text-xs text-green-500">
+                  10% discount applied! You're saving ${((services.find(s => s.id === completedBookingDetails?.service)?.price || 0) * onlineBookingDiscount).toFixed(2)}
                 </p>
               </CardContent>
             </Card>
