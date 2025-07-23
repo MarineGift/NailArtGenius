@@ -7,7 +7,7 @@ import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToke
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
-import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema, insertCustomerNailImageSchema, insertCustomerReservationSchema } from "@shared/schema";
+import { insertCustomerSchema, insertAppointmentSchema, insertCarouselImageSchema, insertCustomerNailImageSchema, insertCustomerReservationSchema, insertContactInquirySchema } from "@shared/schema";
 import { db } from "./db";
 import { smsService } from "./smsService";
 import {
@@ -2465,6 +2465,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching admin carousel images:", error);
       res.status(500).json({ message: "Failed to fetch carousel images" });
+    }
+  });
+
+  // Contact inquiry routes
+  app.post('/api/contact-inquiries', async (req, res) => {
+    try {
+      const validatedData = insertContactInquirySchema.parse(req.body);
+      
+      // Check if there's an existing customer with this phone number
+      const existingCustomer = await db.select()
+        .from(customers)
+        .where(eq(customers.phoneNumber, validatedData.phoneNumber))
+        .limit(1);
+
+      const inquiryData = {
+        fullName: validatedData.fullName || validatedData.customerName,
+        phoneNumber: validatedData.phoneNumber,
+        inquiry: validatedData.inquiry,
+        status: 'new',
+        adminResponse: null,
+        respondedAt: null,
+      };
+
+      const [inquiry] = await db.insert(contactInquiries)
+        .values(inquiryData)
+        .returning();
+
+      res.json(inquiry);
+    } catch (error) {
+      console.error("Error creating contact inquiry:", error);
+      res.status(500).json({ message: "Failed to create contact inquiry" });
+    }
+  });
+
+  app.get('/api/admin/contact-inquiries', authenticateAdmin, async (req, res) => {
+    try {
+      const inquiries = await db.select()
+        .from(contactInquiries)
+        .orderBy(desc(contactInquiries.createdAt));
+
+      res.json(inquiries);
+    } catch (error) {
+      console.error("Error fetching contact inquiries:", error);
+      res.status(500).json({ message: "Failed to fetch contact inquiries" });
+    }
+  });
+
+  app.patch('/api/admin/contact-inquiries/:id', authenticateAdmin, async (req, res) => {
+    try {
+      const inquiryId = parseInt(req.params.id);
+      const { status, adminResponse } = req.body;
+
+      const updateData: any = {};
+      if (status) updateData.status = status;
+      if (adminResponse) {
+        updateData.adminResponse = adminResponse;
+        updateData.respondedAt = new Date();
+      }
+
+      const [updatedInquiry] = await db.update(contactInquiries)
+        .set(updateData)
+        .where(eq(contactInquiries.id, inquiryId))
+        .returning();
+
+      if (!updatedInquiry) {
+        return res.status(404).json({ message: "Contact inquiry not found" });
+      }
+
+      res.json(updatedInquiry);
+    } catch (error) {
+      console.error("Error updating contact inquiry:", error);
+      res.status(500).json({ message: "Failed to update contact inquiry" });
     }
   });
 

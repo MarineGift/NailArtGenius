@@ -28,10 +28,12 @@ import {
   AlertCircle,
   Upload,
   Image,
-  Plus
+  Plus,
+  MessageSquare
 } from 'lucide-react';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
 
 interface AdminStats {
   totalCustomers: number;
@@ -385,7 +387,7 @@ export default function AdminDashboard() {
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="dashboard" className="flex items-center space-x-2">
               <Activity className="h-4 w-4" />
               <span>Dashboard</span>
@@ -401,6 +403,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="appointments" className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
               <span>Appointment Management</span>
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="flex items-center space-x-2">
+              <MessageSquare className="h-4 w-4" />
+              <span>Contact US</span>
             </TabsTrigger>
             <TabsTrigger value="emails" className="flex items-center space-x-2">
               <Mail className="h-4 w-4" />
@@ -589,6 +595,10 @@ export default function AdminDashboard() {
                 <p className="text-center text-gray-600 py-8">예약 관리 기능을 준비 중입니다.</p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="contact" className="space-y-6">
+            <ContactInquiriesManagement />
           </TabsContent>
 
           <TabsContent value="emails" className="space-y-6">

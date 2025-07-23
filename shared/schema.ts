@@ -221,6 +221,8 @@ export const smsTemplates = pgTable("sms_templates", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+
+
 // Carousel Images table for managing images displayed on the website
 export const carouselImages = pgTable("carousel_images", {
   id: serial("id").primaryKey(),

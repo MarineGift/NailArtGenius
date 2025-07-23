@@ -5,6 +5,7 @@ import { ImageCarousel } from '@/components/image-carousel';
 import { BookingHeroSection } from '@/components/booking-hero-section';
 import { AIServiceSection } from '@/components/ai-service-section';
 import { EnglishServicesSection } from '@/components/english-services-section';
+import { ContactUsForm } from '@/components/contact-us-form';
 import { LocationMap } from '@/components/location-map';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
@@ -33,7 +34,10 @@ export default function Home() {
         {/* English Services Section */}
         <EnglishServicesSection />
 
-        {/* Location Map Section */}
+        {/* Contact Us Form */}
+        <ContactUsForm />
+
+        {/* Location Map */}
         <LocationMap />
       </main>
       
