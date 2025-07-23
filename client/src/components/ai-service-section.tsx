@@ -64,7 +64,7 @@ export function AIServiceSection() {
         {/* Booking Process */}
         <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
           <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">Simple Booking Process</h3>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">1</span>
@@ -73,15 +73,22 @@ export function AIServiceSection() {
               <p className="text-gray-600">Choose your desired appointment date and time</p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-white">2</span>
               </div>
               <h4 className="font-semibold text-lg mb-2">Select Service</h4>
-              <p className="text-gray-600">Then enter phone number and additional notes</p>
+              <p className="text-gray-600">Choose your preferred nail art service</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-white">3</span>
+              </div>
+              <h4 className="font-semibold text-lg mb-2">Customer Information</h4>
+              <p className="text-gray-600">Enter phone number and additional notes</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-white">3</span>
+                <span className="text-2xl font-bold text-white">4</span>
               </div>
               <h4 className="font-semibold text-lg mb-2">Visit Store</h4>
               <p className="text-gray-600">Visit at your scheduled time for quick service</p>
