@@ -37,6 +37,9 @@ import {
   type InsertTimeSlotAvailability,
   type AdminUser,
   type InsertAdminUser,
+  emailCampaigns,
+  type EmailCampaign,
+  type InsertEmailCampaign,
   type UserStylePreferences,
   type InsertUserStylePreferences,
   type CustomNailDesign,
@@ -101,13 +104,26 @@ export interface IStorage {
   getOperatingHours(dayOfWeek: number): Promise<OperatingHours | undefined>;
   
   // Admin operations
-  createAdminUser(admin: InsertAdminUser): Promise<AdminUser>;
+  createAdmin(admin: InsertAdminUser): Promise<AdminUser>;
+  getAdminById(id: number): Promise<AdminUser | undefined>;
+  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  updateAdminLastLogin(id: number): Promise<void>;
   isUserAdmin(userId: string): Promise<boolean>;
   getAllAppointments(date?: Date): Promise<Appointment[]>;
   getAllOrders(): Promise<Order[]>;
   getAllUsers(): Promise<User[]>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
   deleteAppointment(id: number): Promise<void>;
+  
+  // Customer management operations
+  getAllCustomers(): Promise<Customer[]>;
+  getCustomersByCategory(category: string): Promise<Customer[]>;
+  updateCustomer(id: number, updates: Partial<Customer>): Promise<Customer>;
+  
+  // Email campaign operations
+  createEmailCampaign(campaign: InsertEmailCampaign): Promise<EmailCampaign>;
+  getAllEmailCampaigns(): Promise<EmailCampaign[]>;
+  updateEmailCampaign(id: number, updates: Partial<EmailCampaign>): Promise<EmailCampaign>;
 
   // Style preferences operations
   upsertUserStylePreferences(preferences: InsertUserStylePreferences): Promise<UserStylePreferences>;
@@ -435,7 +451,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Admin operations
-  async createAdminUser(admin: InsertAdminUser): Promise<AdminUser> {
+  async createAdmin(admin: InsertAdminUser): Promise<AdminUser> {
     const [savedAdmin] = await db
       .insert(adminUsers)
       .values(admin)
@@ -443,12 +459,25 @@ export class DatabaseStorage implements IStorage {
     return savedAdmin;
   }
 
+  async getAdminById(id: number): Promise<AdminUser | undefined> {
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.id, id));
+    return admin;
+  }
+
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
+    return admin;
+  }
+
+  async updateAdminLastLogin(id: number): Promise<void> {
+    await db.update(adminUsers)
+      .set({ lastLogin: new Date() })
+      .where(eq(adminUsers.id, id));
+  }
+
   async isUserAdmin(userId: string): Promise<boolean> {
-    const [admin] = await db
-      .select()
-      .from(adminUsers)
-      .where(eq(adminUsers.userId, userId));
-    return !!admin;
+    // Since we're using separate admin authentication, this method isn't used
+    return false;
   }
 
   async getAllAppointments(date?: Date): Promise<Appointment[]> {

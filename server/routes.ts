@@ -3,6 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { storage, enhancedStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { initializeDefaultAdmin, authenticateAdmin, verifyPassword, generateToken, hashPassword } from "./admin-auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { analyzeNailShape, generateNailShapeImage } from "./openai";
 import { generateNailArt, analyzeNailArt } from "./aiNailGenerator";
@@ -52,6 +53,9 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize default admin user
+  await initializeDefaultAdmin();
+  
   // Auth middleware
   await setupAuth(app);
 
@@ -85,6 +89,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating user profile:", error);
       res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
+  // Admin authentication routes
+  app.post('/api/admin/login', async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: '사용자명과 비밀번호가 필요합니다.' });
+      }
+
+      const admin = await storage.getAdminByUsername(username);
+      if (!admin) {
+        return res.status(401).json({ message: '잘못된 사용자명 또는 비밀번호입니다.' });
+      }
+
+      const isValidPassword = await verifyPassword(password, admin.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: '잘못된 사용자명 또는 비밀번호입니다.' });
+      }
+
+      if (!admin.isActive) {
+        return res.status(401).json({ message: '비활성화된 계정입니다.' });
+      }
+
+      // Update last login time
+      await storage.updateAdminLastLogin(admin.id);
+
+      // Generate JWT token
+      const token = generateToken(admin);
+
+      res.json({
+        token,
+        admin: {
+          id: admin.id,
+          username: admin.username,
+          name: admin.name,
+          email: admin.email,
+          role: admin.role
+        }
+      });
+    } catch (error) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ message: '로그인 처리 중 오류가 발생했습니다.' });
+    }
+  });
+
+  // Admin dashboard data
+  app.get('/api/admin/dashboard', authenticateAdmin, async (req: any, res) => {
+    try {
+      const customers = await storage.getAllCustomers();
+      const appointments = await storage.getAllAppointments();
+      const orders = await storage.getAllOrders();
+      const users = await storage.getAllUsers();
+
+      // Calculate statistics
+      const stats = {
+        totalCustomers: customers.length,
+        totalAppointments: appointments.length,
+        totalOrders: orders.length,
+        totalUsers: users.length,
+        recentCustomers: customers.slice(0, 10),
+        recentAppointments: appointments.slice(0, 10),
+        todayAppointments: appointments.filter(apt => {
+          const today = new Date();
+          const aptDate = new Date(apt.appointmentDate);
+          return aptDate.toDateString() === today.toDateString();
+        }).length
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error('Admin dashboard error:', error);
+      res.status(500).json({ message: '대시보드 데이터를 가져오는 중 오류가 발생했습니다.' });
+    }
+  });
+
+  // Customer management routes
+  app.get('/api/admin/customers', authenticateAdmin, async (req: any, res) => {
+    try {
+      const { category } = req.query;
+      
+      let customers;
+      if (category) {
+        customers = await storage.getCustomersByCategory(category);
+      } else {
+        customers = await storage.getAllCustomers();
+      }
+
+      res.json(customers);
+    } catch (error) {
+      console.error('Get customers error:', error);
+      res.status(500).json({ message: '고객 목록을 가져오는 중 오류가 발생했습니다.' });
     }
   });
 

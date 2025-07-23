@@ -35,9 +35,9 @@ export default function Header() {
                     {t('nav.booking')}
                   </Button>
                 </Link>
-                <Link href="/real-time-booking">
+                <Link href="/admin-login">
                   <Button variant="ghost" className="text-gray-500 hover:text-gray-900">
-                    {t('realtime.title')}
+                    관리자
                   </Button>
                 </Link>
                 <Link href="/gallery">

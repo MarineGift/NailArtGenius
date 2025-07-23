@@ -1,392 +1,524 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { 
-  Calendar as CalendarIcon, 
-  Clock, 
-  User, 
-  Phone, 
+  Users, 
+  Calendar, 
+  ShoppingBag, 
   Mail, 
-  Filter,
-  Download,
+  Settings, 
+  LogOut,
+  Eye,
   Edit,
   Trash2,
-  UserCheck
-} from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
-import { useLocation } from "wouter";
+  RefreshCw,
+  Send,
+  UserPlus,
+  Activity,
+  TrendingUp,
+  Clock,
+  AlertCircle
+} from 'lucide-react';
 import Header from "@/components/header";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
+import Footer from "@/components/footer";
+
+interface AdminStats {
+  totalCustomers: number;
+  totalAppointments: number;
+  totalOrders: number;
+  totalUsers: number;
+  todayAppointments: number;
+  recentCustomers: any[];
+  recentAppointments: any[];
+}
+
+interface Customer {
+  id: number;
+  name: string;
+  email?: string;
+  phoneNumber?: string;
+  category: string;
+  mailingConsent: boolean;
+  totalVisits: number;
+  totalSpent: string;
+  lastVisit?: Date;
+  notes?: string;
+  createdAt: Date;
+}
 
 export default function AdminDashboard() {
-  const { t } = useLanguage();
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [adminUser, setAdminUser] = useState<any>(null);
   
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [viewType, setViewType] = useState("day");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [activeTab, setActiveTab] = useState("appointments");
+  // Password change form
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
 
-  // Fetch appointments based on period and filters
-  const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["/api/appointments", viewType, selectedDate, filterStatus],
-    queryFn: async () => {
-      const params = new URLSearchParams({
-        period: viewType,
-        date: selectedDate,
-        view: activeTab,
-      });
-      if (filterStatus !== "all") {
-        params.append("status", filterStatus);
+  useEffect(() => {
+    checkAdminAuth();
+    loadDashboardData();
+  }, []);
+
+  const checkAdminAuth = () => {
+    const token = localStorage.getItem('adminToken');
+    const user = localStorage.getItem('adminUser');
+    
+    if (!token || !user) {
+      setLocation('/admin-login');
+      return;
+    }
+    
+    try {
+      setAdminUser(JSON.parse(user));
+    } catch (error) {
+      console.error('Invalid admin user data:', error);
+      setLocation('/admin-login');
+    }
+  };
+
+  const loadDashboardData = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        setLocation('/admin-login');
+        return;
       }
-      const response = await fetch(`/api/appointments?${params}`);
-      return response.json();
-    },
-  });
 
-  // Update appointment status mutation
-  const updateAppointmentMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: number; updates: any }) => {
-      return await apiRequest(`/api/admin/appointments/${id}`, "PUT", updates);
-    },
-    onSuccess: () => {
-      toast({
-        title: "업데이트 완료",
-        description: "예약 상태가 업데이트되었습니다.",
+      const response = await fetch('/api/admin/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "업데이트 실패",
-        description: error.message || "상태 업데이트 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
 
-  // Delete appointment mutation
-  const deleteAppointmentMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return await apiRequest(`/api/admin/appointments/${id}`, "DELETE");
-    },
-    onSuccess: () => {
-      toast({
-        title: "삭제 완료",
-        description: "예약이 삭제되었습니다.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "삭제 실패",
-        description: error.message || "예약 삭제 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    },
-  });
+      if (response.status === 401) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        setLocation('/admin-login');
+        return;
+      }
 
-  const handleStatusUpdate = (appointmentId: number, newStatus: string) => {
-    updateAppointmentMutation.mutate({
-      id: appointmentId,
-      updates: { status: newStatus },
-    });
-  };
-
-  const handleDeleteAppointment = (appointmentId: number) => {
-    if (confirm("이 예약을 삭제하시겠습니까?")) {
-      deleteAppointmentMutation.mutate(appointmentId);
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data);
+      } else {
+        setError('대시보드 데이터를 불러오는데 실패했습니다.');
+      }
+    } catch (error) {
+      setError('서버 연결에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "scheduled":
-        return "default";
-      case "completed":
-        return "secondary";
-      case "cancelled":
-        return "destructive";
-      case "no_show":
-        return "outline";
-      default:
-        return "default";
-    }
-  };
+  const loadCustomers = async (category?: string) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "scheduled":
-        return "예약됨";
-      case "completed":
-        return "완료";
-      case "cancelled":
-        return "취소";
-      case "no_show":
-        return "노쇼";
-      default:
-        return status;
-    }
-  };
-
-  const getVisitTypeText = (visitType: string) => {
-    switch (visitType) {
-      case "방문예약":
-        return "방문예약";
-      case "최초방문":
-        return "최초방문";
-      case "인터넷예약":
-        return "인터넷예약";
-      default:
-        return visitType;
-    }
-  };
-
-  const exportToCSV = () => {
-    if (appointments.length === 0) {
-      toast({
-        title: "내보내기 실패",
-        description: "내보낼 데이터가 없습니다.",
-        variant: "destructive",
+      const url = category ? `/api/admin/customers?category=${category}` : '/api/admin/customers';
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCustomers(data);
+      }
+    } catch (error) {
+      console.error('Failed to load customers:', error);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setLocation('/admin-login');
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setError('새 비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    const csvHeader = "날짜,시간,고객명,전화번호,이메일,방문유형,상태\n";
-    const csvData = appointments
-      .map((apt: any) => {
-        const date = format(new Date(apt.appointmentDate), "yyyy-MM-dd", { locale: ko });
-        return [
-          date,
-          apt.timeSlot,
-          apt.customerName,
-          apt.customerPhone,
-          apt.customerEmail || "",
-          getVisitTypeText(apt.visitType),
-          getStatusText(apt.status),
-        ].join(",");
-      })
-      .join("\n");
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/admin/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
 
-    const csvContent = csvHeader + csvData;
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `appointments_${selectedDate}_${viewType}.csv`;
-    link.click();
+      if (response.ok) {
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setError('');
+        alert('비밀번호가 성공적으로 변경되었습니다.');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || '비밀번호 변경에 실패했습니다.');
+      }
+    } catch (error) {
+      setError('서버 연결에 실패했습니다.');
+    }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+        <Header />
+        <main className="flex items-center justify-center px-4 py-16">
+          <div className="flex items-center space-x-2">
+            <RefreshCw className="h-6 w-6 animate-spin text-purple-600" />
+            <p className="text-lg text-gray-600">관리자 패널 로딩 중...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">관리자 대시보드</h1>
-            <p className="text-gray-600">예약 및 방문자 관리</p>
+            <p className="text-gray-600 mt-2">
+              환영합니다, {adminUser?.name || adminUser?.username}님
+            </p>
           </div>
-          <Button onClick={exportToCSV} variant="outline" className="flex items-center">
-            <Download className="h-4 w-4 mr-2" />
-            CSV 내보내기
+          <Button onClick={handleLogout} variant="outline" className="flex items-center space-x-2">
+            <LogOut className="h-4 w-4" />
+            <span>로그아웃</span>
           </Button>
         </div>
 
-        {/* Filter Controls */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Filter className="h-5 w-5 mr-2" />
-              필터 및 검색
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">날짜</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="view-type">조회 기간</Label>
-                <Select value={viewType} onValueChange={setViewType}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="day">일별</SelectItem>
-                    <SelectItem value="week">주별</SelectItem>
-                    <SelectItem value="month">월별</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        {error && (
+          <Alert className="mb-6 bg-red-50 border-red-200">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">{error}</AlertDescription>
+          </Alert>
+        )}
 
-              <div className="space-y-2">
-                <Label htmlFor="status-filter">상태 필터</Label>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
-                    <SelectItem value="scheduled">예약됨</SelectItem>
-                    <SelectItem value="completed">완료</SelectItem>
-                    <SelectItem value="cancelled">취소</SelectItem>
-                    <SelectItem value="no_show">노쇼</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="dashboard" className="flex items-center space-x-2">
+              <Activity className="h-4 w-4" />
+              <span>대시보드</span>
+            </TabsTrigger>
+            <TabsTrigger value="customers" className="flex items-center space-x-2">
+              <Users className="h-4 w-4" />
+              <span>고객관리</span>
+            </TabsTrigger>
+            <TabsTrigger value="appointments" className="flex items-center space-x-2">
+              <Calendar className="h-4 w-4" />
+              <span>예약관리</span>
+            </TabsTrigger>
+            <TabsTrigger value="emails" className="flex items-center space-x-2">
+              <Mail className="h-4 w-4" />
+              <span>메일링</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center space-x-2">
+              <Settings className="h-4 w-4" />
+              <span>설정</span>
+            </TabsTrigger>
+          </TabsList>
 
-              <div className="flex items-end">
-                <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/appointments"] })}>
+          <TabsContent value="dashboard" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">총 고객 수</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.totalCustomers || 0}</div>
+                  <p className="text-xs text-muted-foreground">전체 등록 고객</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">총 예약 수</CardTitle>
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.totalAppointments || 0}</div>
+                  <p className="text-xs text-muted-foreground">전체 예약 건수</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">오늘 예약</CardTitle>
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.todayAppointments || 0}</div>
+                  <p className="text-xs text-muted-foreground">오늘 예약된 건수</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">총 주문 수</CardTitle>
+                  <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.totalOrders || 0}</div>
+                  <p className="text-xs text-muted-foreground">전체 주문 건수</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>최근 고객</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {stats?.recentCustomers?.slice(0, 5).map((customer, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">{customer.name}</p>
+                          <p className="text-sm text-gray-600">{customer.phoneNumber}</p>
+                        </div>
+                        <Badge variant="outline">{customer.category}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>최근 예약</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {stats?.recentAppointments?.slice(0, 5).map((appointment, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">예약 #{appointment.id}</p>
+                          <p className="text-sm text-gray-600">
+                            {new Date(appointment.appointmentDate).toLocaleDateString()} {appointment.timeSlot}
+                          </p>
+                        </div>
+                        <Badge 
+                          variant={appointment.status === 'confirmed' ? 'default' : 'secondary'}
+                        >
+                          {appointment.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="customers" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">고객 관리</h2>
+              <div className="flex space-x-2">
+                <Button onClick={() => loadCustomers()} variant="outline">
+                  <RefreshCw className="h-4 w-4 mr-2" />
                   새로고침
+                </Button>
+                <Button onClick={() => loadCustomers('mailing')} variant="outline">
+                  메일링 고객
+                </Button>
+                <Button onClick={() => loadCustomers('booking')} variant="outline">
+                  예약 고객
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Appointments List */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center">
-                <CalendarIcon className="h-5 w-5 mr-2" />
-                방문 예약 목록
-                {appointments.length > 0 && (
-                  <Badge variant="secondary" className="ml-2">
-                    총 {appointments.length}건
-                  </Badge>
-                )}
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <div className="text-gray-500">로딩 중...</div>
-              </div>
-            ) : appointments.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="text-gray-500 mb-2">선택한 기간에 예약이 없습니다.</div>
-                <Button variant="outline" onClick={() => setLocation("/appointment-booking")}>
-                  새 예약 생성
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {appointments.map((appointment: any) => (
-                  <div
-                    key={appointment.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {/* Date and Time */}
-                        <div className="flex items-center space-x-2">
-                          <CalendarIcon className="h-4 w-4 text-gray-400" />
-                          <div>
-                            <div className="font-medium">
-                              {format(new Date(appointment.appointmentDate), "M월 d일 (eee)", { locale: ko })}
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">이름</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">연락처</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">이메일</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">카테고리</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">방문횟수</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">총 지출</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">작업</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {customers.map((customer) => (
+                        <tr key={customer.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            {customer.name}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {customer.phoneNumber || '-'}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {customer.email || '-'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge variant="outline">{customer.category}</Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {customer.totalVisits}회
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            ₩{parseFloat(customer.totalSpent).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline">
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-3 w-3" />
+                              </Button>
                             </div>
-                            <div className="text-sm text-gray-500 flex items-center">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {appointment.timeSlot}
-                            </div>
-                          </div>
-                        </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                        {/* Customer Info */}
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <User className="h-4 w-4 text-gray-400" />
-                            <span className="font-medium">{appointment.customerName}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <Phone className="h-3 w-3" />
-                            <span>{appointment.customerPhone}</span>
-                          </div>
-                          {appointment.customerEmail && (
-                            <div className="flex items-center space-x-2 text-sm text-gray-600">
-                              <Mail className="h-3 w-3" />
-                              <span>{appointment.customerEmail}</span>
-                            </div>
-                          )}
-                        </div>
+          <TabsContent value="appointments" className="space-y-6">
+            <h2 className="text-2xl font-bold">예약 관리</h2>
+            <Card>
+              <CardContent>
+                <p className="text-center text-gray-600 py-8">예약 관리 기능을 준비 중입니다.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                        {/* Visit Type */}
-                        <div className="flex items-center">
-                          <UserCheck className="h-4 w-4 text-gray-400 mr-2" />
-                          <Badge variant="outline">
-                            {getVisitTypeText(appointment.visitType)}
-                          </Badge>
-                        </div>
+          <TabsContent value="emails" className="space-y-6">
+            <h2 className="text-2xl font-bold">메일링 관리</h2>
+            <Card>
+              <CardContent>
+                <p className="text-center text-gray-600 py-8">메일링 기능을 준비 중입니다.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                        {/* Status */}
-                        <div className="flex items-center justify-between">
-                          <Badge variant={getStatusBadgeVariant(appointment.status)}>
-                            {getStatusText(appointment.status)}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center space-x-2 ml-4">
-                        {appointment.status === "scheduled" && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleStatusUpdate(appointment.id, "completed")}
-                            >
-                              완료
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleStatusUpdate(appointment.id, "no_show")}
-                            >
-                              노쇼
-                            </Button>
-                          </>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteAppointment(appointment.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-
-                    {appointment.notes && (
-                      <div className="mt-3 pt-3 border-t text-sm text-gray-600">
-                        <strong>메모:</strong> {appointment.notes}
-                      </div>
-                    )}
+          <TabsContent value="settings" className="space-y-6">
+            <h2 className="text-2xl font-bold">관리자 설정</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>관리자 정보</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>사용자명</Label>
+                    <Input value={adminUser?.username || ''} disabled />
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                  <div>
+                    <Label>이름</Label>
+                    <Input value={adminUser?.name || ''} disabled />
+                  </div>
+                  <div>
+                    <Label>이메일</Label>
+                    <Input value={adminUser?.email || ''} disabled />
+                  </div>
+                  <div>
+                    <Label>역할</Label>
+                    <Input value={adminUser?.role || ''} disabled />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>비밀번호 변경</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handlePasswordChange} className="space-y-4">
+                    <div>
+                      <Label htmlFor="currentPassword">현재 비밀번호</Label>
+                      <Input
+                        id="currentPassword"
+                        type="password"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          currentPassword: e.target.value
+                        }))}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="newPassword">새 비밀번호</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          newPassword: e.target.value
+                        }))}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="confirmPassword">새 비밀번호 확인</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          confirmPassword: e.target.value
+                        }))}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      비밀번호 변경
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+      
+      <Footer />
     </div>
   );
 }

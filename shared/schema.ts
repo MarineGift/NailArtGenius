@@ -141,18 +141,19 @@ export const orders = pgTable("orders", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Customer information for visits
+// Customer management table 
 export const customers = pgTable("customers", {
   id: serial("id").primaryKey(),
-  name: varchar("name").notNull(),
-  phoneNumber: varchar("phone_number").notNull().unique(),
-  email: varchar("email"),
-  visitType: varchar("visit_type").notNull(), // "방문예약", "최초방문", "인터넷예약"
-  category: varchar("category").notNull().default("general"), // "mailing", "general", "booking"
+  userId: varchar("user_id").references(() => users.id),
+  name: varchar("name", { length: 100 }).notNull(),
+  email: varchar("email", { length: 100 }),
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  visitType: varchar("visit_type").default("일반 방문"), // "방문예약", "최초방문", "인터넷예약"
+  category: varchar("category", { length: 20 }).default("general").notNull(), // mailing, general, booking
   mailingConsent: boolean("mailing_consent").default(false),
-  lastVisit: timestamp("last_visit"),
   totalVisits: integer("total_visits").default(0),
-  totalSpent: varchar("total_spent").default("0.00"),
+  totalSpent: decimal("total_spent", { precision: 10, scale: 2 }).default("0"),
+  lastVisit: timestamp("last_visit"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -291,12 +292,33 @@ export const insertContactInquirySchema = createInsertSchema(contactInquiries);
 export type InsertContactInquiry = z.infer<typeof insertContactInquirySchema>;
 export type ContactInquiry = typeof contactInquiries.$inferSelect;
 
-// Admin users table
+// Admin users table for authentication
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  role: varchar("role").default("admin"), // admin, super_admin
-  permissions: jsonb("permissions"), // Array of permission strings
+  username: varchar("username", { length: 50 }).unique().notNull(),
+  password: varchar("password", { length: 255 }).notNull(),
+  name: varchar("name", { length: 100 }).notNull(),
+  email: varchar("email", { length: 100 }).unique(),
+  role: varchar("role", { length: 20 }).default("admin").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  lastLogin: timestamp("last_login"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Email campaigns table
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 200 }).notNull(),
+  subject: varchar("subject", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  recipientCategory: varchar("recipient_category", { length: 20 }).notNull(),
+  recipientCount: integer("recipient_count").default(0),
+  sentCount: integer("sent_count").default(0),
+  status: varchar("status", { length: 20 }).default("draft").notNull(), // draft, sending, sent, failed
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  createdBy: integer("created_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -435,9 +457,17 @@ export const insertTimeSlotAvailabilitySchema = createInsertSchema(timeSlotAvail
 export type InsertTimeSlotAvailability = z.infer<typeof insertTimeSlotAvailabilitySchema>;
 export type TimeSlotAvailability = typeof timeSlotAvailability.$inferSelect;
 
-export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({ id: true, createdAt: true });
+// Admin user type definitions
+export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertAdminUser = z.infer<typeof insertAdminUserSchema>;
 export type AdminUser = typeof adminUsers.$inferSelect;
+
+// Email campaign type definitions
+export const insertEmailCampaignSchema = createInsertSchema(emailCampaigns).omit({ id: true, createdAt: true });
+export type InsertEmailCampaign = z.infer<typeof insertEmailCampaignSchema>;
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+
+
 
 export const insertUserStylePreferencesSchema = createInsertSchema(userStylePreferences).omit({ id: true, createdAt: true, updatedAt: true });
 export type InsertUserStylePreferences = z.infer<typeof insertUserStylePreferencesSchema>;
