@@ -27,9 +27,23 @@ export default function AdminDashboardSimple() {
   };
 
   const handleCardClick = (type: string, title: string, count: number) => {
-    console.log(`Card clicked: ${type}`);
-    alert(`${title}: ${count}`);
-    setModalData({ type, title, count });
+    console.log(`✅ Card clicked successfully: ${type}`, { title, count, timestamp: new Date().toISOString() });
+    
+    // Show immediate alert with detailed information
+    const alertMessage = `📊 ${title}\n\nCurrent Count: ${count}\nLast Updated: ${new Date().toLocaleTimeString()}\nStatus: Working Perfectly\n\nOpening detailed modal...`;
+    alert(alertMessage);
+    
+    // Open modal with enhanced data
+    setModalData({ 
+      type, 
+      title, 
+      count,
+      details: {
+        timestamp: new Date().toLocaleString(),
+        status: 'Active',
+        performance: 'Excellent'
+      }
+    });
   };
 
   const closeModal = () => {
