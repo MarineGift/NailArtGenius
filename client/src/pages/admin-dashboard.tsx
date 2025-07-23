@@ -34,7 +34,7 @@ import {
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
-import SimpleMetricModal from "@/components/SimpleMetricModal";
+import AdminModal from "@/components/AdminModal";
 import DirectMetricCard from "@/components/DirectMetricCard";
 
 interface AdminStats {
@@ -111,6 +111,9 @@ export default function AdminDashboard() {
   
   // Debug: Force modal to show for testing
   const [forceShowModal, setForceShowModal] = useState(false);
+  
+  // Add debug console log for modal state changes
+  console.log('🔍 Current detailModal state:', detailModal);
 
   useEffect(() => {
     checkAdminAuth();
@@ -272,7 +275,7 @@ export default function AdminDashboard() {
         isOpen: true,
         metricType,
         title,
-        data: [{ name: 'Failed to load data', error: error.message }],
+        data: [{ name: 'Failed to load data', error: String(error) }],
         totalCount
       });
     }
@@ -541,11 +544,12 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
-            {/* Simple test button to verify modal works */}
-            <div className="mb-4">
+            {/* Test buttons to verify modal works */}
+            <div className="mb-4 flex gap-2">
               <Button 
                 onClick={() => {
-                  console.log('Test button clicked - opening modal directly');
+                  console.log('🚀 Test button clicked - opening modal directly');
+                  alert('테스트 버튼 클릭됨!');
                   setDetailModal({
                     isOpen: true,
                     metricType: 'customers',
@@ -560,6 +564,13 @@ export default function AdminDashboard() {
                 className="bg-red-600 hover:bg-red-700"
               >
                 TEST MODAL (임시 테스트)
+              </Button>
+              
+              <Button 
+                onClick={() => handleMetricClick('customers', 'Real Customer Data', 23)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                실제 고객 데이터 테스트
               </Button>
             </div>
             
@@ -1177,8 +1188,8 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Simple Metric Modal */}
-      <SimpleMetricModal
+      {/* Admin Metric Modal */}
+      <AdminModal
         isOpen={detailModal.isOpen}
         onClose={closeDetailModal}
         title={detailModal.title}
