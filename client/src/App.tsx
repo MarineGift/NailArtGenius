@@ -43,6 +43,7 @@ import AdminLogin from "@/pages/admin-login";
 import SignUp from "@/pages/signup";
 import PasswordReset from "@/pages/password-reset";
 import Checkout from "@/pages/checkout";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 // Lazy load AI Nail System
 const AINetworkSystem = lazy(() => import("./pages/ai-nail-system"));
@@ -117,6 +118,7 @@ function App() {
         <AdminAuthProvider>
           <TooltipProvider>
             <Toaster />
+            <PWAInstallPrompt />
             <Router />
           </TooltipProvider>
         </AdminAuthProvider>
