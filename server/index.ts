@@ -1,10 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import http from "http";
+import { registerAccessRoutes } from "./access-routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { seedBookingData } from "./seedData";
-import { seedTestCustomersAndReservations } from "./test-data-seeder";
-import { seedComprehensiveData } from "./comprehensive-seed-data";
-import { seedTodayDateData } from "./today-date-seeder";
 
 const app = express();
 app.use(express.json());
@@ -41,55 +38,22 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize booking system data
-  await seedBookingData();
+  // Initialize Microsoft Access-style database
+  const { accessStorage } = await import('./access-storage');
   
-  // Seed test customers and reservations
+  // Initialize Access DB sample data
   try {
-    await seedTestCustomersAndReservations();
+    await accessStorage.initializeSampleData();
+    console.log('✅ Microsoft Access database initialized successfully');
   } catch (error) {
-    console.log('Note: Test data seeding skipped (already exists or error occurred)');
-  }
-  
-  // Seed comprehensive data (carousel, gallery, AI nail art)
-  try {
-    await seedComprehensiveData();
-  } catch (error) {
-    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
-  }
-
-  // Seed comprehensive sample data for testing
-  try {
-    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
-    await seedComprehensiveSampleData();
-  } catch (error) {
-    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
-  }
-
-  // Create booking data for all customers (1-5 bookings each)
-  try {
-    const { seedBookingData } = await import('./booking-data-seeder');
-    await seedBookingData();
-  } catch (error) {
-    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
-  }
-
-  // Update gallery with Gallery_No unique identifiers
-  try {
-    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
-    await updateGalleryWithGalleryNo();
-  } catch (error) {
-    console.log('Note: Gallery update skipped (already exists or error occurred)');
+    console.log('Note: Access database initialization skipped (already exists or error occurred)');
   }
   
-  // Seed today's date sample data for dashboard testing
-  try {
-    await seedTodayDateData();
-  } catch (error) {
-    console.log('Note: Today date seeding skipped (already exists or error occurred)');
-  }
+  // Skip PostgreSQL-based data seeding - using Microsoft Access DB instead
+  console.log('🚫 Skipping PostgreSQL data seeding - using Microsoft Access database');
   
-  const server = await registerRoutes(app);
+  // Create HTTP server for Access database
+  const server = http.createServer(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -99,6 +63,9 @@ app.use((req, res, next) => {
     throw err;
   });
 
+  // Register Access routes before Vite setup
+  registerAccessRoutes(app);
+  
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes

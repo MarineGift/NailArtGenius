@@ -1,7 +1,7 @@
 # Connie's Nail - Replit Project Guide
 
 ## Overview
-Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. The application is built with a modern React frontend and Express.js backend, featuring Replit authentication.
+Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. **MAJOR UPDATE: Migrated from PostgreSQL to Microsoft Access-style database using SQLite3 for improved operational stability.**
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -10,6 +10,27 @@ Preferred communication style: Simple, everyday language.
 - 비용 효율적인 솔루션 선호
 - 단계적 배포 및 확장 희망
 - nolsae.com 도메인으로 서비스 론칭 계획
+- **Database preference: Microsoft Access-style instead of PostgreSQL due to operational issues**
+
+## Recent Changes (July 2025)
+
+### Microsoft Access Database Migration (July 24, 2025)
+- **Complete Database System Replacement**: Successfully migrated from PostgreSQL to Microsoft Access-style database
+  - Replaced PostgreSQL/Drizzle ORM with SQLite3/better-sqlite3 for Access compatibility
+  - Created access-db.ts with 11 Access-style database tables: Users, Customers, Bookings, Orders, Gallery, etc.
+  - Implemented access-storage.ts with comprehensive CRUD operations for all data entities
+  - Created access-routes.ts with complete REST API endpoints for admin dashboard and customer management
+  - Fixed foreign key relationships and timestamp tracking across all tables
+- **Database Schema Enhancement**: Access-style table structure with proper field naming
+  - All tables include EntryDate field for data entry tracking (Access convention)
+  - Primary keys use AutoIncrement for integer IDs (Access standard)
+  - Text fields replace VARCHAR for Access compatibility
+  - Boolean fields use INTEGER (0/1) following Access boolean conventions
+- **Sample Data Integration**: Created comprehensive test data for Microsoft Access database
+  - Admin user: username "admin", password "1111" for dashboard access
+  - Sample customers with realistic profiles, contact information, and visit history
+  - Dashboard statistics API providing real-time counts for customers/bookings/orders
+  - Today's metrics filtering using EntryDate field for accurate daily reporting
 
 ## Recent Changes (July 2025)
 
