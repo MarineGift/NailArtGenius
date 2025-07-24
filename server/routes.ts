@@ -31,8 +31,11 @@ import {
   gallery,
   galleryDesc,
   aiNailArtImages,
+  bookings,
+  orders,
+  users
 } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
@@ -73,6 +76,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Auth middleware
   await setupAuth(app);
+
+  // Customer phone number validation and lookup middleware
+  const validatePhoneAndCustomer = async (phoneNumber: string) => {
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      throw new Error('Phone number is required for all bookings, AI nail art, and finger data entries.');
+    }
+    
+    // Check if customer exists
+    const existingCustomer = await db
+      .select()
+      .from(customers)
+      .where(eq(customers.phoneNumber, phoneNumber.trim()))
+      .limit(1);
+    
+    return existingCustomer[0] || null;
+  };
+
+  // Create or validate customer workflow
+  const getOrCreateCustomer = async (phoneNumber: string, customerData?: any) => {
+    let customer = await validatePhoneAndCustomer(phoneNumber);
+    
+    if (!customer && customerData) {
+      // Create new customer if phone doesn't exist
+      const [newCustomer] = await db
+        .insert(customers)
+        .values({
+          name: customerData.name || phoneNumber,
+          phoneNumber: phoneNumber.trim(),
+          email: customerData.email || null,
+          category: customerData.category || 'general',
+          visitType: customerData.visitType || 'general',
+          totalVisits: 0,
+          totalSpent: '0',
+          mailingConsent: customerData.mailingConsent || false,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning();
+      
+      customer = newCustomer;
+      console.log('✅ New customer created:', customer.phoneNumber);
+    } else if (customer) {
+      console.log('📞 Existing customer found:', customer.phoneNumber);
+    }
+    
+    return customer;
+  };
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -274,28 +324,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin dashboard data
+  // Admin dashboard data (updated for booking system)
   app.get('/api/admin/dashboard', authenticateAdmin, async (req: any, res) => {
     try {
-      const customers = await storage.getAllCustomers();
-      const appointments = await storage.getAllAppointments();
-      const orders = await storage.getAllOrders();
-      const users = await storage.getAllUsers();
+      // Use direct database queries for accurate counts
+      const [customerCount] = await db.select({ count: sql`count(*)` }).from(customers);
+      const [bookingCount] = await db.select({ count: sql`count(*)` }).from(bookings);
+      const [orderCount] = await db.select({ count: sql`count(*)` }).from(orders);
+      const [userCount] = await db.select({ count: sql`count(*)` }).from(users);
 
-      // Calculate statistics
+      // Get today's bookings
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      
+      const [todayBookingCount] = await db
+        .select({ count: sql`count(*)` })
+        .from(bookings)
+        .where(
+          and(
+            gte(bookings.bookingDate, today),
+            lt(bookings.bookingDate, tomorrow)
+          )
+        );
+
+      // Get recent customers (last 10)
+      const recentCustomers = await db
+        .select()
+        .from(customers)
+        .orderBy(desc(customers.createdAt))
+        .limit(10);
+
+      // Get recent bookings (last 10) with customer details
+      const recentBookings = await db
+        .select({
+          id: bookings.id,
+          customerName: customers.name,
+          bookingDate: bookings.bookingDate,
+          timeSlot: bookings.timeSlot,
+          status: bookings.status,
+          serviceDetails: bookings.serviceDetails,
+          createdAt: bookings.createdAt
+        })
+        .from(bookings)
+        .leftJoin(customers, eq(bookings.customerId, customers.id))
+        .orderBy(desc(bookings.createdAt))
+        .limit(10);
+
+      // Calculate statistics with accurate counts
       const stats = {
-        totalCustomers: customers.length,
-        totalAppointments: appointments.length,
-        totalOrders: orders.length,
-        totalUsers: users.length,
-        recentCustomers: customers.slice(0, 10),
-        recentAppointments: appointments.slice(0, 10),
-        todayAppointments: appointments.filter(apt => {
-          const today = new Date();
-          const aptDate = new Date(apt.appointmentDate);
-          return aptDate.toDateString() === today.toDateString();
-        }).length
+        totalCustomers: customerCount.count || 0,
+        totalBookings: bookingCount.count || 0,
+        totalOrders: orderCount.count || 0,
+        totalUsers: userCount.count || 0,
+        todayBookings: todayBookingCount.count || 0,
+        recentCustomers,
+        recentBookings,
+        // Backward compatibility
+        totalAppointments: bookingCount.count || 0,
+        recentAppointments: recentBookings,
+        todayAppointments: todayBookingCount.count || 0
       };
+
+      console.log('📊 Dashboard stats calculated:', {
+        totalCustomers: stats.totalCustomers,
+        totalBookings: stats.totalBookings,
+        todayBookings: stats.todayBookings
+      });
 
       res.json(stats);
     } catch (error) {
@@ -2494,6 +2590,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create booking with mandatory phone validation
+  app.post('/api/bookings', async (req, res) => {
+    try {
+      const bookingData = req.body;
+      
+      // Mandatory phone validation
+      if (!bookingData.customerPhone) {
+        return res.status(400).json({ 
+          message: 'Phone number is required for all bookings',
+          code: 'PHONE_NUMBER_REQUIRED' 
+        });
+      }
+
+      // Get or create customer
+      const customer = await getOrCreateCustomer(bookingData.customerPhone, {
+        name: bookingData.customerName,
+        email: bookingData.customerEmail,
+        category: bookingData.customerCategory || 'general',
+        visitType: bookingData.visitType || 'online_booking',
+        mailingConsent: bookingData.mailingConsent || false
+      });
+
+      if (!customer) {
+        return res.status(400).json({ 
+          message: 'Failed to process customer information',
+          code: 'CUSTOMER_PROCESSING_FAILED' 
+        });
+      }
+
+      // Check time slot availability
+      const isAvailable = await storage.isTimeSlotAvailable(
+        new Date(bookingData.bookingDate),
+        bookingData.timeSlot
+      );
+      
+      if (!isAvailable) {
+        return res.status(409).json({ 
+          message: 'Selected time slot is not available. Please choose another time.',
+          code: 'TIME_SLOT_UNAVAILABLE' 
+        });
+      }
+
+      // Create booking with customer ID
+      const booking = await storage.createBooking({
+        customerId: customer.id,
+        bookingDate: new Date(bookingData.bookingDate),
+        timeSlot: bookingData.timeSlot,
+        serviceDetails: bookingData.serviceDetails,
+        status: bookingData.status || 'scheduled',
+        notes: bookingData.notes || null,
+        price: bookingData.price || null,
+        duration: bookingData.duration || null,
+        serviceId: bookingData.serviceId || null,
+        visitReason: bookingData.visitReason || null
+      });
+
+      console.log('✅ Booking created with phone validation:', {
+        customerId: customer.id,
+        customerPhone: customer.phoneNumber,
+        bookingId: booking.id,
+        bookingDate: booking.bookingDate,
+        timeSlot: booking.timeSlot
+      });
+      
+      res.json({
+        message: 'Booking successfully created with customer phone validation!',
+        booking,
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          phoneNumber: customer.phoneNumber
+        },
+        success: true
+      });
+    } catch (error: any) {
+      console.error('Error creating booking with phone validation:', error);
+      res.status(500).json({ 
+        message: 'Error occurred while creating booking.',
+        error: error.message 
+      });
+    }
+  });
+
   // Customer reservations API routes
   app.get('/api/customer-reservations', async (req, res) => {
     try {
@@ -2823,6 +3002,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error creating customer nail info:', error);
       res.status(500).json({ message: 'Failed to create customer nail info' });
+    }
+  });
+
+  // AI Nail Art Images API with phone validation
+  app.post('/api/ai-nail-art-images', async (req, res) => {
+    try {
+      const { customerPhone, originalImageUrl, generatedImageUrl, designPrompt, fingerPosition, nailShape, nailLength, nailCondition, designStyle, colorPreferences, sessionId } = req.body;
+      
+      // Mandatory phone validation for AI nail art
+      if (!customerPhone) {
+        return res.status(400).json({ 
+          message: 'Phone number is required for AI nail art creation',
+          code: 'PHONE_NUMBER_REQUIRED' 
+        });
+      }
+
+      // Validate phone and get/create customer
+      const customer = await validatePhoneAndCustomer(customerPhone);
+      if (!customer) {
+        return res.status(400).json({ 
+          message: 'Invalid phone number or customer not found. Please register as customer first.',
+          code: 'CUSTOMER_NOT_FOUND' 
+        });
+      }
+
+      const aiNailArt = await db.insert(aiNailArtImages).values({
+        customerPhone: customerPhone.trim(),
+        originalImageUrl,
+        generatedImageUrl,
+        designPrompt,
+        fingerPosition,
+        nailShape,
+        nailLength,
+        nailCondition,
+        designStyle,
+        colorPreferences,
+        sessionId: sessionId || `ai_${Date.now()}`
+      }).returning();
+
+      console.log('✅ AI Nail Art created with phone validation:', {
+        customerPhone: customerPhone.trim(),
+        fingerId: aiNailArt[0].id,
+        fingerPosition,
+        sessionId
+      });
+
+      res.json({
+        message: 'AI nail art successfully created with phone validation!',
+        aiNailArt: aiNailArt[0],
+        success: true
+      });
+    } catch (error: any) {
+      console.error('Error creating AI nail art with phone validation:', error);
+      res.status(500).json({ 
+        message: 'Error occurred while creating AI nail art.',
+        error: error.message 
+      });
     }
   });
 

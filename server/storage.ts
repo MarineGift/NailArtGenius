@@ -546,14 +546,33 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllAppointments(date?: Date): Promise<Appointment[]> {
+    // Redirect to booking system for backward compatibility
+    return this.getAllBookings(date);
+  }
+
+  async getAllBookings(date?: Date): Promise<Booking[]> {
     if (date) {
-      return this.getAppointmentsByDate(date);
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      return await db
+        .select()
+        .from(bookings)
+        .where(
+          and(
+            gte(bookings.bookingDate, startOfDay),
+            lte(bookings.bookingDate, endOfDay)
+          )
+        )
+        .orderBy(desc(bookings.bookingDate));
     }
     
     return await db
       .select()
-      .from(appointments)
-      .orderBy(desc(appointments.appointmentDate));
+      .from(bookings)
+      .orderBy(desc(bookings.bookingDate));
   }
 
   async getAllOrders(): Promise<Order[]> {
