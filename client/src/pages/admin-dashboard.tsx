@@ -39,12 +39,12 @@ import DirectMetricCard from "@/components/DirectMetricCard";
 
 interface AdminStats {
   totalCustomers: number;
-  totalAppointments: number;
+  totalBookings: number;
   totalOrders: number;
   totalUsers: number;
-  todayAppointments: number;
+  todayBookings: number;
   recentCustomers: any[];
-  recentAppointments: any[];
+  recentBookings: any[];
 }
 
 interface Customer {
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
   // Modal state for metric details
   const [detailModal, setDetailModal] = useState({
     isOpen: false,
-    metricType: 'customers' as 'customers' | 'appointments' | 'visitors' | 'orders',
+    metricType: 'customers' as 'customers' | 'bookings' | 'visitors' | 'orders',
     title: '',
     data: [] as any[],
     totalCount: 0
@@ -220,12 +220,12 @@ export default function AdminDashboard() {
     return [];
   };
 
-  const loadAppointments = async () => {
+  const loadBookings = async () => {
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) return [];
 
-      const response = await fetch('/api/admin/appointments', {
+      const response = await fetch('/api/admin/bookings', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -236,12 +236,12 @@ export default function AdminDashboard() {
         return data;
       }
     } catch (error) {
-      console.error('Failed to load appointments:', error);
+      console.error('Failed to load bookings:', error);
     }
     return [];
   };
 
-  const handleMetricClick = async (metricType: 'customers' | 'appointments' | 'visitors' | 'orders', title: string, totalCount: number) => {
+  const handleMetricClick = async (metricType: 'customers' | 'bookings' | 'visitors' | 'orders', title: string, totalCount: number) => {
     console.log('🔥 Card clicked! Metric:', metricType, 'Title:', title, 'Count:', totalCount);
     
     try {
@@ -261,18 +261,18 @@ export default function AdminDashboard() {
         } else {
           console.error('❌ Failed to load customers:', response.status);
         }
-      } else if (metricType === 'appointments') {
-        console.log('📅 Loading appointments data...');
-        const response = await fetch('/api/admin/appointments', {
+      } else if (metricType === 'bookings') {
+        console.log('📅 Loading bookings data...');
+        const response = await fetch('/api/admin/bookings', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
         if (response.ok) {
           data = await response.json();
-          console.log('✅ Appointments data loaded:', data.length, 'items');
+          console.log('✅ Bookings data loaded:', data.length, 'items');
         } else {
-          console.error('❌ Failed to load appointments:', response.status);
+          console.error('❌ Failed to load bookings:', response.status);
         }
       } else {
         // For visitors and orders, use sample data for now
@@ -749,7 +749,7 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="appointments" className="flex items-center space-x-2">
               <Calendar className="h-4 w-4" />
-              <span>Appointment</span>
+              <span>Booking</span>
             </TabsTrigger>
             <TabsTrigger value="contact" className="flex items-center space-x-2">
               <MessageSquare className="h-4 w-4" />
@@ -791,21 +791,21 @@ export default function AdminDashboard() {
               />
 
               <DirectMetricCard
-                title="Total Appointments"
-                value={stats?.totalAppointments || 0}
-                description="All appointment bookings - Click for details"
+                title="Total Bookings"
+                value={stats?.totalBookings || 0}
+                description="All customer bookings - Click for details"
                 iconComponent={<Calendar className="h-4 w-4 text-gray-500" />}
                 borderClass="border-green-300"
-                onClick={() => handleMetricClick('appointments', 'Total Appointments', stats?.totalAppointments || 0)}
+                onClick={() => handleMetricClick('bookings', 'Total Bookings', stats?.totalBookings || 0)}
               />
 
               <DirectMetricCard
-                title="Today's Visitors"
-                value={stats?.todayAppointments || 12}
-                description="Today's website visitors - Click for details"
+                title="Today's Bookings"
+                value={stats?.todayBookings || 0}
+                description="Today's booking appointments - Click for details"
                 iconComponent={<Clock className="h-4 w-4 text-gray-500" />}
                 borderClass="border-yellow-300"
-                onClick={() => handleMetricClick('visitors', "Today's Visitors", stats?.todayAppointments || 12)}
+                onClick={() => handleMetricClick('bookings', "Today's Bookings", stats?.todayBookings || 0)}
               />
 
               <DirectMetricCard
@@ -840,22 +840,25 @@ export default function AdminDashboard() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Appointments</CardTitle>
+                  <CardTitle>Recent Bookings</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {stats?.recentAppointments?.slice(0, 5).map((appointment, index) => (
+                    {stats?.recentBookings?.slice(0, 5).map((booking, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium">Appointment #{appointment.id}</p>
+                          <p className="font-medium">Booking #{booking.id}</p>
                           <p className="text-sm text-gray-600">
-                            {new Date(appointment.appointmentDate).toLocaleDateString()} {appointment.timeSlot}
+                            {new Date(booking.bookingDate).toLocaleDateString()} {booking.timeSlot}
                           </p>
+                          {booking.serviceDetails && (
+                            <p className="text-xs text-gray-500">{booking.serviceDetails}</p>
+                          )}
                         </div>
                         <Badge 
-                          variant={appointment.status === 'confirmed' ? 'default' : 'secondary'}
+                          variant={booking.status === 'completed' ? 'default' : 'secondary'}
                         >
-                          {appointment.status}
+                          {booking.status}
                         </Badge>
                       </div>
                     ))}
@@ -938,10 +941,15 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="appointments" className="space-y-6">
-            <h2 className="text-2xl font-bold">Appointment</h2>
+            <h2 className="text-2xl font-bold">Booking Management</h2>
             <Card>
               <CardContent>
-                <p className="text-center text-gray-600 py-8">Appointment management features are being prepared.</p>
+                <p className="text-center text-gray-600 py-8">Booking management features are being prepared.</p>
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-gray-500">
+                    📊 Current System Status: {stats?.totalBookings || 0} total bookings from {stats?.totalCustomers || 0} customers
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

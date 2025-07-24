@@ -323,26 +323,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Appointments management routes  
+  // Bookings management routes (converted from appointments)
+  app.get('/api/admin/bookings', authenticateAdmin, async (req: any, res) => {
+    try {
+      // Get all bookings with customer details
+      const bookingsWithCustomers = await db
+        .select({
+          id: bookings.id,
+          customerId: bookings.customerId,
+          customerName: customers.name,
+          customerPhone: customers.phoneNumber,
+          service: bookings.serviceDetails,
+          bookingDate: bookings.bookingDate,
+          timeSlot: bookings.timeSlot,
+          status: bookings.status,
+          visitReason: bookings.visitReason,
+          price: bookings.price,
+          duration: bookings.duration,
+          notes: bookings.notes,
+          createdAt: bookings.createdAt
+        })
+        .from(bookings)
+        .leftJoin(customers, eq(bookings.customerId, customers.id))
+        .orderBy(bookings.bookingDate);
+
+      res.json(bookingsWithCustomers);
+    } catch (error) {
+      console.error('Get bookings error:', error);
+      res.status(500).json({ message: 'Failed to load bookings.' });
+    }
+  });
+
+  // Backward compatibility for appointments
   app.get('/api/admin/appointments', authenticateAdmin, async (req: any, res) => {
     try {
-      const appointments = await storage.getAllAppointments();
-      
-      // Transform appointments to include customer information
-      const appointmentsWithCustomers = appointments.map(apt => ({
-        id: apt.id,
-        customerName: 'Unknown', // Will be populated from join
-        customerPhone: 'N/A', // Will be populated from join
-        service: apt.visitReason || 'General Service',
-        appointmentDate: apt.appointmentDate,
-        timeSlot: apt.timeSlot,
-        status: apt.status || 'confirmed',
-        totalAmount: parseFloat(apt.price || '0') || 0,
-        createdAt: apt.createdAt || new Date(),
-        notes: apt.notes || ''
-      }));
+      // Redirect to bookings endpoint
+      const bookingsWithCustomers = await db
+        .select({
+          id: bookings.id,
+          customerId: bookings.customerId,
+          customerName: customers.name,
+          customerPhone: customers.phoneNumber,
+          service: bookings.serviceDetails,
+          appointmentDate: bookings.bookingDate, // Map to old field name
+          timeSlot: bookings.timeSlot,
+          status: bookings.status,
+          visitReason: bookings.visitReason,
+          price: bookings.price,
+          duration: bookings.duration,
+          notes: bookings.notes,
+          createdAt: bookings.createdAt
+        })
+        .from(bookings)
+        .leftJoin(customers, eq(bookings.customerId, customers.id))
+        .orderBy(bookings.bookingDate);
 
-      res.json(appointmentsWithCustomers);
+      res.json(bookingsWithCustomers);
     } catch (error) {
       console.error('Get appointments error:', error);
       res.status(500).json({ message: 'Failed to load appointments.' });
