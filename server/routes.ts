@@ -36,7 +36,7 @@ import {
   users,
   siteVisits
 } from "@shared/schema";
-import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lt, or, like, ilike, isNull, asc } from "drizzle-orm";
 import { customerEnhancedRoutes } from "./customer-enhanced-routes";
 import multer from "multer";
 import path from "path";
@@ -2946,6 +2946,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching gallery items:', error);
       res.status(500).json({ message: 'Failed to fetch gallery items' });
+    }
+  });
+
+  // Public Gallery API with Pagination
+  app.get('/api/gallery', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 12;
+      const category = req.query.category as string;
+      const search = req.query.search as string;
+      const offset = (page - 1) * limit;
+
+      let query = db.select().from(gallery).where(eq(gallery.isActive, true));
+      
+      if (category && category !== 'all') {
+        query = query.where(eq(gallery.category, category));
+      }
+      
+      if (search) {
+        query = query.where(
+          or(
+            ilike(gallery.title, `%${search}%`),
+            ilike(gallery.description, `%${search}%`)
+          )
+        );
+      }
+
+      const totalQuery = db.select({ count: sql<number>`count(*)` }).from(gallery).where(eq(gallery.isActive, true));
+      
+      if (category && category !== 'all') {
+        totalQuery.where(eq(gallery.category, category));
+      }
+      
+      if (search) {
+        totalQuery.where(
+          or(
+            ilike(gallery.title, `%${search}%`),
+            ilike(gallery.description, `%${search}%`)
+          )
+        );
+      }
+
+      const [items, totalResult] = await Promise.all([
+        query.orderBy(desc(gallery.displayOrder), desc(gallery.GetDate)).limit(limit).offset(offset),
+        totalQuery
+      ]);
+
+      const total = totalResult[0]?.count || 0;
+      const totalPages = Math.ceil(total / limit);
+
+      res.json({
+        items,
+        pagination: {
+          current: page,
+          total: totalPages,
+          limit,
+          totalItems: total,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching gallery items:', error);
+      res.json({ items: [], pagination: { current: 1, total: 0, limit: 12, totalItems: 0, hasNext: false, hasPrev: false } });
     }
   });
 
