@@ -13,6 +13,22 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (July 2025)
 
+### 5-Card Admin Dashboard Layout Implementation (July 24, 2025)
+- **Restructured Admin Dashboard**: Updated from 4-card to 5-card layout as requested
+  - Combined "Total" card showing Customers / Bookings / Orders in concise format
+  - Individual today cards: Today Customer, Today's Booking, Today's Visit, Today Orders
+  - Site visits tracking table (siteVisits) created for website visitor analytics
+  - All "today" metrics now properly filter by current date using database timestamps
+- **Enhanced Data Tracking**: Added comprehensive today-specific metrics
+  - Today Customer: New customers registered today (filtered by createdAt)
+  - Today's Booking: Booking appointments for today (filtered by bookingDate) 
+  - Today's Visit: Website visitors today (tracked via site visit API)
+  - Today Orders: Order transactions completed today (filtered by createdAt)
+- **Site Visit Tracking System**: Complete visitor analytics infrastructure
+  - New siteVisits table storing IP, user agent, referrer, page, session data
+  - API endpoint /api/track-visit for visitor data collection
+  - Real-time today's visit count for dashboard analytics
+
 ### Complete AI Nail Art System with Customer Integration (July 23, 2025)
 - **Customer-Centric 10-Finger AI Nail System**: Comprehensive nail art management connected to Customer table via phone number
   - Created customer_nail_info table storing all 10 fingers data per customer session

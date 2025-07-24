@@ -46,6 +46,7 @@ interface AdminStats {
   todayCustomers: number;
   todayBookings: number;
   todayVisits: number;
+  todayOrders: number;
   totalCustomers: number;
   totalBookings: number;
   totalOrders: number;
@@ -791,12 +792,12 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {/* Combined Totals Card */}
               <DirectMetricCard
-                title="Total Combined"
+                title="Total"
                 value={`${stats?.totalCombined?.customers || 0} / ${stats?.totalCombined?.bookings || 0} / ${stats?.totalCombined?.orders || 0}`}
-                description="Total Customers / Total Bookings / Total Orders"
+                description="Customers / Bookings / Orders"
                 iconComponent={<TrendingUp className="h-4 w-4 text-gray-500" />}
                 borderClass="border-purple-300"
-                onClick={() => handleMetricClick('combined', 'Total Combined Statistics', 
+                onClick={() => handleMetricClick('customers', 'Total Combined Statistics', 
                   (stats?.totalCombined?.customers || 0) + (stats?.totalCombined?.bookings || 0) + (stats?.totalCombined?.orders || 0))}
               />
 
@@ -807,7 +808,7 @@ export default function AdminDashboard() {
                 description="New customers registered today - Click for details"
                 iconComponent={<Users className="h-4 w-4 text-gray-500" />}
                 borderClass="border-blue-300"
-                onClick={() => handleMetricClick('today-customers', 'Today Customer', stats?.todayCustomers || 0)}
+                onClick={() => handleMetricClick('customers', 'Today Customer', stats?.todayCustomers || 0)}
               />
 
               {/* Today's Booking Card */}
@@ -817,7 +818,7 @@ export default function AdminDashboard() {
                 description="Today's booking appointments - Click for details"
                 iconComponent={<Calendar className="h-4 w-4 text-gray-500" />}
                 borderClass="border-green-300"
-                onClick={() => handleMetricClick('today-bookings', "Today's Booking", stats?.todayBookings || 0)}
+                onClick={() => handleMetricClick('bookings', "Today's Booking", stats?.todayBookings || 0)}
               />
 
               {/* Today's Visit Card */}
@@ -827,17 +828,17 @@ export default function AdminDashboard() {
                 description="Site visitors today - Click for details"
                 iconComponent={<Activity className="h-4 w-4 text-gray-500" />}
                 borderClass="border-orange-300"
-                onClick={() => handleMetricClick('today-visits', "Today's Visit", stats?.todayVisits || 0)}
+                onClick={() => handleMetricClick('visitors', "Today's Visit", stats?.todayVisits || 0)}
               />
 
-              {/* Total Orders Card */}
+              {/* Today Orders Card */}
               <DirectMetricCard
-                title="Total Orders"
-                value={stats?.totalOrders || 0}
-                description="All order transactions - Click for details"
+                title="Today Orders"
+                value={stats?.todayOrders || 0}
+                description="Today's order transactions - Click for details"
                 iconComponent={<ShoppingBag className="h-4 w-4 text-gray-500" />}
                 borderClass="border-red-300"
-                onClick={() => handleMetricClick('orders', 'Total Orders', stats?.totalOrders || 0)}
+                onClick={() => handleMetricClick('orders', 'Today Orders', stats?.todayOrders || 0)}
               />
             </div>
 

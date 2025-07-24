@@ -2,7 +2,7 @@ import React from 'react';
 
 interface DirectMetricCardProps {
   title: string;
-  value: number;
+  value: number | string;
   description: string;
   iconComponent: React.ReactNode;
   borderClass: string;

@@ -371,6 +371,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           )
         );
 
+      // Today's orders
+      const [todayOrderCount] = await db
+        .select({ count: sql`count(*)` })
+        .from(orders)
+        .where(
+          and(
+            gte(orders.createdAt, today),
+            lt(orders.createdAt, tomorrow)
+          )
+        );
+
       // Get recent data for modals
       const recentCustomers = await db
         .select()
@@ -405,6 +416,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         todayCustomers: todayCustomerCount.count || 0,
         todayBookings: todayBookingCount.count || 0,
         todayVisits: todayVisitCount.count || 0,
+        todayOrders: todayOrderCount.count || 0,
         // Additional data
         recentCustomers,
         recentBookings,
@@ -421,7 +433,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalCombined: stats.totalCombined,
         todayCustomers: stats.todayCustomers,
         todayBookings: stats.todayBookings,
-        todayVisits: stats.todayVisits
+        todayVisits: stats.todayVisits,
+        todayOrders: stats.todayOrders
       });
 
       res.json(stats);
