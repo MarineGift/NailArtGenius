@@ -25,6 +25,7 @@ import AITailGenerator from "@/pages/ai-nail-generator";
 import GalleryAdmin from "@/pages/gallery-admin";
 import RealTimeBooking from "@/pages/real-time-booking";
 import CustomerManagementPage from "@/pages/customer-management";
+import AdvancedCustomerManagementPage from "@/pages/advanced-customer-management";
 import Signup from "@/pages/signup";
 import Booking from "@/pages/booking";
 import StylePreferences from "@/pages/style-preferences";
@@ -87,6 +88,7 @@ function Router() {
         <Route path="/admin-test" component={AdminTest} />
         <Route path="/admin-panel" component={AdminPanel} />
         <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
+        <Route path="/advanced-customer-management" component={AdvancedCustomerManagementPage} />
         
         {/* Protected pages - only for authenticated users */}
         {isAuthenticated && (

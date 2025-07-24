@@ -37,6 +37,7 @@ import {
   siteVisits
 } from "@shared/schema";
 import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
+import { customerEnhancedRoutes } from "./customer-enhanced-routes";
 import multer from "multer";
 import path from "path";
 import fs from "fs/promises";
@@ -3317,6 +3318,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Social sharing routes
   const socialSharingRoutes = (await import('./socialSharingRoutes')).default;
   app.use('/api', socialSharingRoutes);
+
+  // Add customer enhanced routes
+  app.use(customerEnhancedRoutes);
 
   const httpServer = createServer(app);
   return httpServer;

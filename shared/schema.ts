@@ -193,15 +193,101 @@ export const customers = pgTable("customers", {
   email: varchar("email", { length: 100 }),
   phoneNumber: varchar("phone_number", { length: 20 }).unique().notNull(), // UNIQUE KEY FIELD
   visitType: varchar("visit_type").default("general_visit"), // "appointment_visit", "first_visit", "online_booking"
-  category: varchar("category", { length: 20 }).default("general").notNull(), // mailing, general, booking
+  category: varchar("category", { length: 20 }).default("general").notNull(), // mailing, general, booking, VIP, premium
   mailingConsent: boolean("mailing_consent").default(false),
   totalVisits: integer("total_visits").default(0),
   totalSpent: decimal("total_spent", { precision: 10, scale: 2 }).default("0"),
   lastVisit: timestamp("last_visit"),
   notes: text("notes"),
+  // Enhanced customer management fields
+  vipLevel: varchar("vip_level").default("regular"), // regular, silver, gold, platinum, diamond
+  loyaltyPoints: integer("loyalty_points").default(0),
+  preferredServices: text("preferred_services").array(), // Array of preferred service types
+  birthday: timestamp("birthday"),
+  anniversaryDate: timestamp("anniversary_date"), // Date of first visit or membership
+  address: text("address"),
+  occupation: varchar("occupation"),
+  referralSource: varchar("referral_source"), // how they found us
+  marketingOptIn: boolean("marketing_opt_in").default(false),
+  smsOptIn: boolean("sms_opt_in").default(false),
+  lastContactDate: timestamp("last_contact_date"),
+  nextFollowUpDate: timestamp("next_follow_up_date"),
+  customerRating: decimal("customer_rating", { precision: 3, scale: 2 }), // 0.00 to 5.00
+  lifetimeValue: decimal("lifetime_value", { precision: 10, scale: 2 }).default("0"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
+});
+
+// Customer visit history for detailed tracking
+export const customerVisitHistory = pgTable("customer_visit_history", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  visitDate: timestamp("visit_date").notNull(),
+  serviceIds: text("service_ids").array(), // Array of service IDs received
+  serviceNames: text("service_names").array(), // Service names for easy display
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
+  paymentMethod: varchar("payment_method").default("cash"), // cash, card, paypal, points
+  staffMember: varchar("staff_member"), // Who served the customer
+  customerSatisfaction: integer("customer_satisfaction"), // 1-5 rating
+  visitNotes: text("visit_notes"), // Notes from this specific visit
+  promotionsUsed: text("promotions_used").array(), // Any promotions applied
+  pointsEarned: integer("points_earned").default(0),
+  pointsRedeemed: integer("points_redeemed").default(0),
+  visitDuration: integer("visit_duration"), // Duration in minutes
+  waitTime: integer("wait_time"), // Wait time in minutes
+  createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(),
+});
+
+// Customer preferences and profile
+export const customerPreferences = pgTable("customer_preferences", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  preferredColors: text("preferred_colors").array(), // Favorite nail colors
+  preferredStyles: text("preferred_styles").array(), // Preferred nail art styles
+  allergyInfo: text("allergy_info"), // Any allergies or sensitivities
+  skinSensitivity: varchar("skin_sensitivity").default("normal"), // normal, sensitive, very_sensitive
+  preferredAppointmentTime: varchar("preferred_appointment_time"), // morning, afternoon, evening
+  preferredStaff: text("preferred_staff").array(), // Preferred staff members
+  communicationPreference: varchar("communication_preference").default("sms"), // sms, email, phone, app
+  languagePreference: varchar("language_preference").default("korean"), // korean, english, etc
+  specialRequests: text("special_requests"), // Any special requests or needs
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(),
+});
+
+// Customer loyalty program
+export const customerLoyalty = pgTable("customer_loyalty", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  currentPoints: integer("current_points").default(0),
+  totalPointsEarned: integer("total_points_earned").default(0),
+  totalPointsRedeemed: integer("total_points_redeemed").default(0),
+  tierLevel: varchar("tier_level").default("bronze"), // bronze, silver, gold, platinum, diamond
+  tierBenefits: text("tier_benefits").array(), // Current tier benefits
+  nextTierRequirement: integer("next_tier_requirement"), // Points needed for next tier
+  membershipStartDate: timestamp("membership_start_date").defaultNow(),
+  lastPointsActivity: timestamp("last_points_activity"),
+  bonusMultiplier: decimal("bonus_multiplier", { precision: 3, scale: 2 }).default("1.00"), // Point earning multiplier
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(),
+});
+
+// Customer segmentation for targeted marketing
+export const customerSegments = pgTable("customer_segments", {
+  id: serial("id").primaryKey(),
+  segmentName: varchar("segment_name").notNull(),
+  description: text("description"),
+  criteria: jsonb("criteria"), // JSON criteria for automatic segmentation
+  customerIds: text("customer_ids").array(), // Array of customer IDs in this segment
+  isActive: boolean("is_active").default(true),
+  createdBy: varchar("created_by"), // Admin who created this segment
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(),
 });
 
 // Customer purchase history
