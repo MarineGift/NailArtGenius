@@ -21,6 +21,7 @@ export const sessions = pgTable(
     sid: varchar("sid").primaryKey(),
     sess: jsonb("sess").notNull(),
     expire: timestamp("expire").notNull(),
+    GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
   },
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
@@ -43,6 +44,7 @@ export const users = pgTable("users", {
   username: varchar("username").unique(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer photos for nail analysis with card-based measurement
@@ -59,6 +61,7 @@ export const customerPhotos = pgTable("customer_photos", {
   cardPixelHeight: integer("card_pixel_height"), // Card height in pixels for scale calculation
   scaleFactor: decimal("scale_factor", { precision: 10, scale: 6 }), // mm per pixel ratio
   uploadedAt: timestamp("uploaded_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer nail images (12 images per customer)
@@ -73,6 +76,7 @@ export const customerNailImages = pgTable("customer_nail_images", {
   imageUrl: varchar("image_url"),
   notes: text("notes"),
   uploadedAt: timestamp("uploaded_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer reservations for AI nail art
@@ -91,6 +95,7 @@ export const customerReservations = pgTable("customer_reservations", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // AI generated nail analysis with precise measurements
@@ -109,6 +114,7 @@ export const aiGeneratedNails = pgTable("ai_generated_nails", {
   measurementConfidence: decimal("measurement_confidence", { precision: 5, scale: 2 }), // 0-100 confidence score
   imageUrl: varchar("image_url"), // Generated nail shape visualization
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Nail designs table - catalog of available designs
@@ -125,6 +131,7 @@ export const nailDesigns = pgTable("nail_designs", {
   tags: text("tags").array(), // Array of style tags
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // User style preferences for AI customization
@@ -142,6 +149,7 @@ export const userStylePreferences = pgTable("user_style_preferences", {
   notes: text("notes"), // Additional preference notes
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // AI-generated custom designs
@@ -159,6 +167,7 @@ export const customNailDesigns = pgTable("custom_nail_designs", {
   status: varchar("status").default("generated"), // generated, approved, rejected
   price: decimal("price", { precision: 10, scale: 2 }), // Custom pricing
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Orders
@@ -173,6 +182,7 @@ export const orders = pgTable("orders", {
   printStatus: varchar("print_status").default("waiting"), // waiting, printing, completed
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer management table 
@@ -191,6 +201,7 @@ export const customers = pgTable("customers", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer purchase history
@@ -207,6 +218,7 @@ export const customerPurchases = pgTable("customer_purchases", {
   purchaseDate: timestamp("purchase_date").notNull(),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // SMS templates for customer communication
@@ -219,6 +231,7 @@ export const smsTemplates = pgTable("sms_templates", {
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 
@@ -234,6 +247,7 @@ export const carouselImages = pgTable("carousel_images", {
   isActive: boolean("is_active").default(true), // Whether the image is currently active
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Gallery table for managing gallery data and images
@@ -250,6 +264,7 @@ export const gallery = pgTable("gallery", {
   isActive: boolean("is_active").default(true), // Whether item is active
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Gallery detailed descriptions table for modal views
@@ -265,6 +280,7 @@ export const galleryDesc = pgTable("gallery_desc", {
   materials: text("materials").array(), // Materials used
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // AI Nail Art images table - stores customer nail images and AI generated designs
@@ -280,6 +296,7 @@ export const aiNailArtImages = pgTable("ai_nail_art_images", {
   sessionId: varchar("session_id"), // Groups related nail art session
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // SMS automation rules
@@ -294,6 +311,7 @@ export const smsAutomationRules = pgTable("sms_automation_rules", {
   lastTriggered: timestamp("last_triggered"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // SMS history tracking
@@ -309,6 +327,7 @@ export const smsHistory = pgTable("sms_history", {
   sentAt: timestamp("sent_at").defaultNow(),
   deliveryStatus: varchar("delivery_status"), // delivered, failed, unknown
   errorMessage: text("error_message"),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Bookings for nail salon visits (renamed from appointments)
@@ -327,6 +346,7 @@ export const bookings = pgTable("bookings", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Keep appointments table as alias for backward compatibility
@@ -344,6 +364,7 @@ export const services = pgTable("services", {
   displayOrder: integer("display_order").default(0),
   requiresConsultation: boolean("requires_consultation").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Salon operating hours and availability
@@ -358,6 +379,7 @@ export const operatingHours = pgTable("operating_hours", {
   breakEndTime: varchar("break_end_time"),
   specialNotes: text("special_notes"),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Time slot availability tracking
@@ -371,6 +393,7 @@ export const timeSlotAvailability = pgTable("time_slot_availability", {
   blockedReason: varchar("blocked_reason"), // holiday, maintenance, etc.
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Contact inquiries from customers
@@ -383,6 +406,7 @@ export const contactInquiries = pgTable("contact_inquiries", {
   adminResponse: text("admin_response"),
   respondedAt: timestamp("responded_at"),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Contact inquiry insert schema
@@ -410,6 +434,7 @@ export const adminUsers = pgTable("admin_users", {
   lastLogin: timestamp("last_login"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Email campaigns table
@@ -426,6 +451,7 @@ export const emailCampaigns = pgTable("email_campaigns", {
   sentAt: timestamp("sent_at"),
   createdBy: integer("created_by").references(() => adminUsers.id),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // User activity tracking for analytics
@@ -440,6 +466,7 @@ export const userActivities = pgTable("user_activities", {
   ipAddress: varchar("ip_address"),
   duration: integer("duration"), // Time spent on activity (seconds)
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Design interaction tracking
@@ -453,6 +480,7 @@ export const designInteractions = pgTable("design_interactions", {
   timeSpent: integer("time_spent"), // Seconds spent viewing/interacting
   interactionData: jsonb("interaction_data"), // Additional interaction details
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // User preferences learning and analytics
@@ -474,6 +502,7 @@ export const userBehaviorAnalytics = pgTable("user_behavior_analytics", {
   loyaltyScore: integer("loyalty_score").default(0), // Calculated loyalty metric
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Design performance analytics
@@ -493,6 +522,7 @@ export const designAnalytics = pgTable("design_analytics", {
   demographicPerformance: jsonb("demographic_performance"), // Performance by user segments
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // User journey tracking
@@ -510,6 +540,7 @@ export const userJourneys = pgTable("user_journeys", {
   exitPoint: varchar("exit_point"), // Where user left the journey
   dropoffReason: varchar("dropoff_reason"), // technical_issue, price_concern, etc.
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 export type UpsertUser = typeof users.$inferInsert;
@@ -543,6 +574,7 @@ export const customerNailInfo = pgTable("customer_nail_info", {
   sessionId: varchar("session_id", { length: 100 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer Visit History table
@@ -558,6 +590,7 @@ export const customerVisits = pgTable("customer_visits", {
   satisfaction: integer("satisfaction"), // 1-5 rating
   nextAppointment: timestamp("next_appointment"),
   createdAt: timestamp("created_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
 });
 
 // Customer Visit History schema and types
@@ -597,6 +630,20 @@ export type Appointment = Booking;
 export const insertServiceSchema = createInsertSchema(services).omit({ id: true, createdAt: true });
 export type InsertService = z.infer<typeof insertServiceSchema>;
 export type Service = typeof services.$inferSelect;
+
+// Site visits tracking for analytics
+export const siteVisits = pgTable("site_visits", {
+  id: serial("id").primaryKey(),
+  visitorId: varchar("visitor_id"), // Anonymous visitor tracking ID
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  referrer: text("referrer"),
+  page: varchar("page").notNull(), // Page visited
+  sessionId: varchar("session_id"),
+  visitDuration: integer("visit_duration"), // Duration in seconds
+  visitedAt: timestamp("visited_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
+});
 
 export const insertOperatingHoursSchema = createInsertSchema(operatingHours).omit({ id: true, createdAt: true });
 export type InsertOperatingHours = z.infer<typeof insertOperatingHoursSchema>;
@@ -652,18 +699,7 @@ export const insertCustomNailDesignSchema = createInsertSchema(customNailDesigns
 export type InsertCustomNailDesign = z.infer<typeof insertCustomNailDesignSchema>;
 export type CustomNailDesign = typeof customNailDesigns.$inferSelect;
 
-// Site visits tracking table for Today's Visits analytics
-export const siteVisits = pgTable("site_visits", {
-  id: serial("id").primaryKey(),
-  visitorId: varchar("visitor_id"), // Anonymous visitor tracking ID
-  ipAddress: varchar("ip_address"),
-  userAgent: text("user_agent"),
-  referrer: text("referrer"),
-  page: varchar("page").notNull(), // Page visited
-  sessionId: varchar("session_id"),
-  visitDuration: integer("visit_duration"), // Duration in seconds
-  visitedAt: timestamp("visited_at").defaultNow(),
-});
+// Site visits tracking table for Today's Visits analytics (duplicate removed)
 
 export const insertSiteVisitSchema = createInsertSchema(siteVisits).omit({ id: true, visitedAt: true });
 export type InsertSiteVisit = z.infer<typeof insertSiteVisitSchema>;

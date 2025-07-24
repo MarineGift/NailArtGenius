@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { seedBookingData } from "./seedData";
 import { seedTestCustomersAndReservations } from "./test-data-seeder";
 import { seedComprehensiveData } from "./comprehensive-seed-data";
+import { seedTodayDateData } from "./today-date-seeder";
 
 const app = express();
 app.use(express.json());
@@ -79,6 +80,13 @@ app.use((req, res, next) => {
     await updateGalleryWithGalleryNo();
   } catch (error) {
     console.log('Note: Gallery update skipped (already exists or error occurred)');
+  }
+  
+  // Seed today's date sample data for dashboard testing
+  try {
+    await seedTodayDateData();
+  } catch (error) {
+    console.log('Note: Today date seeding skipped (already exists or error occurred)');
   }
   
   const server = await registerRoutes(app);

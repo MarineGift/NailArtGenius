@@ -143,7 +143,12 @@ export async function seedComprehensiveData() {
 
     const insertedGalleryItems = [];
     for (const item of galleryData) {
-      const [inserted] = await db.insert(gallery).values(item).returning();
+      // Add required galleryNo field
+      const itemWithGalleryNo = {
+        ...item,
+        galleryNo: `GALLERY_${String(item.displayOrder).padStart(3, '0')}`
+      };
+      const [inserted] = await db.insert(gallery).values(itemWithGalleryNo).returning();
       insertedGalleryItems.push(inserted);
     }
 
