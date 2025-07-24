@@ -2728,6 +2728,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Customer Booking History Route
+  app.get('/api/customer/:phone/booking-history', async (req, res) => {
+    try {
+      const customerPhone = req.params.phone;
+      const { getCustomerBookingHistory } = await import('./booking-data-seeder');
+      const bookingHistory = await getCustomerBookingHistory(customerPhone);
+      
+      if (bookingHistory.error) {
+        return res.status(404).json({ message: bookingHistory.error });
+      }
+      
+      res.json(bookingHistory);
+    } catch (error) {
+      console.error('Error fetching customer booking history:', error);
+      res.status(500).json({ message: 'Failed to fetch customer booking history' });
+    }
+  });
+
   // Get comprehensive customer information with all related data
   app.get('/api/customer/:phone/comprehensive', async (req, res) => {
     try {

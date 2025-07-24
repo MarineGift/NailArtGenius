@@ -64,6 +64,22 @@ app.use((req, res, next) => {
   } catch (error) {
     console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
   }
+
+  // Create booking data for all customers (1-5 bookings each)
+  try {
+    const { seedBookingData } = await import('./booking-data-seeder');
+    await seedBookingData();
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
+
+  // Update gallery with Gallery_No unique identifiers
+  try {
+    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
+    await updateGalleryWithGalleryNo();
+  } catch (error) {
+    console.log('Note: Gallery update skipped (already exists or error occurred)');
+  }
   
   const server = await registerRoutes(app);
 

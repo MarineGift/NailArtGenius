@@ -71,6 +71,7 @@ function Router() {
         <Route path="/booking" component={Booking} />
         <Route path="/checkout" component={Checkout} />
         <Route path="/customer-nail-info" component={CustomerNailInfo} />
+        <Route path="/booking-history" component={lazy(() => import("./pages/booking-history"))} />
         <Route path="/appointment-booking-new" component={AppointmentBooking} />
         <Route path="/real-time-booking" component={RealTimeBooking} />
         <Route path="/pwa-test" component={PWATestPage} />

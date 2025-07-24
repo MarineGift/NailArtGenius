@@ -197,7 +197,7 @@ export const customers = pgTable("customers", {
 export const customerPurchases = pgTable("customer_purchases", {
   id: serial("id").primaryKey(),
   customerId: integer("customer_id").notNull().references(() => customers.id),
-  appointmentId: integer("appointment_id").references(() => appointments.id),
+  bookingId: integer("booking_id").references(() => bookings.id),
   orderId: integer("order_id").references(() => orders.id),
   serviceId: integer("service_id").references(() => services.id),
   serviceName: varchar("service_name").notNull(),
@@ -239,6 +239,7 @@ export const carouselImages = pgTable("carousel_images", {
 // Gallery table for managing gallery data and images
 export const gallery = pgTable("gallery", {
   id: serial("id").primaryKey(),
+  galleryNo: varchar("gallery_no").unique().notNull(), // Unique Gallery Number identifier
   title: varchar("title").notNull(), // Gallery item title
   description: text("description"), // Gallery item description
   imagePath: varchar("image_path").notNull(), // Path to the gallery image
@@ -310,12 +311,12 @@ export const smsHistory = pgTable("sms_history", {
   errorMessage: text("error_message"),
 });
 
-// Appointments for nail salon visits (Enhanced for real-time booking)
-export const appointments = pgTable("appointments", {
+// Bookings for nail salon visits (renamed from appointments)
+export const bookings = pgTable("bookings", {
   id: serial("id").primaryKey(),
   customerId: integer("customer_id").notNull().references(() => customers.id),
   serviceId: integer("service_id").references(() => services.id),
-  appointmentDate: timestamp("appointment_date").notNull(),
+  bookingDate: timestamp("booking_date").notNull(),
   timeSlot: varchar("time_slot").notNull(), // "09:00", "09:30", "10:00", etc.
   duration: integer("duration").default(60), // minutes
   status: varchar("status").default("scheduled"), // scheduled, confirmed, in_progress, completed, cancelled, no_show
@@ -327,6 +328,9 @@ export const appointments = pgTable("appointments", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Keep appointments table as alias for backward compatibility
+export const appointments = bookings;
 
 // Service types and pricing
 export const services = pgTable("services", {
@@ -580,9 +584,15 @@ export const insertCustomerSchema = createInsertSchema(customers).omit({ id: tru
 export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
 export type Customer = typeof customers.$inferSelect;
 
-export const insertAppointmentSchema = createInsertSchema(appointments).omit({ id: true, createdAt: true, updatedAt: true });
-export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
-export type Appointment = typeof appointments.$inferSelect;
+// Booking schemas (new primary schemas)
+export const insertBookingSchema = createInsertSchema(bookings).omit({ id: true, createdAt: true, updatedAt: true });
+export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type Booking = typeof bookings.$inferSelect;
+
+// Appointment schemas (backward compatibility aliases)
+export const insertAppointmentSchema = insertBookingSchema;
+export type InsertAppointment = InsertBooking;
+export type Appointment = Booking;
 
 export const insertServiceSchema = createInsertSchema(services).omit({ id: true, createdAt: true });
 export type InsertService = z.infer<typeof insertServiceSchema>;
