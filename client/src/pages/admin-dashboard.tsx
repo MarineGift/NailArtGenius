@@ -38,11 +38,18 @@ import AdminModal from "@/components/AdminModal";
 import DirectMetricCard from "@/components/DirectMetricCard";
 
 interface AdminStats {
+  totalCombined: {
+    customers: number;
+    bookings: number;
+    orders: number;
+  };
+  todayCustomers: number;
+  todayBookings: number;
+  todayVisits: number;
   totalCustomers: number;
   totalBookings: number;
   totalOrders: number;
   totalUsers: number;
-  todayBookings: number;
   recentCustomers: any[];
   recentBookings: any[];
 }
@@ -780,34 +787,50 @@ export default function AdminDashboard() {
           <TabsContent value="dashboard" className="space-y-6">
 
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* 5-Card Layout: Combined Totals + Today's Individual Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              {/* Combined Totals Card */}
               <DirectMetricCard
-                title="Total Customers"
-                value={stats?.totalCustomers || 0}
-                description="All registered customers - Click for details"
+                title="Total Combined"
+                value={`${stats?.totalCombined?.customers || 0} / ${stats?.totalCombined?.bookings || 0} / ${stats?.totalCombined?.orders || 0}`}
+                description="Total Customers / Total Bookings / Total Orders"
+                iconComponent={<TrendingUp className="h-4 w-4 text-gray-500" />}
+                borderClass="border-purple-300"
+                onClick={() => handleMetricClick('combined', 'Total Combined Statistics', 
+                  (stats?.totalCombined?.customers || 0) + (stats?.totalCombined?.bookings || 0) + (stats?.totalCombined?.orders || 0))}
+              />
+
+              {/* Today Customer Card */}
+              <DirectMetricCard
+                title="Today Customer"
+                value={stats?.todayCustomers || 0}
+                description="New customers registered today - Click for details"
                 iconComponent={<Users className="h-4 w-4 text-gray-500" />}
                 borderClass="border-blue-300"
-                onClick={() => handleMetricClick('customers', 'Total Customers', stats?.totalCustomers || 0)}
+                onClick={() => handleMetricClick('today-customers', 'Today Customer', stats?.todayCustomers || 0)}
               />
 
+              {/* Today's Booking Card */}
               <DirectMetricCard
-                title="Total Bookings"
-                value={stats?.totalBookings || 0}
-                description="All customer bookings - Click for details"
-                iconComponent={<Calendar className="h-4 w-4 text-gray-500" />}
-                borderClass="border-green-300"
-                onClick={() => handleMetricClick('bookings', 'Total Bookings', stats?.totalBookings || 0)}
-              />
-
-              <DirectMetricCard
-                title="Today's Bookings"
+                title="Today's Booking"
                 value={stats?.todayBookings || 0}
                 description="Today's booking appointments - Click for details"
-                iconComponent={<Clock className="h-4 w-4 text-gray-500" />}
-                borderClass="border-yellow-300"
-                onClick={() => handleMetricClick('bookings', "Today's Bookings", stats?.todayBookings || 0)}
+                iconComponent={<Calendar className="h-4 w-4 text-gray-500" />}
+                borderClass="border-green-300"
+                onClick={() => handleMetricClick('today-bookings', "Today's Booking", stats?.todayBookings || 0)}
               />
 
+              {/* Today's Visit Card */}
+              <DirectMetricCard
+                title="Today's Visit"
+                value={stats?.todayVisits || 0}
+                description="Site visitors today - Click for details"
+                iconComponent={<Activity className="h-4 w-4 text-gray-500" />}
+                borderClass="border-orange-300"
+                onClick={() => handleMetricClick('today-visits', "Today's Visit", stats?.todayVisits || 0)}
+              />
+
+              {/* Total Orders Card */}
               <DirectMetricCard
                 title="Total Orders"
                 value={stats?.totalOrders || 0}

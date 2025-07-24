@@ -33,7 +33,8 @@ import {
   aiNailArtImages,
   bookings,
   orders,
-  users
+  users,
+  siteVisits
 } from "@shared/schema";
 import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
 import multer from "multer";
@@ -324,21 +325,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin dashboard data (updated for booking system)
+  // Admin dashboard data (updated for 5-card layout with site visits)
   app.get('/api/admin/dashboard', authenticateAdmin, async (req: any, res) => {
     try {
-      // Use direct database queries for accurate counts
-      const [customerCount] = await db.select({ count: sql`count(*)` }).from(customers);
-      const [bookingCount] = await db.select({ count: sql`count(*)` }).from(bookings);
-      const [orderCount] = await db.select({ count: sql`count(*)` }).from(orders);
-      const [userCount] = await db.select({ count: sql`count(*)` }).from(users);
-
-      // Get today's bookings
+      // Get today's date range
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
+
+      // Use direct database queries for accurate counts
+      const [customerCount] = await db.select({ count: sql`count(*)` }).from(customers);
+      const [bookingCount] = await db.select({ count: sql`count(*)` }).from(bookings);
+      const [orderCount] = await db.select({ count: sql`count(*)` }).from(orders);
       
+      // Today's specific counts
+      const [todayCustomerCount] = await db
+        .select({ count: sql`count(*)` })
+        .from(customers)
+        .where(
+          and(
+            gte(customers.createdAt, today),
+            lt(customers.createdAt, tomorrow)
+          )
+        );
+
       const [todayBookingCount] = await db
         .select({ count: sql`count(*)` })
         .from(bookings)
@@ -349,14 +360,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           )
         );
 
-      // Get recent customers (last 10)
+      // Today's site visits
+      const [todayVisitCount] = await db
+        .select({ count: sql`count(*)` })
+        .from(siteVisits)
+        .where(
+          and(
+            gte(siteVisits.visitedAt, today),
+            lt(siteVisits.visitedAt, tomorrow)
+          )
+        );
+
+      // Get recent data for modals
       const recentCustomers = await db
         .select()
         .from(customers)
         .orderBy(desc(customers.createdAt))
         .limit(10);
 
-      // Get recent bookings (last 10) with customer details
       const recentBookings = await db
         .select({
           id: bookings.id,
@@ -372,25 +393,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .orderBy(desc(bookings.createdAt))
         .limit(10);
 
-      // Calculate statistics with accurate counts
+      // Calculate statistics for 5-card layout
       const stats = {
-        totalCustomers: customerCount.count || 0,
-        totalBookings: bookingCount.count || 0,
-        totalOrders: orderCount.count || 0,
-        totalUsers: userCount.count || 0,
+        // Combined totals card
+        totalCombined: {
+          customers: customerCount.count || 0,
+          bookings: bookingCount.count || 0,
+          orders: orderCount.count || 0
+        },
+        // Individual today cards
+        todayCustomers: todayCustomerCount.count || 0,
         todayBookings: todayBookingCount.count || 0,
+        todayVisits: todayVisitCount.count || 0,
+        // Additional data
         recentCustomers,
         recentBookings,
         // Backward compatibility
+        totalCustomers: customerCount.count || 0,
+        totalBookings: bookingCount.count || 0,
+        totalOrders: orderCount.count || 0,
         totalAppointments: bookingCount.count || 0,
         recentAppointments: recentBookings,
         todayAppointments: todayBookingCount.count || 0
       };
 
-      console.log('📊 Dashboard stats calculated:', {
-        totalCustomers: stats.totalCustomers,
-        totalBookings: stats.totalBookings,
-        todayBookings: stats.todayBookings
+      console.log('📊 Dashboard stats calculated (5-card layout):', {
+        totalCombined: stats.totalCombined,
+        todayCustomers: stats.todayCustomers,
+        todayBookings: stats.todayBookings,
+        todayVisits: stats.todayVisits
       });
 
       res.json(stats);
@@ -2469,6 +2500,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Serve HTML version for testing
   app.use('/html-version', express.static(path.join(process.cwd(), 'html-version')));
+
+  // Site visit tracking endpoint
+  app.post('/api/track-visit', async (req, res) => {
+    try {
+      const { page, visitorId, sessionId, referrer } = req.body;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent') || '';
+
+      await db.insert(siteVisits).values({
+        visitorId,
+        ipAddress,
+        userAgent,
+        referrer,
+        page,
+        sessionId
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error tracking site visit:', error);
+      res.status(500).json({ message: 'Failed to track visit' });
+    }
+  });
 
   // Contact inquiries API
   app.post('/api/contact-inquiries', async (req, res) => {

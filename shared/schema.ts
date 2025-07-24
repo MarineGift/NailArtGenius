@@ -651,3 +651,20 @@ export type UserStylePreferences = typeof userStylePreferences.$inferSelect;
 export const insertCustomNailDesignSchema = createInsertSchema(customNailDesigns).omit({ id: true, createdAt: true });
 export type InsertCustomNailDesign = z.infer<typeof insertCustomNailDesignSchema>;
 export type CustomNailDesign = typeof customNailDesigns.$inferSelect;
+
+// Site visits tracking table for Today's Visits analytics
+export const siteVisits = pgTable("site_visits", {
+  id: serial("id").primaryKey(),
+  visitorId: varchar("visitor_id"), // Anonymous visitor tracking ID
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  referrer: text("referrer"),
+  page: varchar("page").notNull(), // Page visited
+  sessionId: varchar("session_id"),
+  visitDuration: integer("visit_duration"), // Duration in seconds
+  visitedAt: timestamp("visited_at").defaultNow(),
+});
+
+export const insertSiteVisitSchema = createInsertSchema(siteVisits).omit({ id: true, visitedAt: true });
+export type InsertSiteVisit = z.infer<typeof insertSiteVisitSchema>;
+export type SiteVisit = typeof siteVisits.$inferSelect;
