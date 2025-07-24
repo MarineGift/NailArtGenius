@@ -1,7 +1,11 @@
 import express, { type Request, Response, NextFunction } from "express";
 import http from "http";
-import { registerAccessRoutes } from "./access-routes";
+import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { seedBookingData } from "./seedData";
+import { seedTestCustomersAndReservations } from "./test-data-seeder";
+import { seedComprehensiveData } from "./comprehensive-seed-data";
+import { seedTodayDateData } from "./today-date-seeder";
 
 const app = express();
 app.use(express.json());
@@ -38,22 +42,69 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize Microsoft Access-style database
-  const { accessStorage } = await import('./access-storage');
+  console.log('🔄 Migrating from Access DB to Supabase PostgreSQL...');
   
-  // Initialize Access DB sample data
+  // Initialize PostgreSQL/Supabase data seeding
   try {
-    await accessStorage.initializeSampleData();
-    console.log('✅ Microsoft Access database initialized successfully');
+    await seedBookingData();
+    console.log('✅ Booking data seeded to Supabase');
   } catch (error) {
-    console.log('Note: Access database initialization skipped (already exists or error occurred)');
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
   }
   
-  // Skip PostgreSQL-based data seeding - using Microsoft Access DB instead
-  console.log('🚫 Skipping PostgreSQL data seeding - using Microsoft Access database');
+  // Seed test customers and reservations
+  try {
+    await seedTestCustomersAndReservations();
+    console.log('✅ Test customers seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Test data seeding skipped (already exists or error occurred)');
+  }
   
-  // Create HTTP server for Access database
-  const server = http.createServer(app);
+  // Seed comprehensive data (carousel, gallery, AI nail art)
+  try {
+    await seedComprehensiveData();
+    console.log('✅ Comprehensive data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
+  }
+
+  // Seed comprehensive sample data for testing
+  try {
+    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
+    await seedComprehensiveSampleData();
+    console.log('✅ Comprehensive sample data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
+  }
+
+  // Create booking data for all customers (1-5 bookings each)
+  try {
+    const { seedBookingData } = await import('./booking-data-seeder');
+    await seedBookingData();
+    console.log('✅ Customer booking data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
+
+  // Update gallery with Gallery_No unique identifiers
+  try {
+    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
+    await updateGalleryWithGalleryNo();
+    console.log('✅ Gallery updated in Supabase');
+  } catch (error) {
+    console.log('Note: Gallery update skipped (already exists or error occurred)');
+  }
+  
+  // Seed today's date sample data for dashboard testing
+  try {
+    await seedTodayDateData();
+    console.log('✅ Today date data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Today date seeding skipped (already exists or error occurred)');
+  }
+  
+  const server = await registerRoutes(app);
+  console.log('✅ Supabase PostgreSQL routes registered successfully');
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -62,9 +113,6 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
-
-  // Register Access routes before Vite setup
-  registerAccessRoutes(app);
   
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
