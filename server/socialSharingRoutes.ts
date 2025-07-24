@@ -9,8 +9,8 @@ const router = Router();
 const shareDataSchema = z.object({
   platform: z.string(),
   designId: z.string().optional(),
-  designTitle: z.string().optional(),
-  sharedAt: z.string().optional()
+  designTitle: z.string(),
+  sharedAt: z.string()
 });
 
 const generateShareContentSchema = z.object({
@@ -31,10 +31,11 @@ router.post('/social-shares', async (req, res) => {
     // Store share data in database
     const shareRecord = await storage.createSocialShare({
       platform: shareData.platform,
-      designId: shareData.designId || null,
-      designTitle: shareData.designTitle || `${shareData.platform} share`,
-      sharedAt: shareData.sharedAt ? new Date(shareData.sharedAt) : new Date(),
-      ipAddress: req.ip || 'unknown',
+      designId: shareData.designId ? parseInt(shareData.designId) : null,
+      designTitle: shareData.designTitle,
+      sharedAt: new Date(shareData.sharedAt),
+      ipAddress: req.ip,
+      userAgent: req.get('User-Agent') || '',
       GetDate: new Date()
     });
 
