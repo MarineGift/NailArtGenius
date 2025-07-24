@@ -1,5 +1,5 @@
 import { db } from './db';
-import { customers, bookings, orders, siteVisits } from '@shared/schema';
+import { customers, bookings, orders, siteVisits, users } from '@shared/schema';
 
 export async function seedTodayDateData() {
   console.log('📅 Starting today date sample data seeding...');
@@ -8,6 +8,43 @@ export async function seedTodayDateData() {
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   
   try {
+    // Add users with today's date first (needed for orders foreign key)
+    console.log('👤 Creating users with today\'s date...');
+    
+    const todayUsers = [
+      {
+        id: 'user_today_001',
+        email: 'emma.johnson@email.com',
+        firstName: 'Emma',
+        lastName: 'Johnson',
+        phoneNumber: '010-1111-2024',
+        level: 'Customer',
+        GetDate: todayStart
+      },
+      {
+        id: 'user_today_002',
+        email: 'sarah.kim@email.com',
+        firstName: 'Sarah',
+        lastName: 'Kim',
+        phoneNumber: '010-2222-2024',
+        level: 'Customer',
+        GetDate: todayStart
+      },
+      {
+        id: 'user_today_003',
+        email: 'lisa.chen@email.com',
+        firstName: 'Lisa',
+        lastName: 'Chen',
+        phoneNumber: '010-3333-2024',
+        level: 'Customer',
+        GetDate: todayStart
+      }
+    ];
+    
+    for (const user of todayUsers) {
+      await db.insert(users).values(user).onConflictDoNothing();
+    }
+    
     // Add customers with today's date
     console.log('👥 Creating customers with today\'s date...');
     
@@ -112,7 +149,7 @@ export async function seedTodayDateData() {
     const todayOrders = [
       {
         userId: 'user_today_001',
-        designId: 1,
+        designId: null,
         sessionId: 'session_today_001',
         totalAmount: '45.00',
         paypalOrderId: 'PAYPAL_TODAY_001',
@@ -122,12 +159,22 @@ export async function seedTodayDateData() {
       },
       {
         userId: 'user_today_002',
-        designId: 2,
+        designId: null,
         sessionId: 'session_today_002',
         totalAmount: '55.00',
         paypalOrderId: 'PAYPAL_TODAY_002',
         paymentStatus: 'paid',
         printStatus: 'printing',
+        GetDate: todayStart
+      },
+      {
+        userId: 'user_today_003',
+        designId: null,
+        sessionId: 'session_today_003',
+        totalAmount: '40.00',
+        paypalOrderId: 'PAYPAL_TODAY_003',
+        paymentStatus: 'paid',
+        printStatus: 'completed',
         GetDate: todayStart
       }
     ];
