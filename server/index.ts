@@ -56,6 +56,14 @@ app.use((req, res, next) => {
   } catch (error) {
     console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
   }
+
+  // Seed comprehensive sample data for testing
+  try {
+    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
+    await seedComprehensiveSampleData();
+  } catch (error) {
+    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
+  }
   
   const server = await registerRoutes(app);
 
