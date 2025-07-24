@@ -244,7 +244,7 @@ export default function Gallery() {
                               <p className="text-gray-600">{item.description}</p>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                              {item.tags.map((tag, index) => (
+                              {Array.isArray(item.tags) && item.tags.map((tag, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {tag.charAt(0).toUpperCase() + tag.slice(1)}
                                 </Badge>
@@ -272,12 +272,12 @@ export default function Gallery() {
                       </p>
                       
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {item.tags.slice(0, 3).map((tag, index) => (
+                        {Array.isArray(item.tags) && item.tags.slice(0, 3).map((tag, index) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             #{tag}
                           </Badge>
                         ))}
-                        {item.tags.length > 3 && (
+                        {Array.isArray(item.tags) && item.tags.length > 3 && (
                           <Badge variant="outline" className="text-xs">
                             +{item.tags.length - 3} more
                           </Badge>

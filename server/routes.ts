@@ -1351,105 +1351,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Gallery Management Routes  
-  app.get("/api/gallery", async (req, res) => {
-    try {
-      // Return mock data until database schema is set up
-      const mockGalleryItems = [
-        {
-          id: 1,
-          title: "Classic French Manicure",
-          description: "전통적인 프렌치 매니큐어 스타일",
-          category: "classic",
-          image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
-          price: "$45",
-          duration: "45분",
-          difficulty: "beginner",
-          rating: 4.8,
-          reviews: 127,
-          techniques: ["베이스 코팅", "화이트 팁", "탑 코팅"],
-          materials: ["젤 베이스", "화이트 젤", "클리어 탑코트"],
-          aftercare: "2-3주 지속, 오일 케어 권장",
-          suitableFor: "모든 행사, 직장, 일상",
-          isActive: true,
-          createdAt: new Date()
-        },
-        {
-          id: 2,
-          title: "Floral Design",
-          description: "섬세한 꽃 무늬 네일아트",
-          category: "floral",
-          image: "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=400&h=400&fit=crop",
-          price: "$65",
-          duration: "90분",
-          difficulty: "advanced",
-          rating: 4.9,
-          reviews: 89,
-          techniques: ["손그림 아트", "그라데이션", "세밀 터치"],
-          materials: ["아크릴 페인트", "세밀 브러시", "젤 탑코트"],
-          aftercare: "3-4주 지속, 손 보호 권장",
-          suitableFor: "특별한 행사, 웨딩, 파티",
-          isActive: true,
-          createdAt: new Date()
-        }
-      ];
-      
-      res.json(mockGalleryItems);
-    } catch (error: any) {
-      console.error("Error fetching gallery items:", error);
-      res.status(500).json({ message: "Failed to fetch gallery items" });
-    }
-  });
-
-  app.post("/api/gallery", isAuthenticated, async (req, res) => {
-    try {
-      const galleryItemData = req.body;
-      
-      if (!galleryItemData.title || !galleryItemData.description || !galleryItemData.category) {
-        return res.status(400).json({ message: "Title, description, and category are required" });
-      }
-
-      const newItem = {
-        id: Date.now(),
-        ...galleryItemData,
-        createdAt: new Date(),
-        isActive: true
-      };
-      
-      res.status(201).json(newItem);
-    } catch (error: any) {
-      console.error("Error creating gallery item:", error);
-      res.status(500).json({ message: "Failed to create gallery item" });
-    }
-  });
-
-  app.put("/api/gallery/:id", isAuthenticated, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const updateData = req.body;
-      
-      const updatedItem = {
-        id: parseInt(id),
-        ...updateData,
-        updatedAt: new Date()
-      };
-      
-      res.json(updatedItem);
-    } catch (error: any) {
-      console.error("Error updating gallery item:", error);
-      res.status(500).json({ message: "Failed to update gallery item" });
-    }
-  });
-
-  app.delete("/api/gallery/:id", isAuthenticated, async (req, res) => {
-    try {
-      const { id } = req.params;
-      res.json({ message: "Gallery item deleted successfully", id: parseInt(id) });
-    } catch (error: any) {
-      console.error("Error deleting gallery item:", error);
-      res.status(500).json({ message: "Failed to delete gallery item" });
-    }
-  });
+  // Gallery Management Routes (removed - using paginated version below)
 
   // Real-time booking routes
   app.get("/api/real-time-availability/:date", async (req, res) => {
@@ -2935,13 +2837,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // === NEW FEATURE ROUTES ===
   
-  // Gallery Management Routes
+  // Gallery Management Routes  
   app.get('/api/admin/gallery', authenticateAdmin, async (req: any, res) => {
     try {
       const { category } = req.query;
-      const galleryItems = category 
-        ? await storage.getGalleryByCategory(category as string)
-        : await storage.getAllGallery();
+      let galleryQuery = db.select().from(gallery).where(eq(gallery.isActive, true));
+      
+      if (category) {
+        galleryQuery = galleryQuery.where(eq(gallery.category, category));
+      }
+      
+      const galleryItems = await galleryQuery.orderBy(desc(gallery.displayOrder), desc(gallery.GetDate));
       res.json(galleryItems);
     } catch (error) {
       console.error('Error fetching gallery items:', error);
@@ -2958,14 +2864,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const search = req.query.search as string;
       const offset = (page - 1) * limit;
 
-      let query = db.select().from(gallery).where(eq(gallery.isActive, true));
-      
+      // Build where conditions
+      const conditions = [eq(gallery.isActive, true)];
+
       if (category && category !== 'all') {
-        query = query.where(eq(gallery.category, category));
+        conditions.push(eq(gallery.category, category));
       }
-      
+
       if (search) {
-        query = query.where(
+        conditions.push(
           or(
             ilike(gallery.title, `%${search}%`),
             ilike(gallery.description, `%${search}%`)
@@ -2973,31 +2880,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
       }
 
-      const totalQuery = db.select({ count: sql<number>`count(*)` }).from(gallery).where(eq(gallery.isActive, true));
-      
-      if (category && category !== 'all') {
-        totalQuery.where(eq(gallery.category, category));
-      }
-      
-      if (search) {
-        totalQuery.where(
-          or(
-            ilike(gallery.title, `%${search}%`),
-            ilike(gallery.description, `%${search}%`)
-          )
-        );
-      }
+      const whereClause = conditions.length > 1 ? and(...conditions) : conditions[0];
 
+      // Execute queries
       const [items, totalResult] = await Promise.all([
-        query.orderBy(desc(gallery.displayOrder), desc(gallery.GetDate)).limit(limit).offset(offset),
-        totalQuery
+        db.select({
+          id: gallery.id,
+          title: gallery.title,
+          description: gallery.description,
+          category: gallery.category,
+          imagePath: gallery.imagePath,
+          thumbnailPath: gallery.thumbnailPath,
+          tags: gallery.tags,
+          displayOrder: gallery.displayOrder,
+          isActive: gallery.isActive,
+          createdAt: gallery.createdAt,
+          updatedAt: gallery.updatedAt,
+          galleryNo: gallery.galleryNo
+        })
+        .from(gallery)
+        .where(whereClause)
+        .orderBy(desc(gallery.displayOrder), desc(gallery.GetDate))
+        .limit(limit)
+        .offset(offset),
+        
+        db.select({ count: sql<number>`count(*)` })
+        .from(gallery)
+        .where(whereClause)
       ]);
 
       const total = totalResult[0]?.count || 0;
       const totalPages = Math.ceil(total / limit);
 
+      console.log(`Gallery API: Found ${items.length} items, total: ${total}, page: ${page}, category: ${category}, search: ${search}`);
+
       res.json({
-        items,
+        items: items.map(item => ({
+          id: item.id,
+          title: item.title || 'Untitled',
+          description: item.description || 'No description',
+          category: item.category || 'uncategorized',
+          imagePath: item.imagePath || '/uploads/placeholder.jpg',
+          thumbnailPath: item.thumbnailPath,
+          tags: Array.isArray(item.tags) ? item.tags : [],
+          displayOrder: item.displayOrder || 0,
+          isActive: item.isActive,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          galleryNo: item.galleryNo
+        })),
         pagination: {
           current: page,
           total: totalPages,
@@ -3009,7 +2940,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('Error fetching gallery items:', error);
-      res.json({ items: [], pagination: { current: 1, total: 0, limit: 12, totalItems: 0, hasNext: false, hasPrev: false } });
+      res.status(500).json({ 
+        items: [], 
+        pagination: { current: 1, total: 0, limit: 12, totalItems: 0, hasNext: false, hasPrev: false },
+        error: 'Failed to fetch gallery items'
+      });
     }
   });
 
@@ -3276,19 +3211,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Public Gallery Route (for customer viewing)
-  app.get('/api/gallery', async (req, res) => {
-    try {
-      const { category } = req.query;
-      const galleryItems = category 
-        ? await storage.getGalleryByCategory(category as string)
-        : await storage.getAllGallery();
-      res.json(galleryItems);
-    } catch (error) {
-      console.error('Error fetching public gallery:', error);
-      res.status(500).json({ message: 'Failed to fetch gallery' });
-    }
-  });
+  // Public Gallery Route (removed - using paginated version above)
 
   // Gallery detail endpoint
   app.get('/api/gallery/:id/detail', async (req, res) => {
