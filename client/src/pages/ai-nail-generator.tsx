@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Camera, Upload, Download, CreditCard, AlertCircle, CheckCircle } from 'lucide-react';
 import { EnglishNailArtDesignSelection } from '@/components/english-nail-art-design-selection';
 import { CustomerReservationForm } from '@/components/customer-reservation-form';
+import { SocialShareWidget } from '@/components/SocialShareWidget';
+import { useSocialSharing } from '@/hooks/useSocialSharing';
 
 interface UploadedPhoto {
   file: File;
@@ -28,6 +30,7 @@ export default function AITailGenerator() {
   const { t } = useLanguage();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { trackShare } = useSocialSharing();
   
   const [uploadedPhotos, setUploadedPhotos] = useState<UploadedPhoto[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -478,14 +481,23 @@ export default function AITailGenerator() {
                 <p className="text-lg text-gray-700 mb-4">
                   측정된 손톱 크기에 맞춘 10개의 개별 네일 디자인이 생성되었습니다
                 </p>
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-                  <Download className="w-4 h-4 mr-2" />
-                  10개 디자인 PDF 다운로드
-                </Button>
+                <div className="flex gap-4 justify-center">
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Download className="w-4 h-4 mr-2" />
+                    10개 디자인 PDF 다운로드
+                  </Button>
+                  
+                  <SocialShareWidget
+                    designImage="/uploads/ai-nail-design-sample.jpg"
+                    designTitle="AI Generated 10-Finger Nail Art Design"
+                    designDescription="Check out my custom AI-generated nail art designs created with precise measurements! 💅 ✨"
+                    onShare={(platform) => trackShare(platform, undefined, "AI Generated 10-Finger Nail Art Design")}
+                  />
+                </div>
               </div>
 
               {/* Individual Nail Designs Grid */}
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-5 gap-4 mb-6">
                 {fingerMeasurements.map((finger, index) => (
                   <div key={index} className="border-2 border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
                     <div className="h-36 p-4 bg-gray-50 flex items-center justify-center">
@@ -498,6 +510,19 @@ export default function AITailGenerator() {
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* Share Individual Designs */}
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-3">
+                  Share your personalized nail art designs on social media!
+                </p>
+                <SocialShareWidget
+                  designImage="/uploads/ai-nail-grid-sample.jpg"
+                  designTitle={`Custom AI Nail Designs - ${fingerMeasurements.length} Fingers`}
+                  designDescription="Look at my personalized nail art created with AI precision! Each design is perfectly sized for my nails. 💅 #ConniesNail #AINailArt"
+                  onShare={(platform) => trackShare(platform, undefined, `Custom AI Nail Designs - ${fingerMeasurements.length} Fingers`)}
+                />
               </div>
             </CardContent>
           </Card>

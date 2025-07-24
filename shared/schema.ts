@@ -704,3 +704,21 @@ export type CustomNailDesign = typeof customNailDesigns.$inferSelect;
 export const insertSiteVisitSchema = createInsertSchema(siteVisits).omit({ id: true, visitedAt: true });
 export type InsertSiteVisit = z.infer<typeof insertSiteVisitSchema>;
 export type SiteVisit = typeof siteVisits.$inferSelect;
+
+// Social media sharing tracking
+export const socialShares = pgTable("social_shares", {
+  id: serial("id").primaryKey(),
+  platform: varchar("platform").notNull(), // facebook, twitter, instagram, whatsapp, etc.
+  designId: integer("design_id").references(() => nailDesigns.id),
+  designTitle: varchar("design_title").notNull(),
+  sharedAt: timestamp("shared_at").defaultNow(),
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  shareContent: text("share_content"), // Generated content for the share
+  hashtags: text("hashtags").array(), // Hashtags used
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
+});
+
+export const insertSocialShareSchema = createInsertSchema(socialShares).omit({ id: true, sharedAt: true });
+export type InsertSocialShare = z.infer<typeof insertSocialShareSchema>;
+export type SocialShare = typeof socialShares.$inferSelect;

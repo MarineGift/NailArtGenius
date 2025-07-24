@@ -3314,6 +3314,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Social sharing routes
+  const socialSharingRoutes = (await import('./socialSharingRoutes')).default;
+  app.use('/api', socialSharingRoutes);
+
   const httpServer = createServer(app);
   return httpServer;
 }

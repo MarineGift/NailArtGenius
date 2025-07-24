@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, Heart, Clock, DollarSign } from 'lucide-react';
+import { SocialShareWidget } from "@/components/SocialShareWidget";
+import { useSocialSharing } from "@/hooks/useSocialSharing";
 
 interface NailDesign {
   id: number;
@@ -25,6 +27,7 @@ interface NailArtDesignSelectionProps {
 export function EnglishNailArtDesignSelection({ onDesignSelect }: NailArtDesignSelectionProps) {
   const [selectedDesign, setSelectedDesign] = useState<NailDesign | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const { trackShare } = useSocialSharing();
 
   const designs: NailDesign[] = [
     {
@@ -270,6 +273,17 @@ export function EnglishNailArtDesignSelection({ onDesignSelect }: NailArtDesignS
                 <p className="text-sm text-gray-600">
                   <strong>Description:</strong> {selectedDesign.description}
                 </p>
+              </div>
+              
+              {/* Social Share Widget for Selected Design */}
+              <div className="mt-4 flex justify-center">
+                <SocialShareWidget
+                  designImage={selectedDesign.image}
+                  designTitle={selectedDesign.name}
+                  designDescription={`Check out this beautiful ${selectedDesign.name} nail art design! ${selectedDesign.description} 💅✨`}
+                  designId={selectedDesign.id.toString()}
+                  onShare={(platform) => trackShare(platform, selectedDesign.id.toString(), selectedDesign.name)}
+                />
               </div>
             </div>
           )}

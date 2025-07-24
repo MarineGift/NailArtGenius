@@ -18,6 +18,7 @@ import {
   carouselImages,
   gallery,
   aiNailArtImages,
+  socialShares,
   type User,
   type UpsertUser,
   type Customer,
@@ -62,6 +63,8 @@ import {
   customerNailInfo,
   type CustomerNailInfo,
   type InsertCustomerNailInfo,
+  type SocialShare,
+  type InsertSocialShare,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -1166,6 +1169,108 @@ export class EnhancedDatabaseStorage extends DatabaseStorage {
         lastVisit: customer.lastVisit
       }
     };
+  }
+
+  // Social sharing operations
+  async createSocialShare(shareData: InsertSocialShare): Promise<SocialShare> {
+    const [savedShare] = await db
+      .insert(socialShares)
+      .values(shareData)
+      .returning();
+    return savedShare;
+  }
+
+  async getSocialSharingStats(): Promise<{
+    totalShares: number;
+    platformBreakdown: Record<string, number>;
+    recentShares: SocialShare[];
+  }> {
+    const allShares = await db.select().from(socialShares).orderBy(desc(socialShares.sharedAt));
+    
+    const platformBreakdown: Record<string, number> = {};
+    allShares.forEach(share => {
+      platformBreakdown[share.platform] = (platformBreakdown[share.platform] || 0) + 1;
+    });
+
+    return {
+      totalShares: allShares.length,
+      platformBreakdown,
+      recentShares: allShares.slice(0, 10)
+    };
+  }
+
+  async getPopularSharedDesigns(): Promise<Array<{
+    designTitle: string;
+    shareCount: number;
+    platforms: string[];
+  }>> {
+    const shares = await db.select().from(socialShares);
+    
+    const designStats: Record<string, {
+      count: number;
+      platforms: Set<string>;
+    }> = {};
+
+    shares.forEach(share => {
+      if (!designStats[share.designTitle]) {
+        designStats[share.designTitle] = {
+          count: 0,
+          platforms: new Set()
+        };
+      }
+      designStats[share.designTitle].count++;
+      designStats[share.designTitle].platforms.add(share.platform);
+    });
+
+    return Object.entries(designStats)
+      .map(([title, stats]) => ({
+        designTitle: title,
+        shareCount: stats.count,
+        platforms: Array.from(stats.platforms)
+      }))
+      .sort((a, b) => b.shareCount - a.shareCount)
+      .slice(0, 10);
+  }
+
+  async getSharingTrends(period: string): Promise<Array<{
+    date: string;
+    shares: number;
+    platforms: Record<string, number>;
+  }>> {
+    const now = new Date();
+    const daysAgo = period === '30d' ? 30 : 7;
+    const startDate = new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
+
+    const shares = await db
+      .select()
+      .from(socialShares)
+      .where(gte(socialShares.sharedAt, startDate))
+      .orderBy(socialShares.sharedAt);
+
+    const dailyStats: Record<string, {
+      shares: number;
+      platforms: Record<string, number>;
+    }> = {};
+
+    shares.forEach(share => {
+      const date = share.sharedAt?.toISOString().split('T')[0] || '';
+      if (!dailyStats[date]) {
+        dailyStats[date] = {
+          shares: 0,
+          platforms: {}
+        };
+      }
+      dailyStats[date].shares++;
+      dailyStats[date].platforms[share.platform] = (dailyStats[date].platforms[share.platform] || 0) + 1;
+    });
+
+    return Object.entries(dailyStats)
+      .map(([date, stats]) => ({
+        date,
+        shares: stats.shares,
+        platforms: stats.platforms
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
   }
 }
 
