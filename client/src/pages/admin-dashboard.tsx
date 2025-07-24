@@ -35,7 +35,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { ContactInquiriesManagement } from "@/components/contact-inquiries-management";
 import AdminModal from "@/components/AdminModal";
-import DirectMetricCard from "@/components/DirectMetricCard";
+import { DirectMetricCard } from "@/components/DirectMetricCard";
 
 interface AdminStats {
   totalCombined: {

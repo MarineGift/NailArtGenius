@@ -90,6 +90,7 @@ function Router() {
         <Route path="/enhanced-admin" component={() => <EnhancedAdminPanel />} />
         <Route path="/advanced-customer-management" component={AdvancedCustomerManagementPage} />
         <Route path="/deployment-status" component={lazy(() => import("./pages/deployment-status"))} />
+        <Route path="/customer-vip-management" component={lazy(() => import("./pages/customer-vip-management"))} />
         
         {/* Protected pages - only for authenticated users */}
         {isAuthenticated && (
