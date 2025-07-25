@@ -86,14 +86,14 @@ app.use((req, res, next) => {
     console.log('Note: Booking data seeding skipped (already exists or error occurred)');
   }
 
-  // Update gallery with Gallery_No unique identifiers
-  try {
-    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
-    await updateGalleryWithGalleryNo();
-    console.log('✅ Gallery updated in Supabase');
-  } catch (error) {
-    console.log('Note: Gallery update skipped (already exists or error occurred)');
-  }
+  // Update gallery with Gallery_No unique identifiers (disabled to preserve data)
+  // try {
+  //   const { updateGalleryWithGalleryNo } = await import('./gallery-update');
+  //   await updateGalleryWithGalleryNo();
+  //   console.log('✅ Gallery updated in Supabase');
+  // } catch (error) {
+  //   console.log('Note: Gallery update skipped (already exists or error occurred)');
+  // }
   
   // Seed today's date sample data for dashboard testing
   try {
