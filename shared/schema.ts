@@ -26,7 +26,29 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User storage table.
+// Admin storage table - Management users with administrative privileges
+export const admins = pgTable("admins", {
+  id: serial("id").primaryKey(),
+  adminId: varchar("admin_id").unique().notNull(), // Admin identifier 
+  username: varchar("username").unique().notNull(),
+  password: varchar("password").notNull(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email").unique(),
+  phoneNumber: varchar("phone_number").unique(),
+  role: varchar("role").default("admin"), // admin, super_admin, manager
+  permissions: text("permissions").array(), // Array of permission strings
+  lastLogin: timestamp("last_login"),
+  isActive: boolean("is_active").default(true),
+  workplace: varchar("workplace"),
+  region: varchar("region"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  GetDate: timestamp("get_date").defaultNow(), // Data entry timestamp
+});
+
+// User storage table (kept for compatibility)
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),

@@ -69,10 +69,32 @@ interface Customer {
   createdAt: Date;
 }
 
+interface Admin {
+  id: number;
+  adminId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phoneNumber?: string;
+  role: string;
+  permissions: string[];
+  lastLogin?: Date;
+  isActive: boolean;
+  workplace?: string;
+  region?: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [admins, setAdmins] = useState<Admin[]>([]);
+  const [adminFilter, setAdminFilter] = useState('all');
+  const [adminSearch, setAdminSearch] = useState('');
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -152,6 +174,7 @@ export default function AdminDashboard() {
     loadDashboardData();
     loadCarouselImages();
     loadGalleryItems();
+    loadAdmins();
   }, []);
 
   const checkAdminAuth = () => {
@@ -203,6 +226,28 @@ export default function AdminDashboard() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const loadAdmins = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      const response = await fetch('/api/admin/admins', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAdmins(data);
+        return data;
+      }
+    } catch (error) {
+      console.error('Failed to load admins:', error);
+    }
+    return [];
   };
 
   const loadCustomers = async (category?: string) => {
@@ -747,9 +792,9 @@ export default function AdminDashboard() {
               <Activity className="h-4 w-4" />
               <span>Dashboard</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center space-x-2">
-              <Users className="h-4 w-4" />
-              <span>User</span>
+            <TabsTrigger value="admins" className="flex items-center space-x-2">
+              <Settings className="h-4 w-4" />
+              <span>Admin</span>
             </TabsTrigger>
             <TabsTrigger value="customers" className="flex items-center space-x-2">
               <Users className="h-4 w-4" />
@@ -890,6 +935,166 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="admins" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Admin Management</h2>
+              <div className="flex space-x-2">
+                <Button onClick={() => loadAdmins()} variant="outline">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+                <Button onClick={() => setAdminFilter('super_admin')} variant="outline">
+                  Super Admin
+                </Button>
+                <Button onClick={() => setAdminFilter('manager')} variant="outline">
+                  Manager
+                </Button>
+                <Button onClick={() => setAdminFilter('admin')} variant="outline">
+                  Admin
+                </Button>
+                <Button onClick={() => setAdminFilter('all')} variant="outline">
+                  All
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex space-x-4 mb-4">
+              <Input
+                placeholder="Search admin by name, username, or email..."
+                value={adminSearch}
+                onChange={(e) => setAdminSearch(e.target.value)}
+                className="max-w-sm"
+              />
+            </div>
+
+            <Card>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Admin ID</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Username</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Email</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Phone</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Role</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Workplace</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Status</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Last Login</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {admins
+                        .filter(admin => {
+                          if (adminFilter !== 'all' && admin.role !== adminFilter) return false;
+                          if (adminSearch) {
+                            const searchLower = adminSearch.toLowerCase();
+                            return (
+                              admin.firstName.toLowerCase().includes(searchLower) ||
+                              admin.lastName.toLowerCase().includes(searchLower) ||
+                              admin.username.toLowerCase().includes(searchLower) ||
+                              admin.email?.toLowerCase().includes(searchLower) ||
+                              admin.adminId.toLowerCase().includes(searchLower)
+                            );
+                          }
+                          return true;
+                        })
+                        .map((admin) => (
+                        <tr key={admin.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            {admin.adminId}
+                          </td>
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                            {admin.firstName} {admin.lastName}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {admin.username}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {admin.email || '-'}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {admin.phoneNumber || '-'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge 
+                              variant={admin.role === 'super_admin' ? 'default' : 
+                                      admin.role === 'manager' ? 'secondary' : 'outline'}
+                            >
+                              {admin.role}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {admin.workplace || '-'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge variant={admin.isActive ? 'default' : 'destructive'}>
+                              {admin.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            {admin.lastLogin ? new Date(admin.lastLogin).toLocaleDateString() : 'Never'}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline">
+                                <Eye className="h-3 w-3" />
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Edit className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {admins.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No admin accounts found.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Statistics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">
+                      {admins.filter(a => a.role === 'super_admin').length}
+                    </div>
+                    <div className="text-sm text-gray-600">Super Admin</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                      {admins.filter(a => a.role === 'manager').length}
+                    </div>
+                    <div className="text-sm text-gray-600">Manager</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {admins.filter(a => a.role === 'admin').length}
+                    </div>
+                    <div className="text-sm text-gray-600">Admin</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-600">
+                      {admins.filter(a => a.isActive).length}
+                    </div>
+                    <div className="text-sm text-gray-600">Active</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="customers" className="space-y-6">

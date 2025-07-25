@@ -34,7 +34,8 @@ import {
   bookings,
   orders,
   users,
-  siteVisits
+  siteVisits,
+  admins as adminsTable
 } from "@shared/schema";
 import { eq, desc, sql, and, gte, lt, or, like, ilike, isNull, asc } from "drizzle-orm";
 import { customerEnhancedRoutes } from "./customer-enhanced-routes";
@@ -1099,6 +1100,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching order:", error);
       res.status(500).json({ message: "Failed to fetch order" });
+    }
+  });
+
+  // Admin routes
+  app.get("/api/admin/admins", async (req, res) => {
+    try {
+      const admins = await db.select().from(adminsTable).orderBy(adminsTable.createdAt);
+      res.json(admins);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+      res.status(500).json({ message: "Failed to fetch admins" });
+    }
+  });
+
+  app.post("/api/admin/admins", async (req, res) => {
+    try {
+      const adminData = req.body;
+      const [savedAdmin] = await db.insert(adminsTable).values({
+        adminId: adminData.adminId,
+        username: adminData.username,
+        password: adminData.password,
+        firstName: adminData.firstName,
+        lastName: adminData.lastName,
+        email: adminData.email,
+        phoneNumber: adminData.phoneNumber,
+        role: adminData.role || 'admin',
+        permissions: adminData.permissions || [],
+        workplace: adminData.workplace,
+        region: adminData.region,
+        notes: adminData.notes
+      }).returning();
+      res.json(savedAdmin);
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      res.status(500).json({ message: "Failed to create admin" });
+    }
+  });
+
+  app.put("/api/admin/admins/:id", async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      const updateData = req.body;
+      const [updatedAdmin] = await db.update(adminsTable)
+        .set({
+          ...updateData,
+          updatedAt: new Date()
+        })
+        .where(eq(adminsTable.id, adminId))
+        .returning();
+      res.json(updatedAdmin);
+    } catch (error) {
+      console.error("Error updating admin:", error);
+      res.status(500).json({ message: "Failed to update admin" });
+    }
+  });
+
+  app.delete("/api/admin/admins/:id", async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      await db.update(adminsTable)
+        .set({ isActive: false })
+        .where(eq(adminsTable.id, adminId));
+      res.json({ message: "Admin deactivated successfully" });
+    } catch (error) {
+      console.error("Error deleting admin:", error);
+      res.status(500).json({ message: "Failed to delete admin" });
     }
   });
 
