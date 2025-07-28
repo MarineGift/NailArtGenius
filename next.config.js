@@ -1,21 +1,12 @@
 /** @type {import('next').NextConfig} */
-const createNextIntlPlugin = require('next-intl/plugin');
-
-const withNextIntl = createNextIntlPlugin();
-
 const nextConfig = {
   experimental: {
     appDir: true,
   },
   images: {
-    domains: ['images.unsplash.com', 'unsplash.com'],
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ['images.unsplash.com', 'via.placeholder.com'],
   },
-  env: {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  },
-};
+  // Remove i18n config as we're using App Router with manual routing
+}
 
-module.exports = withNextIntl(nextConfig);
+module.exports = nextConfig

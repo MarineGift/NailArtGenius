@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "booking": "Booking",
+    "gallery": "Gallery",
+    "ai_nail_art": "AI Nail Art",
+    "contact": "Contact"
+  },
+  "header": {
+    "web_app": "Web App"
+  },
+  "hero": {
+    "title": "Connie's Nail",
+    "subtitle": "Premium Nail Care & AI Nail Art",
+    "description": "From traditional nail care to innovative AI nail art, perfect beauty care experience awaits you.",
+    "book_now": "Book Now",
+    "view_gallery": "View Gallery"
+  },
+  "services": {
+    "title": "Premium Services",
+    "spa_manicure": {
+      "title": "Spa Manicure",
+      "description": "Perfect nail care with premium spa treatment"
+    },
+    "ai_nail_art": {
+      "title": "AI Nail Art Generation",
+      "description": "AI creates unique personalized nail designs just for you"
+    },
+    "waxing": {
+      "title": "Professional Waxing",
+      "description": "Professional waxing care services from face to full body"
+    },
+    "massage": {
+      "title": "Massage Therapy",
+      "description": "Complete relaxation for body and mind with comfortable chair massage"
+    }
+  },
+  "ai_features": {
+    "title": "AI Nail Art - Revolutionary Nail Art Service",
+    "description": "Register your nails → select nail art design → payment → visit date process. Connie's Nail AI analyzes your nails and pre-creates your selected nail art design, dramatically reducing treatment time and cost during your visit.",
+    "go_to_ai": "Go to AI Nail Art"
+  },
+  "booking_cta": {
+    "title": "Premium Nail Service Booking",
+    "description": "Experience perfect nail care with expert touch and innovative AI technology",
+    "online_booking": "Book online easily",
+    "quick_booking": "Quick Booking",
+    "special_benefits": "Special Benefits",
+    "book_appointment": "Book Appointment",
+    "discount_notice": "* 10% discount for online bookings"
+  },
+  "footer": {
+    "business_hours": "Business Hours",
+    "contact_info": "Contact Information",
+    "address": "Address",
+    "weekdays": "Monday - Friday",
+    "hours": "10:00 AM - 7:00 PM",
+    "weekend": "Saturday - Sunday",
+    "closed": "Closed",
+    "location": "Washington, DC",
+    "copyright": "© 2025 Connie's Nail. All rights reserved."
+  }
+}

@@ -1,18 +1,38 @@
-# Connie's Nail - Replit Project Guide
+# Connie's Nail - Next.js Multilingual Website
 
 ## Overview
-Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. **MAJOR UPDATE: Migrated from PostgreSQL to Microsoft Access-style database using SQLite3 for improved operational stability.**
+Connie's Nail is a modern, multilingual nail salon website built with Next.js App Router, featuring AI-powered nail art generation, online booking, and comprehensive customer management. The platform provides 4-language support (Korean/English/Japanese/Spanish), Supabase backend, PWA capabilities, and Railway deployment. **MAJOR RESTRUCTURE: Reorganized from complex Replit structure to clean, maintainable Next.js standard architecture for GitHub/Railway deployment.**
 
 ## User Preferences
-Preferred communication style: Simple, everyday language.
+- Preferred communication style: Simple, everyday language
+- 비용 효율적인 솔루션 선호 (Cost-effective solutions preferred)
+- 단계적 배포 및 확장 희망 (Gradual deployment and scaling desired)
+- GitHub + Railway deployment pipeline preferred
+- Clean, maintainable folder structure for easy maintenance
+- Standard Next.js architecture over complex Replit structure
 
-## User Preferences
-- 비용 효율적인 솔루션 선호
-- 단계적 배포 및 확장 희망
-- nolsae.com 도메인으로 서비스 론칭 계획
-- **Database preference: Microsoft Access-style instead of PostgreSQL due to operational issues**
-
-## Recent Changes (July 2025)
+### Clean Architecture Restructure (July 28, 2025)
+- **Complete Folder Structure Reorganization**: Transformed complex Replit structure into clean, maintainable Next.js standard architecture
+  - Created proper `src/` directory with organized component hierarchy
+  - Implemented App Router structure with `[lang]` dynamic routing for multilingual support
+  - Separated UI components into logical folders: `ui/`, `layout/`, `sections/`, `forms/`
+  - Organized library functions into `lib/` with `supabase/`, `i18n/`, `utils/`, `constants/`
+  - Proper `public/` directory structure with `locales/` and `images/` organization
+- **Modern Next.js Architecture**: Implemented latest Next.js 14 App Router patterns
+  - Server Components for better performance and SEO
+  - Proper middleware for language detection and routing
+  - Clean separation of client and server code
+  - Optimized for Railway deployment and GitHub integration
+- **Standardized Configuration**: Created industry-standard configuration files
+  - Professional `README.md` with complete setup instructions
+  - Proper `middleware.js` for i18n routing
+  - `.env.example` with all required environment variables
+  - Deployment scripts and documentation in `scripts/` and `docs/`
+- **Multilingual Translation System**: Complete 4-language support infrastructure
+  - Korean, English, Japanese, Spanish translations in organized JSON files
+  - Professional translation management with proper dictionary loading
+  - Language selector component with flag emojis and proper routing
+  - All UI text properly externalized and translatable
 
 ### GitHub Pages Static Site Deployment Complete (July 25, 2025)
 - **Complete Static Site Package**: Finalized comprehensive GitHub Pages deployment in `docs/` folder

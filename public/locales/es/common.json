@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "booking": "Reservar",
+    "gallery": "Galería",
+    "ai_nail_art": "Arte de Uñas AI",
+    "contact": "Contacto"
+  },
+  "header": {
+    "web_app": "App Web"
+  },
+  "hero": {
+    "title": "Connie's Nail",
+    "subtitle": "Cuidado Premium de Uñas y Arte AI",
+    "description": "Desde el cuidado tradicional de uñas hasta el innovador arte de uñas AI, te espera una experiencia perfecta de cuidado de belleza.",
+    "book_now": "Reservar Ahora",
+    "view_gallery": "Ver Galería"
+  },
+  "services": {
+    "title": "Servicios Premium",
+    "spa_manicure": {
+      "title": "Manicure Spa",
+      "description": "Cuidado perfecto de uñas con tratamiento spa premium"
+    },
+    "ai_nail_art": {
+      "title": "Generación de Arte AI",
+      "description": "La AI crea diseños únicos y personalizados solo para ti"
+    },
+    "waxing": {
+      "title": "Depilación Profesional",
+      "description": "Servicios profesionales de depilación de cara a cuerpo completo"
+    },
+    "massage": {
+      "title": "Terapia de Masajes",
+      "description": "Relajación completa para cuerpo y mente con masaje en silla cómoda"
+    }
+  },
+  "ai_features": {
+    "title": "Arte de Uñas AI - Servicio Revolucionario",
+    "description": "Registra tus uñas → selecciona diseño → pago → proceso de fecha de visita. La AI de Connie's Nail analiza tus uñas y pre-crea tu diseño seleccionado, reduciendo dramáticamente el tiempo y costo del tratamiento durante tu visita.",
+    "go_to_ai": "Ir al Arte de Uñas AI"
+  },
+  "booking_cta": {
+    "title": "Reserva de Servicio Premium",
+    "description": "Experimenta el cuidado perfecto de uñas con toque experto y tecnología AI innovadora",
+    "online_booking": "Reserva en línea fácilmente",
+    "quick_booking": "Reserva Rápida",
+    "special_benefits": "Beneficios Especiales",
+    "book_appointment": "Reservar Cita",
+    "discount_notice": "* 10% descuento para reservas en línea"
+  },
+  "footer": {
+    "business_hours": "Horario de Atención",
+    "contact_info": "Información de Contacto",
+    "address": "Dirección",
+    "weekdays": "Lunes - Viernes",
+    "hours": "10:00 AM - 7:00 PM",
+    "weekend": "Sábado - Domingo",
+    "closed": "Cerrado",
+    "location": "Washington, DC",
+    "copyright": "© 2025 Connie's Nail. Todos los derechos reservados."
+  }
+}
