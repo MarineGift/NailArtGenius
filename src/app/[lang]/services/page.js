@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-export default function ServicesPage({ params }) {
-  const { lang } = params
+export default async function ServicesPage({ params }) {
+  const { lang } = await params
 
   const services = [
     {

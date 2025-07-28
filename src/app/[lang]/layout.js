@@ -7,8 +7,8 @@ export async function generateStaticParams() {
   return locales.map((locale) => ({ lang: locale }))
 }
 
-export default function LangLayout({ children, params }) {
-  const { lang } = params
+export default async function LangLayout({ children, params }) {
+  const { lang } = await params
   
   // Check if the locale is supported
   if (!locales.includes(lang)) {

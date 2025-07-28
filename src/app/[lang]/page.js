@@ -56,8 +56,8 @@ const languages = {
   }
 }
 
-export default function LangHomePage({ params }) {
-  const { lang } = params
+export default async function LangHomePage({ params }) {
+  const { lang } = await params
   const content = languages[lang] || languages.ko
 
   return (

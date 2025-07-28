@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-export default function ContactPage({ params }) {
-  const { lang } = params
+export default async function ContactPage({ params }) {
+  const { lang } = await params
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
