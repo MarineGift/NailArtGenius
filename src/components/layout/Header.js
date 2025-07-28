@@ -1,12 +1,11 @@
 import Link from 'next/link'
-import LanguageSelector from './LanguageSelector'
 
-export default function Header({ lang, dict }) {
+export default function Header({ lang }) {
   const navigation = [
-    { name: dict.nav.home, href: `/${lang}` },
-    { name: dict.nav.services, href: `/${lang}/services` },
-    { name: dict.nav.about, href: `/${lang}/about` },
-    { name: dict.nav.contact, href: `/${lang}/contact` },
+    { name: 'Home', href: `/${lang}` },
+    { name: 'Services', href: `/${lang}/services` },
+    { name: 'AI Nail Art', href: `/${lang}/ai-nail-art` },
+    { name: 'Contact', href: `/${lang}/contact` },
   ]
 
   return (
@@ -34,12 +33,11 @@ export default function Header({ lang, dict }) {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <LanguageSelector lang={lang} />
             <Link
-              href={`/${lang}/contact`}
+              href={`/${lang}/booking`}
               className="bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-pink-700 transition-colors"
             >
-              {dict.nav.booking}
+              Book Now
             </Link>
           </div>
         </div>

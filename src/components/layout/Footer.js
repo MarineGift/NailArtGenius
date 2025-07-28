@@ -1,13 +1,6 @@
 import Link from 'next/link'
 
-export default function Footer({ lang, dict }) {
-  const navigation = [
-    { name: dict.nav.home, href: `/${lang}` },
-    { name: dict.nav.services, href: `/${lang}/services` },
-    { name: dict.nav.about, href: `/${lang}/about` },
-    { name: dict.nav.contact, href: `/${lang}/contact` },
-  ]
-
+export default function Footer({ lang }) {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -17,44 +10,56 @@ export default function Footer({ lang, dict }) {
               Connie's Nail
             </h3>
             <p className="text-gray-300 mb-4">
-              Professional nail care and beauty services with AI-powered design, 
-              online booking, and multilingual support.
+              Washington DC Premium Nail Salon
             </p>
             <div className="text-gray-400 space-y-1">
-              <p>{dict.footer.address}</p>
-              <p>{dict.footer.phone}</p>
-              <p>{dict.footer.email}</p>
+              <p>1300 Pennsylvania Avenue NW</p>
+              <p>Washington, DC 20004</p>
+              <p>202.898.0826</p>
+              <p>Sungimconniekim@gmail.com</p>
             </div>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-white transition-colors"
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href={`/${lang}`} className="text-gray-300 hover:text-white transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${lang}/services`} className="text-gray-300 hover:text-white transition-colors">
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${lang}/ai-nail-art`} className="text-gray-300 hover:text-white transition-colors">
+                  AI Nail Art
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${lang}/contact`} className="text-gray-300 hover:text-white transition-colors">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Business Hours</h4>
             <div className="text-gray-300 space-y-1">
-              <p>Mon - Sat: 10:00 - 20:00</p>
-              <p>Sunday: 11:00 - 18:00</p>
+              <p>Monday - Friday</p>
+              <p>10:00 AM - 7:00 PM</p>
+              <p>Saturday - Sunday</p>
+              <p>Closed</p>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            {dict.footer.copyright}
+            © 2024 Connie's Nail. All rights reserved.
           </p>
         </div>
       </div>
