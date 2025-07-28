@@ -1,0 +1,37 @@
+{
+  "HomePage": {
+    "services": "Services",
+    "gallery": "Gallery",
+    "booking": "Booking",
+    "contact": "Contact",
+    "hero": {
+      "title": "Premium Nail Salon",
+      "subtitle": "Professional nail care and AI-powered nail art design services",
+      "bookNow": "Book Now",
+      "viewGallery": "View Gallery"
+    },
+    "services": {
+      "classic": {
+        "title": "Classic Manicure",
+        "description": "Traditional French manicure and classic nail care"
+      },
+      "ai": {
+        "title": "AI Nail Art",
+        "description": "Customized nail art design using AI technology"
+      },
+      "premium": {
+        "title": "Premium Service",
+        "description": "Luxury spa treatment and premium nail care"
+      }
+    },
+    "footer": {
+      "description": "Providing the finest nail care and beautiful nail art",
+      "contact": "Contact",
+      "hours": "Business Hours",
+      "weekdays": "Weekdays",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "closed": "Closed"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "HomePage": {
+    "services": "Servicios",
+    "gallery": "Galería",
+    "booking": "Reservar",
+    "contact": "Contacto",
+    "hero": {
+      "title": "Salón de Uñas Premium",
+      "subtitle": "Cuidado profesional de uñas y servicios de diseño de arte de uñas con IA",
+      "bookNow": "Reservar Ahora",
+      "viewGallery": "Ver Galería"
+    },
+    "services": {
+      "classic": {
+        "title": "Manicura Clásica",
+        "description": "Manicura francesa tradicional y cuidado clásico de uñas"
+      },
+      "ai": {
+        "title": "Arte de Uñas IA",
+        "description": "Diseño de arte de uñas personalizado usando tecnología IA"
+      },
+      "premium": {
+        "title": "Servicio Premium",
+        "description": "Tratamiento de spa de lujo y cuidado premium de uñas"
+      }
+    },
+    "footer": {
+      "description": "Proporcionando el mejor cuidado de uñas y hermoso arte de uñas",
+      "contact": "Contacto",
+      "hours": "Horario de Atención",
+      "weekdays": "Días laborables",
+      "saturday": "Sábado",
+      "sunday": "Domingo",
+      "closed": "Cerrado"
+    }
+  }
+}

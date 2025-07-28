@@ -1,55 +1,138 @@
-// Simple Next.js project launcher
-import express from 'express';
-import { spawn } from 'child_process';
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
+import express, { type Request, Response, NextFunction } from "express";
+import http from "http";
+import { registerRoutes } from "./routes";
+import { setupVite, serveStatic, log } from "./vite";
+import { seedBookingData } from "./seedData";
+import { seedTestCustomersAndReservations } from "./test-data-seeder";
+import { seedComprehensiveData } from "./comprehensive-seed-data";
+import { seedTodayDateData } from "./today-date-seeder";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-console.log('🚀 Starting Connie\'s Nail - Complete Next.js System');
-console.log('✅ 4 languages: Korean, English, Japanese, Spanish');
-console.log('✅ PWA mobile app + AI nail art + Supabase database');
-
-// Next.js 서버 실행
-const nextProcess = spawn('npx', ['next', 'dev', '--port', '3000'], {
-  cwd: join(__dirname, '..'),
-  stdio: 'inherit',
-  shell: true
-});
-
-nextProcess.on('error', (err) => {
-  console.error('❌ Next.js failed to start:', err);
-});
-
-// 상태 확인용 Express 서버
 const app = express();
-const PORT = 5000;
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.get('/api/status', (req, res) => {
-  res.json({
-    message: 'Connie\'s Nail - Next.js System Running',
-    nextjs_url: 'http://localhost:3000',
-    languages: ['Korean (기본)', 'English', 'Japanese', 'Spanish'],
-    features: [
-      'PWA Mobile App',
-      'AI Nail Art Generator', 
-      'Supabase Database',
-      'Customer Management',
-      'Admin Dashboard',
-      'Railway Deployment Ready'
-    ]
+app.use((req, res, next) => {
+  const start = Date.now();
+  const path = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+
+  const originalResJson = res.json;
+  res.json = function (bodyJson, ...args) {
+    capturedJsonResponse = bodyJson;
+    return originalResJson.apply(res, [bodyJson, ...args]);
+  };
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (path.startsWith("/api")) {
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) {
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      }
+
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
+
+      log(logLine);
+    }
   });
+
+  next();
 });
 
-app.get('/', (req, res) => {
-  res.redirect('http://localhost:3000/ko');
-});
+(async () => {
+  console.log('🔄 Migrating from Access DB to Supabase PostgreSQL...');
+  
+  // Initialize PostgreSQL/Supabase data seeding
+  try {
+    await seedBookingData();
+    console.log('✅ Booking data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
+  
+  // Seed test customers and reservations
+  try {
+    await seedTestCustomersAndReservations();
+    console.log('✅ Test customers seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Test data seeding skipped (already exists or error occurred)');
+  }
+  
+  // Seed comprehensive data (carousel, gallery, AI nail art)
+  try {
+    await seedComprehensiveData();
+    console.log('✅ Comprehensive data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
+  }
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`📊 Status server: http://localhost:${PORT}`);
-  console.log(`🌟 Main Next.js app: http://localhost:3000/ko`);
-  console.log(`🔗 Try: http://localhost:3000/en for English`);
-});
+  // Seed comprehensive sample data for testing
+  try {
+    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
+    await seedComprehensiveSampleData();
+    console.log('✅ Comprehensive sample data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
+  }
+
+  // Create booking data for all customers (1-5 bookings each)
+  try {
+    const { seedBookingData } = await import('./booking-data-seeder');
+    await seedBookingData();
+    console.log('✅ Customer booking data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
+
+  // Update gallery with Gallery_No unique identifiers (disabled to preserve data)
+  // try {
+  //   const { updateGalleryWithGalleryNo } = await import('./gallery-update');
+  //   await updateGalleryWithGalleryNo();
+  //   console.log('✅ Gallery updated in Supabase');
+  // } catch (error) {
+  //   console.log('Note: Gallery update skipped (already exists or error occurred)');
+  // }
+  
+  // Seed today's date sample data for dashboard testing
+  try {
+    await seedTodayDateData();
+    console.log('✅ Today date data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Today date seeding skipped (already exists or error occurred)');
+  }
+  
+  const server = await registerRoutes(app);
+  console.log('✅ Supabase PostgreSQL routes registered successfully');
+
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+
+    res.status(status).json({ message });
+    throw err;
+  });
+  
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
+
+  // ALWAYS serve the app on the port specified in the environment variable PORT
+  // Other ports are firewalled. Default to 5000 if not specified.
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = parseInt(process.env.PORT || '5000', 10);
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    log(`serving on port ${port}`);
+  });
+})();
