@@ -16,12 +16,8 @@ export default async function LangLayout({ children, params }) {
   }
 
   return (
-    <html lang={lang}>
-      <body>
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
-          {children}
-        </div>
-      </body>
-    </html>
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+      {children}
+    </div>
   )
 }

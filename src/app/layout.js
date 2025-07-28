@@ -8,6 +8,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
+      <head>
+        <title>Connie's Nail</title>
+        <meta name="description" content="AI-powered nail salon" />
+      </head>
       <body className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
         {children}
       </body>
