@@ -1,0 +1,62 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "services": "サービス",
+    "about": "会社概要",
+    "contact": "お問い合わせ",
+    "booking": "予約"
+  },
+  "hero": {
+    "title": "コニー・ネイルへようこそ",
+    "subtitle": "AI搭載ネイルアート＆プロフェッショナルネイルケア",
+    "description": "最先端のAI生成ネイルデザインとプロフェッショナルなネイルケアサービスを体験してください。",
+    "bookNow": "今すぐ予約",
+    "viewServices": "サービスを見る"
+  },
+  "services": {
+    "title": "サービス",
+    "subtitle": "あなたのためのプロフェッショナルネイルケアサービス",
+    "aiNailArt": {
+      "title": "AIネイルアート",
+      "description": "人工知能が生成するユニークなネイルデザイン",
+      "price": "$50-80",
+      "duration": "90分"
+    },
+    "classicManicure": {
+      "title": "クラシックマニキュア",
+      "description": "基本的なネイルケアとポリッシュサービス",
+      "price": "$25-35",
+      "duration": "45分"
+    },
+    "gelNails": {
+      "title": "ジェルネイル",
+      "description": "長持ちするジェルポリッシュ",
+      "price": "$40-55",
+      "duration": "60分"
+    }
+  },
+  "ai": {
+    "title": "AI機能",
+    "subtitle": "最先端の人工知能で完璧なネイルアートを体験してください",
+    "features": {
+      "design": {
+        "title": "AIデザイン生成",
+        "description": "あなたの好みに合わせたカスタムネイルデザイン"
+      },
+      "color": {
+        "title": "カラーマッチング",
+        "description": "肌の色や服装に完璧なカラー推奨"
+      },
+      "trend": {
+        "title": "トレンド分析",
+        "description": "最新のネイルトレンドをリアルタイムで統合"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Connie's Nail. All rights reserved.",
+    "address": "123 Beauty Street, Seoul, Korea",
+    "phone": "+82-2-1234-5678",
+    "email": "contact@connienail.com"
+  }
+}

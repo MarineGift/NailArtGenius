@@ -1,65 +1,24 @@
 import Link from 'next/link'
+import { Button } from '@/components/ui/Button'
 
 export default function BookingCTA({ lang, dict }) {
-  const features = [
-    {
-      icon: '📅',
-      title: dict?.booking_cta?.online_booking || 'Book online easily',
-      subtitle: 'and receive special benefits',
-      bgColor: 'bg-pink-100',
-      textColor: 'text-pink-600'
-    },
-    {
-      icon: '⚡',
-      title: dict?.booking_cta?.quick_booking || 'Quick Booking',
-      subtitle: 'Real-time confirmation',
-      bgColor: 'bg-blue-100',
-      textColor: 'text-blue-600'
-    },
-    {
-      icon: '🎁',
-      title: dict?.booking_cta?.special_benefits || 'Special Benefits',
-      subtitle: 'Online booking discount',
-      bgColor: 'bg-green-100',
-      textColor: 'text-green-600'
-    }
-  ]
-
   return (
-    <section className="py-16 bg-white border-t">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            {dict?.booking_cta?.title || 'Premium Nail Service Booking'}
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            {dict?.booking_cta?.description || 'Experience perfect nail care with expert touch and innovative AI technology'}
-          </p>
-          
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8 mb-8">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center">
-                <div className={`w-12 h-12 ${feature.bgColor} rounded-full flex items-center justify-center mr-4`}>
-                  <span className={feature.textColor}>{feature.icon}</span>
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold">{feature.title}</h4>
-                  <p className="text-gray-600 text-sm">{feature.subtitle}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <Link 
-            href={`/${lang}/booking`}
-            className="inline-block bg-pink-600 hover:bg-pink-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-300"
-          >
-            {dict?.booking_cta?.book_appointment || 'Book Appointment'}
-          </Link>
-          <p className="text-sm text-gray-500 mt-2">
-            {dict?.booking_cta?.discount_notice || '* 10% discount for online bookings'}
-          </p>
-        </div>
+    <section className="py-20 bg-pink-600">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          Ready for Beautiful Nails?
+        </h2>
+        <p className="text-xl text-pink-100 mb-8 max-w-2xl mx-auto">
+          Book your appointment today and experience the future of nail care with AI-powered designs.
+        </p>
+        <Button 
+          as={Link}
+          href={`/${lang}/contact`}
+          variant="white"
+          size="lg"
+        >
+          {dict.hero.bookNow}
+        </Button>
       </div>
     </section>
   )

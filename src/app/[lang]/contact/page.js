@@ -1,68 +1,72 @@
-import Link from 'next/link'
+import { getDictionary } from '@/lib/i18n/dictionaries'
+import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 
 export default async function ContactPage({ params }) {
-  const { lang } = await params
+  const { lang } = params
+  const dict = await getDictionary(lang)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="min-h-screen py-16">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
-          <Link 
-            href={`/${lang}`}
-            className="inline-block bg-pink-600 text-white px-4 py-2 rounded-lg mb-6 hover:bg-pink-700 transition-colors"
-          >
-            ← {lang === 'ko' ? '홈으로' : 'Back to Home'}
-          </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {lang === 'ko' ? '연락처' : 'Contact Us'}
+          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+            {dict?.contact?.title || 'Contact Us'}
           </h1>
           <p className="text-xl text-gray-600">
-            {lang === 'ko' 
-              ? '문의사항이나 예약을 원하시면 연락주세요'
-              : 'Get in touch with us for inquiries or bookings'
-            }
+            {dict?.contact?.subtitle || 'Get in touch with us for appointments and inquiries'}
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Information */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-semibold mb-6">
-              {lang === 'ko' ? '연락처 정보' : 'Contact Information'}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {dict?.contact?.get_in_touch || 'Get in Touch'}
             </h2>
             
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="text-2xl mr-4">📍</div>
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <Phone className="w-6 h-6 text-pink-600 mr-4 mt-1" />
                 <div>
-                  <h3 className="font-semibold">{lang === 'ko' ? '주소' : 'Address'}</h3>
-                  <p className="text-gray-600">123 Beauty Street, Seoul, Korea</p>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    {dict?.contact?.phone || 'Phone'}
+                  </h3>
+                  <p className="text-gray-600">202.898.0826</p>
                 </div>
               </div>
               
-              <div className="flex items-center">
-                <div className="text-2xl mr-4">📞</div>
+              <div className="flex items-start">
+                <Mail className="w-6 h-6 text-pink-600 mr-4 mt-1" />
                 <div>
-                  <h3 className="font-semibold">{lang === 'ko' ? '전화번호' : 'Phone'}</h3>
-                  <p className="text-gray-600">+82-2-1234-5678</p>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    {dict?.contact?.email || 'Email'}
+                  </h3>
+                  <p className="text-gray-600">Sungimconniekim@gmail.com</p>
                 </div>
               </div>
               
-              <div className="flex items-center">
-                <div className="text-2xl mr-4">✉️</div>
+              <div className="flex items-start">
+                <MapPin className="w-6 h-6 text-pink-600 mr-4 mt-1" />
                 <div>
-                  <h3 className="font-semibold">{lang === 'ko' ? '이메일' : 'Email'}</h3>
-                  <p className="text-gray-600">contact@connienail.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-2xl mr-4">🕒</div>
-                <div>
-                  <h3 className="font-semibold">{lang === 'ko' ? '운영시간' : 'Hours'}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    {dict?.contact?.address || 'Address'}
+                  </h3>
                   <p className="text-gray-600">
-                    {lang === 'ko' ? '월-토: 10:00-20:00' : 'Mon-Sat: 10:00-20:00'}<br />
-                    {lang === 'ko' ? '일: 11:00-18:00' : 'Sun: 11:00-18:00'}
+                    1300 Pennsylvania Avenue NW<br />
+                    Washington, DC 20004
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start">
+                <Clock className="w-6 h-6 text-pink-600 mr-4 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    {dict?.contact?.hours || 'Business Hours'}
+                  </h3>
+                  <p className="text-gray-600">
+                    {dict?.footer?.weekdays || 'Monday - Friday'}: {dict?.footer?.hours || '10:00 AM - 7:00 PM'}<br />
+                    {dict?.footer?.weekend || 'Saturday - Sunday'}: {dict?.footer?.closed || 'Closed'}
                   </p>
                 </div>
               </div>
@@ -70,61 +74,61 @@ export default async function ContactPage({ params }) {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-semibold mb-6">
-              {lang === 'ko' ? '문의하기' : 'Send Message'}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {dict?.contact?.send_message || 'Send us a Message'}
             </h2>
             
-            <form className="space-y-4">
+            <form className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {lang === 'ko' ? '이름' : 'Name'}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {dict?.contact?.name || 'Name'}
                 </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder={lang === 'ko' ? '이름을 입력해주세요' : 'Enter your name'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                  placeholder={dict?.contact?.name_placeholder || 'Your name'}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {lang === 'ko' ? '이메일' : 'Email'}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {dict?.contact?.email || 'Email'}
                 </label>
                 <input
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder={lang === 'ko' ? '이메일을 입력해주세요' : 'Enter your email'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                  placeholder={dict?.contact?.email_placeholder || 'your@email.com'}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {lang === 'ko' ? '전화번호' : 'Phone'}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {dict?.contact?.phone || 'Phone'}
                 </label>
                 <input
                   type="tel"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder={lang === 'ko' ? '전화번호를 입력해주세요' : 'Enter your phone'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                  placeholder={dict?.contact?.phone_placeholder || 'Your phone number'}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {lang === 'ko' ? '메시지' : 'Message'}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {dict?.contact?.message || 'Message'}
                 </label>
                 <textarea
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder={lang === 'ko' ? '문의 내용을 입력해주세요' : 'Enter your message'}
-                />
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                  placeholder={dict?.contact?.message_placeholder || 'How can we help you?'}
+                ></textarea>
               </div>
               
               <button
                 type="submit"
-                className="w-full bg-pink-600 text-white py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors"
+                className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 px-6 rounded-lg font-medium transition-colors"
               >
-                {lang === 'ko' ? '메시지 보내기' : 'Send Message'}
+                {dict?.contact?.send_message || 'Send Message'}
               </button>
             </form>
           </div>

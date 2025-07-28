@@ -1,18 +1,17 @@
 import './globals.css'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: "Connie's Nail - Multilingual Nail Salon",
-  description: 'Professional nail salon with AI-powered nail art generation',
+  title: "Connie's Nail - Premium Nail Care & AI Nail Art",
+  description: 'Professional nail care and beauty services with AI-powered design, online booking, and multilingual support',
 }
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko">
-      <head>
-        <title>Connie's Nail</title>
-        <meta name="description" content="AI-powered nail salon" />
-      </head>
-      <body className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+    <html>
+      <body className={inter.className}>
         {children}
       </body>
     </html>

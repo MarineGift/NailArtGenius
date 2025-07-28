@@ -1,12 +1,11 @@
-import 'server-only'
+// Dictionary loader for i18n
+export async function getDictionary(locale) {
+  const dictionaries = {
+    ko: () => import('./dictionaries/ko.json').then((module) => module.default),
+    en: () => import('./dictionaries/en.json').then((module) => module.default),
+    ja: () => import('./dictionaries/ja.json').then((module) => module.default),
+    es: () => import('./dictionaries/es.json').then((module) => module.default),
+  };
 
-const dictionaries = {
-  ko: () => import('@/../../public/locales/ko/common.json').then((module) => module.default),
-  en: () => import('@/../../public/locales/en/common.json').then((module) => module.default),
-  ja: () => import('@/../../public/locales/ja/common.json').then((module) => module.default),
-  es: () => import('@/../../public/locales/es/common.json').then((module) => module.default),
-}
-
-export const getDictionary = async (locale) => {
-  return dictionaries[locale]?.() ?? dictionaries.ko()
+  return dictionaries[locale]?.() ?? dictionaries.ko();
 }

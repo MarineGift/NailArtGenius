@@ -1,18 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/ko',
-        permanent: true,
-      },
-    ]
+  experimental: {
+    appDir: true,
   },
   images: {
-    domains: ['localhost'],
-    formats: ['image/webp', 'image/avif'],
+    domains: ['images.unsplash.com', 'via.placeholder.com'],
   },
+  // Remove i18n config as we're using App Router with manual routing
 }
 
-export default nextConfig;
+export default nextConfig
