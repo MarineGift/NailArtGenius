@@ -1,0 +1,25 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+exports.id = "_rsc_locales_ko_json";
+exports.ids = ["_rsc_locales_ko_json"];
+exports.modules = {
+
+/***/ "(rsc)/./locales/ko.json":
+/*!*************************!*\
+  !*** ./locales/ko.json ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = /*#__PURE__*/JSON.parse('{"HomePage":{"services":{"classic":{"title":"클래식 매니큐어","description":"전통적인 프렌치 매니큐어와 클래식 네일 케어"},"ai":{"title":"AI 네일 아트","description":"AI 기술을 활용한 맞춤형 네일 아트 디자인"},"premium":{"title":"프리미엄 서비스","description":"고급 스파 트리트먼트와 프리미엄 네일 케어"}},"gallery":"갤러리","booking":"예약","contact":"연락처","hero":{"title":"프리미엄 네일 살롱","subtitle":"전문적인 네일 케어와 AI 기반 네일 아트 디자인 서비스를 제공합니다","bookNow":"지금 예약","viewGallery":"갤러리 보기"},"footer":{"description":"최고의 네일 케어와 아름다운 네일 아트를 제공합니다","contact":"연락처","hours":"운영 시간","weekdays":"평일","saturday":"토요일","sunday":"일요일","closed":"휴무"}}}');
+
+/***/ })
+
+};
+;
