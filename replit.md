@@ -1,16 +1,16 @@
-# Connie's Nail - Next.js Project Guide
+# Connie's Nail - Replit Project Guide
 
 ## Overview
-Connie's Nail은 전문 네일 살롱을 위한 Next.js + Supabase + Railway 배포 최적화 시스템입니다. 다국어 지원, AI 네일 아트 생성, 고객 관리, PWA 모바일 앱 기능을 제공하며, GitHub → Railway 배포를 통해 확장 가능한 클라우드 서비스로 구축되었습니다.
+Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. **MAJOR UPDATE: Migrated from PostgreSQL to Microsoft Access-style database using SQLite3 for improved operational stability.**
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
 ## User Preferences
-- 비용 효율적인 솔루션 선호 (Next.js + Supabase + Railway)
-- 단계적 배포 및 확장 희망 (GitHub 연동 자동 배포)
-- 깔끔하고 유지보수 가능한 폴더 구조 최우선 (Next.js App Router)
-- **Database: Supabase PostgreSQL + Drizzle ORM for modern development**
+- 비용 효율적인 솔루션 선호
+- 단계적 배포 및 확장 희망
+- nolsae.com 도메인으로 서비스 론칭 계획
+- **Database preference: Microsoft Access-style instead of PostgreSQL due to operational issues**
 
 ## Recent Changes (July 2025)
 
