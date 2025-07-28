@@ -1,19 +1,172 @@
-import { getDictionary } from '@/lib/i18n/dictionaries'
-import Hero from '@/components/sections/Hero'
-import Services from '@/components/sections/Services'
-import AIFeatures from '@/components/sections/AIFeatures'
-import BookingCTA from '@/components/sections/BookingCTA'
+import Link from 'next/link'
 
-export default async function HomePage({ params }) {
+// Language configurations
+const languages = {
+  ko: {
+    name: '한국어',
+    flag: '🇰🇷',
+    title: '코니 네일에 오신 것을 환영합니다',
+    subtitle: 'AI 기반 네일 아트와 전문적인 네일 케어 서비스',
+    description: '최신 AI 기술을 활용한 맞춤형 네일 디자인과 전문적인 네일 케어를 제공합니다.',
+    buttons: {
+      services: '서비스 보기',
+      booking: '예약하기',
+      about: '소개',
+      contact: '연락처'
+    }
+  },
+  en: {
+    name: 'English',
+    flag: '🇺🇸',
+    title: 'Welcome to Connie\'s Nail',
+    subtitle: 'AI-Powered Nail Art & Professional Nail Care',
+    description: 'Experience cutting-edge AI-generated nail designs and professional nail care services.',
+    buttons: {
+      services: 'View Services',
+      booking: 'Book Now',
+      about: 'About Us',
+      contact: 'Contact'
+    }
+  },
+  ja: {
+    name: '日本語',
+    flag: '🇯🇵',
+    title: 'コニーネイルへようこそ',
+    subtitle: 'AI搭載ネイルアート＆プロフェッショナルネイルケア',
+    description: '最先端のAI生成ネイルデザインとプロフェッショナルなネイルケアサービスをご体験ください。',
+    buttons: {
+      services: 'サービス一覧',
+      booking: '予約する',
+      about: 'About Us',
+      contact: 'お問い合わせ'
+    }
+  },
+  es: {
+    name: 'Español',
+    flag: '🇪🇸',
+    title: 'Bienvenido a Connie\'s Nail',
+    subtitle: 'Arte de Uñas con IA y Cuidado Profesional',
+    description: 'Experimenta diseños de uñas generados por IA de vanguardia y servicios profesionales de cuidado de uñas.',
+    buttons: {
+      services: 'Ver Servicios',
+      booking: 'Reservar',
+      about: 'Nosotros',
+      contact: 'Contacto'
+    }
+  }
+}
+
+export default function LangHomePage({ params }) {
   const { lang } = params
-  const dict = await getDictionary(lang)
+  const content = languages[lang] || languages.ko
 
   return (
-    <>
-      <Hero lang={lang} dict={dict} />
-      <Services lang={lang} dict={dict} />
-      <AIFeatures lang={lang} dict={dict} />
-      <BookingCTA lang={lang} dict={dict} />
-    </>
+    <div className="min-h-screen">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl font-bold text-pink-600">Connie's Nail</h1>
+              <span className="text-sm bg-pink-100 text-pink-800 px-2 py-1 rounded">
+                {content.flag} {content.name}
+              </span>
+            </div>
+            
+            {/* Language Selector */}
+            <div className="flex space-x-2">
+              {Object.entries(languages).map(([code, langInfo]) => (
+                <Link
+                  key={code}
+                  href={`/${code}`}
+                  className={`px-3 py-1.5 rounded text-sm transition-colors ${
+                    code === lang
+                      ? 'bg-pink-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {langInfo.flag} {langInfo.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center animate-fade-in">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+              {content.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-6">
+              {content.subtitle}
+            </p>
+            <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+              {content.description}
+            </p>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
+              <Link
+                href={`/${lang}/services`}
+                className="bg-pink-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition-colors"
+              >
+                {content.buttons.services}
+              </Link>
+              <Link
+                href={`/${lang}/contact`}
+                className="bg-white text-pink-600 border-2 border-pink-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-pink-50 transition-colors"
+              >
+                {content.buttons.booking}
+              </Link>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+              <div className="text-4xl mb-4">🎨</div>
+              <h3 className="text-xl font-semibold mb-2">AI Nail Art</h3>
+              <p className="text-gray-600">Custom designs generated by artificial intelligence</p>
+            </div>
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+              <div className="text-4xl mb-4">💅</div>
+              <h3 className="text-xl font-semibold mb-2">Professional Care</h3>
+              <p className="text-gray-600">Expert nail technicians with premium products</p>
+            </div>
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+              <div className="text-4xl mb-4">📱</div>
+              <h3 className="text-xl font-semibold mb-2">Online Booking</h3>
+              <p className="text-gray-600">Easy appointment scheduling system</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4">Connie's Nail</h3>
+            <div className="flex justify-center space-x-4 mb-4">
+              <Link href={`/${lang}/about`} className="hover:text-pink-400 transition-colors">
+                {content.buttons.about}
+              </Link>
+              <Link href={`/${lang}/services`} className="hover:text-pink-400 transition-colors">
+                {content.buttons.services}
+              </Link>
+              <Link href={`/${lang}/contact`} className="hover:text-pink-400 transition-colors">
+                {content.buttons.contact}
+              </Link>
+            </div>
+            <p className="text-gray-400">
+              © 2024 Connie's Nail. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
   )
 }

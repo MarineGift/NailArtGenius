@@ -16,7 +16,6 @@ const nextConfig = {
     domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
   },
-
 }
 
-module.exports = nextConfig
+export default nextConfig;

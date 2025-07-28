@@ -1,21 +1,27 @@
-import { getDictionary } from '@/lib/i18n/dictionaries'
-import { i18n } from '@/lib/i18n/config'
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import { notFound } from 'next/navigation'
+
+// Supported languages
+const locales = ['ko', 'en', 'ja', 'es']
 
 export async function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }))
+  return locales.map((locale) => ({ lang: locale }))
 }
 
-export default async function LocaleLayout({ children, params }) {
+export default function LangLayout({ children, params }) {
   const { lang } = params
-  const dict = await getDictionary(lang)
+  
+  // Check if the locale is supported
+  if (!locales.includes(lang)) {
+    notFound()
+  }
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header lang={lang} dict={dict} />
-      <main>{children}</main>
-      <Footer lang={lang} dict={dict} />
-    </div>
+    <html lang={lang}>
+      <body>
+        <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+          {children}
+        </div>
+      </body>
+    </html>
   )
 }
