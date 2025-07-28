@@ -1,108 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connie's Nail - Next.js Structure Ready</title>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connie's Nail - 프리미엄 네일 살롱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-        .status {
-            background: rgba(76, 175, 80, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #4caf50;
-        }
-        .file-list {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .file {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-        .next-steps {
-            background: rgba(33, 150, 243, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #2196f3;
-        }
-        code {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Monaco', 'Menlo', monospace;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🎉 Connie's Nail</h1>
-        
-        <div class="status">
-            <h2>✅ Next.js 구조 최적화 완료</h2>
-            <p>깔끔하고 유지보수 가능한 Next.js + Supabase + Railway 구조로 완전히 재구성되었습니다.</p>
-        </div>
-
-        <div class="file-list">
-            <h3>📦 생성된 파일들</h3>
-            <div class="file">
-                <strong>connienail-nextjs-clean-20250728-035545.tar.gz</strong> (24KB)<br>
-                깔끔한 Next.js 구조 - 배포 준비 완료
-            </div>
-            <div class="file">
-                <strong>nextjs-structure/</strong><br>
-                완전한 Next.js 13+ App Router 구조
-            </div>
-            <div class="file">
-                <strong>CLEAN_PROJECT_STRUCTURE.md</strong><br>
-                폴더 구조 가이드
-            </div>
-            <div class="file">
-                <strong>DEPLOYMENT_FINAL_GUIDE.md</strong><br>
-                GitHub → Railway 배포 가이드
-            </div>
-        </div>
-
-        <div class="next-steps">
-            <h3>🚀 다음 단계</h3>
-            <ol>
-                <li>압축파일 다운로드: <code>connienail-nextjs-clean-20250728-035545.tar.gz</code></li>
-                <li>새로운 GitHub 저장소 생성</li>
-                <li>압축 해제 후 <code>nextjs-structure/</code> 폴더 내용 업로드</li>
-                <li>Railway에서 GitHub 저장소 연결</li>
-                <li>환경 변수 설정 (Supabase URL, API 키)</li>
-                <li>자동 배포 실행</li>
-            </ol>
-        </div>
-
-        <div style="text-align: center; margin-top: 30px; opacity: 0.7;">
-            <p>4개 언어 지원 (한국어, 영어, 일본어, 스페인어) • PWA 모바일 앱 • AI 네일아트</p>
-        </div>
-    </div>
-</body>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
