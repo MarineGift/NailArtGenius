@@ -7,8 +7,8 @@ import path from 'path';
 console.log('🚀 Starting Connie\'s Nail multilingual website...');
 console.log('📁 Using Next.js standard structure in src/ folder');
 
-// Start Next.js development server
-const nextProcess = spawn('npx', ['next', 'dev'], {
+// Start Next.js development server on port 5000
+const nextProcess = spawn('npx', ['next', 'dev', '-p', '5000'], {
   cwd: process.cwd(),
   stdio: 'inherit',
   shell: true
