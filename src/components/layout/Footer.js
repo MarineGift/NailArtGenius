@@ -1,65 +1,60 @@
-import Link from 'next/link'
+import { Clock, Phone, Mail, MapPin } from 'lucide-react'
 
-export default function Footer({ lang }) {
+export default function Footer({ lang, dict }) {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-2">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Connie's Nail
-            </h3>
-            <p className="text-gray-300 mb-4">
-              Washington DC Premium Nail Salon
+          {/* Brand */}
+          <div>
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">💅</span>
+              </div>
+              <h3 className="text-xl font-bold">Connie's Nail</h3>
+            </div>
+            <p className="text-gray-400 mb-4">{dict?.footer?.location || 'Washington, DC'}</p>
+          </div>
+          
+          {/* Business Hours */}
+          <div>
+            <h4 className="font-semibold mb-4 flex items-center">
+              <Clock className="w-4 h-4 mr-2" />
+              {dict?.footer?.business_hours || 'Business Hours'}
+            </h4>
+            <p className="text-gray-400">{dict?.footer?.weekdays || 'Monday - Friday'}</p>
+            <p className="text-gray-400">{dict?.footer?.hours || '10:00 AM - 7:00 PM'}</p>
+            <p className="text-gray-400 mt-2">{dict?.footer?.weekend || 'Saturday - Sunday'}</p>
+            <p className="text-gray-400">{dict?.footer?.closed || 'Closed'}</p>
+          </div>
+          
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-semibold mb-4">{dict?.footer?.contact_info || 'Contact Information'}</h4>
+            <p className="text-gray-400 flex items-center mb-2">
+              <Phone className="w-4 h-4 mr-2" />
+              202.898.0826
             </p>
-            <div className="text-gray-400 space-y-1">
-              <p>1300 Pennsylvania Avenue NW</p>
-              <p>Washington, DC 20004</p>
-              <p>202.898.0826</p>
-              <p>Sungimconniekim@gmail.com</p>
-            </div>
+            <p className="text-gray-400 flex items-center">
+              <Mail className="w-4 h-4 mr-2" />
+              Sungimconniekim@gmail.com
+            </p>
           </div>
-
+          
+          {/* Address */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Navigation</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href={`/${lang}`} className="text-gray-300 hover:text-white transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href={`/${lang}/services`} className="text-gray-300 hover:text-white transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href={`/${lang}/ai-nail-art`} className="text-gray-300 hover:text-white transition-colors">
-                  AI Nail Art
-                </Link>
-              </li>
-              <li>
-                <Link href={`/${lang}/contact`} className="text-gray-300 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Business Hours</h4>
-            <div className="text-gray-300 space-y-1">
-              <p>Monday - Friday</p>
-              <p>10:00 AM - 7:00 PM</p>
-              <p>Saturday - Sunday</p>
-              <p>Closed</p>
-            </div>
+            <h4 className="font-semibold mb-4 flex items-center">
+              <MapPin className="w-4 h-4 mr-2" />
+              {dict?.footer?.address || 'Address'}
+            </h4>
+            <p className="text-gray-400">1300 Pennsylvania Avenue NW</p>
+            <p className="text-gray-400">Washington, DC 20004</p>
           </div>
         </div>
-
+        
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-gray-400">
-            © 2024 Connie's Nail. All rights reserved.
+            {dict?.footer?.copyright || '© 2025 Connie\'s Nail. All rights reserved.'}
           </p>
         </div>
       </div>

@@ -1,42 +1,26 @@
+import Link from 'next/link'
+
 export default function AIFeatures({ lang, dict }) {
-  const features = [
-    {
-      icon: '🎨',
-      title: dict.ai.features.design.title,
-      description: dict.ai.features.design.description,
-    },
-    {
-      icon: '🌈',
-      title: dict.ai.features.color.title,
-      description: dict.ai.features.color.description,
-    },
-    {
-      icon: '📈',
-      title: dict.ai.features.trend.title,
-      description: dict.ai.features.trend.description,
-    },
-  ]
-
   return (
-    <section className="py-20 bg-gradient-to-br from-purple-50 to-pink-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {dict.ai.title}
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            {dict.ai.subtitle}
+    <section className="py-16 bg-gradient-to-r from-pink-50 to-purple-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center">
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">
+            🤖 {dict?.ai_features?.title || 'AI Nail Art - Revolutionary Nail Art Service'}
+          </h3>
+          <p className="text-lg text-gray-700 mb-6 max-w-4xl mx-auto">
+            {dict?.ai_features?.description || 
+              `Register your nails → select nail art design → payment → visit date process. 
+              Connie's Nail AI analyzes your nails and pre-creates your selected nail art design, 
+              dramatically reducing treatment time and cost during your visit.`
+            }
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
+          <Link 
+            href={`/${lang}/ai-nail-art`}
+            className="inline-block bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 transform hover:scale-105"
+          >
+            ✨ {dict?.ai_features?.go_to_ai || 'Go to AI Nail Art'}
+          </Link>
         </div>
       </div>
     </section>
