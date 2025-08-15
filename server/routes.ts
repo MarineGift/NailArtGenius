@@ -7,6 +7,18 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
+// JWT User interface
+interface JWTUser {
+  id: number;
+  username: string;
+  role: string;
+}
+
+// Extended Request interface
+interface AuthenticatedRequest extends Request {
+  user?: JWTUser;
+}
+
 // Middleware to verify JWT token
 const verifyToken = (req: any, res: any, next: any) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -16,7 +28,7 @@ const verifyToken = (req: any, res: any, next: any) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTUser;
     req.user = decoded;
     next();
   } catch (error) {
@@ -62,9 +74,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/auth/me", verifyToken, async (req, res) => {
+  app.get("/api/auth/user", verifyToken, async (req, res) => {
     try {
-      const user = await storage.getAdminUserById(req.user.id);
+      const user = await storage.getAdminUserById((req as any).user.id);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -286,6 +298,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Delete news error:", error);
       res.status(500).json({ error: "Failed to delete news" });
+    }
+  });
+
+  // Services API for frontend (non-authenticated)
+  app.get("/api/services", async (req, res) => {
+    try {
+      res.json({
+        services: [
+          {
+            name: "Nail Art Design",
+            description: "Custom nail art and designs",
+            category: "design"
+          },
+          {
+            name: "Manicure & Pedicure",
+            description: "Professional nail care services",
+            category: "care"
+          },
+          {
+            name: "Spa Treatments",
+            description: "Relaxing spa and wellness treatments",
+            category: "wellness"
+          }
+        ]
+      });
+    } catch (error) {
+      console.error("Get services error:", error);
+      res.status(500).json({ error: "Failed to fetch services" });
     }
   });
 

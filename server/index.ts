@@ -1,8 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import http from "http";
+import next from "next";
 import { registerRoutes } from "./routes";
-// import { setupVite, serveStatic, log } from "./vite";
 import { seedData } from "./seedData";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -41,6 +42,13 @@ app.use((req, res, next) => {
 (async () => {
   console.log('🔄 Starting Admin Dashboard Server...');
   
+  const dev = process.env.NODE_ENV !== 'production';
+  const nextApp = next({ dev, dir: process.cwd() });
+  const handle = nextApp.getRequestHandler();
+
+  await nextApp.prepare();
+  console.log('✅ Next.js application prepared');
+  
   // Initialize PostgreSQL/Supabase data seeding
   try {
     await seedData();
@@ -52,6 +60,11 @@ app.use((req, res, next) => {
   const server = await registerRoutes(app);
   console.log('✅ Admin routes registered successfully');
 
+  // Handle all Next.js pages
+  app.all('*', (req, res) => {
+    return handle(req, res);
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -59,11 +72,6 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
-  
-  // Serve static files in production (Next.js will handle this in development)
-  if (app.get("env") !== "development") {
-    app.use(express.static('public'));
-  }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
