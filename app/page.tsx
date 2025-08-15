@@ -7,7 +7,7 @@ import { getCurrentUser, signOut, type AuthUser } from '@/lib/auth'
 import { LoginForm } from '@/components/login-form'
 import { DashboardTabs } from '@/components/dashboard-tabs'
 import { Button } from '@/components/ui/button'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Sparkles } from 'lucide-react'
 import { Toaster } from '@/components/ui/toaster'
 
 export default function AdminDashboard() {
@@ -62,8 +62,13 @@ export default function AdminDashboard() {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">KICT Group</h1>
-            <p className="text-white/80">Admin Dashboard</p>
+            <div className="flex justify-center mb-4">
+              <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                <Sparkles className="h-8 w-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-2">ConnieNail</h1>
+            <p className="text-white/80">Luxury Nail Salon Admin</p>
           </div>
           <LoginForm onSuccess={handleLoginSuccess} />
         </motion.div>
@@ -77,13 +82,19 @@ export default function AdminDashboard() {
       <header className="admin-gradient shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-white">KICT Group Admin</h1>
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">ConnieNail Admin</h1>
+                <p className="text-white/80 text-sm">Luxury Nail Salon Management</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 text-white">
                 <User className="h-5 w-5" />
-                <span>{user.firstName || user.username}</span>
+                <span>{user.firstName || user.email.split('@')[0]}</span>
                 <span className="text-white/70">({user.role})</span>
               </div>
               <Button
@@ -102,7 +113,7 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DashboardTabs />
+        <DashboardTabs currentUser={user} />
       </main>
     </div>
   )

@@ -118,7 +118,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           </Button>
         </form>
         <div className="mt-4 text-center text-sm text-slate-600">
-          Default credentials: admin@kictgroup.com / admin123
+          Default credentials: admin@connienail.com / admin123
         </div>
       </CardContent>
     </Card>

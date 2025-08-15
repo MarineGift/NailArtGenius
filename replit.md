@@ -1,7 +1,7 @@
-# KICT Group Admin Dashboard
+# ConnieNail Admin Dashboard
 
 ## Project Overview
-A clean, modern admin management platform built with Next.js 15, TypeScript, and Supabase for handling customer inquiries, gallery management, and news management. Features a professional design with purple/blue gradient theme and full App Router architecture.
+A cutting-edge luxury nail salon admin management system built with Next.js 15, TypeScript, and Supabase. Features comprehensive customer relationship management (CRM), booking management, admin role-based access control, and a modern luxury design with purple/pink gradient theme.
 
 ## Technology Stack
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript
@@ -12,12 +12,16 @@ A clean, modern admin management platform built with Next.js 15, TypeScript, and
 - **Communication**: Email (SendGrid integration ready)
 
 ## Key Features
-- Modern admin authentication system
-- Customer inquiry management dashboard
-- Gallery management with image handling
-- News article management and publishing
-- Statistics overview dashboard
-- Responsive design with dark mode support
+- **Multi-tier Admin System**: Role-based access control (Super Admin, Admin, Editor, Viewer)
+- **Customer CRM**: Phone-based customer identification with complete history tracking
+- **Booking Management**: Advanced appointment scheduling with admin input tracking
+- **Treatment History**: Complete service history with photos and notes
+- **Communication System**: Email/SMS integration for customer outreach
+- **Gallery Management**: Image upload with object storage integration
+- **News & Content Management**: Article creation and publishing
+- **Product & Carousel Management**: E-commerce ready with luxury UI
+- **Real-time Dashboard**: Live statistics and luxury animations
+- **Object Storage Integration**: Cloud-based file management
 
 ## Project Structure
 ```
@@ -44,17 +48,22 @@ A clean, modern admin management platform built with Next.js 15, TypeScript, and
 └── package.json
 ```
 
-## Database Schema (Supabase Ready)
-- **customer_inquiries**: Customer contact messages and status
-- **gallery**: Image gallery with categories and publishing status
-- **news**: News articles with content and publishing workflow
-- **admin_users**: Admin user authentication and roles
-- **email_templates**: Customizable email response templates
-- **sms_templates**: SMS response templates
+## Database Schema (ConnieNail Supabase)
+- **admin_users**: Multi-role admin authentication with permissions
+- **customers**: Phone-based customer records with complete profiles
+- **services**: Nail services with pricing and duration
+- **bookings**: Appointment system with admin input tracking
+- **treatments**: Complete treatment history with photos
+- **customer_communications**: Email/SMS communication logs
+- **gallery**: Image gallery with object storage integration
+- **news**: News articles and blog posts
+- **products**: Product catalog for e-commerce
+- **carousel_images**: Homepage slider management
 
 ## Default Credentials
-- Email: `admin@kictgroup.com`
+- Email: `admin@connienail.com`
 - Password: `admin123`
+- Role: `super_admin` (Full system access)
 
 ## Environment Variables
 - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
@@ -68,13 +77,15 @@ A clean, modern admin management platform built with Next.js 15, TypeScript, and
 - `next start -p 5000`: Start production server
 
 ## Recent Changes
-- **2025-08-15**: Complete migration to Next.js 15 + Supabase architecture
-- **2025-08-15**: Removed all Express.js and Drizzle dependencies
-- **2025-08-15**: Implemented clean App Router structure
-- **2025-08-15**: Created modern shadcn/ui component library
-- **2025-08-15**: Added demo authentication system (Supabase Auth ready)
-- **2025-08-15**: Built responsive dashboard with statistics overview
-- **2025-08-15**: Cleaned up unnecessary files for Railway deployment
+- **2025-08-15**: Complete ConnieNail luxury admin system implementation
+- **2025-08-15**: Multi-role admin authentication with Supabase backend
+- **2025-08-15**: Phone-based customer CRM with complete history tracking
+- **2025-08-15**: Advanced booking management with admin input tracking
+- **2025-08-15**: Object storage integration for gallery management
+- **2025-08-15**: Luxury UI design with purple/pink gradient theme
+- **2025-08-15**: Comprehensive database schema for nail salon operations
+- **2025-08-15**: Email/SMS communication system for customer outreach
+- **2025-08-15**: Real-time dashboard with luxury animations and statistics
 
 ## User Preferences
 - **Language**: English only (all content and UI)
