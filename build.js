@@ -1,16 +1,18 @@
 #!/usr/bin/env node
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 
 console.log('🏗️ Building ConnieNail Next.js application for deployment...');
 
-exec('npx next build', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`Build error: ${error.message}`);
-    process.exit(1);
+const build = spawn('npx', ['next', 'build'], {
+  stdio: 'inherit',
+  shell: true
+});
+
+build.on('exit', (code) => {
+  if (code === 0) {
+    console.log('✅ Build completed successfully!');
+  } else {
+    console.error(`❌ Build failed with exit code ${code}`);
+    process.exit(code);
   }
-  if (stderr) {
-    console.error(`Build stderr: ${stderr}`);
-  }
-  console.log(stdout);
-  console.log('✅ Build completed successfully!');
 });

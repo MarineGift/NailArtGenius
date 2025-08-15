@@ -87,6 +87,11 @@ A cutting-edge luxury nail salon admin management system built with Next.js 15, 
 - **2025-08-15**: Floating animations and glow effects for luxury UI
 - **2025-08-15**: Korean interface elements integrated
 - **2025-08-15**: Standalone build configuration for Railway deployment
+- **2025-08-15**: **NEW: AR Virtual Nail Try-On Feature** - MediaPipe hand tracking with real-time nail design preview
+- **2025-08-15**: **NEW: Comprehensive Nail Design Manager** - Full CRUD system for managing nail designs with trending features
+- **2025-08-15**: **NEW: API Integration** - Real nail design data with color palettes, pricing, and categories
+- **2025-08-15**: **NEW: Enhanced Dashboard** - 9 fully functional tabs including AR experience and design management
+- **2025-08-15**: Fixed deployment configuration issues - created proper Next.js build scripts
 
 ## User Preferences
 - **Language**: English only (all content and UI)
