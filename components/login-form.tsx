@@ -65,60 +65,61 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   return (
     <Card className="admin-card">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
-        <CardDescription className="text-center text-slate-600">
-          Enter your credentials to access the admin dashboard
+        <CardTitle className="text-3xl font-bold text-center bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">로그인</CardTitle>
+        <CardDescription className="text-center text-purple-600 font-medium">
+          관리자 대시보드에 접속하세요
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+          <div className="space-y-3">
+            <Label htmlFor="email" className="text-purple-700 font-semibold">이메일</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@kictgroup.com"
+                placeholder="admin@connienail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 admin-input"
+                className="pl-11 admin-input h-12 text-purple-700 placeholder:text-purple-300"
                 disabled={loading}
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-3">
+            <Label htmlFor="password" className="text-purple-700 font-semibold">비밀번호</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3 top-3 h-5 w-5 text-purple-400" />
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 admin-input"
+                className="pl-11 admin-input h-12 text-purple-700"
                 disabled={loading}
               />
             </div>
           </div>
           <Button
             type="submit"
-            className="w-full admin-button"
+            className="w-full admin-button h-12 text-lg font-semibold mt-6"
             disabled={loading}
           >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in...
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                로그인 중...
               </>
             ) : (
-              'Sign In'
+              '로그인'
             )}
           </Button>
         </form>
-        <div className="mt-4 text-center text-sm text-slate-600">
-          Default credentials: admin@connienail.com / admin123
+        <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-100">
+          <p className="text-center text-sm text-purple-600 font-medium">기본 계정 정보</p>
+          <p className="text-center text-xs text-purple-500 mt-1">admin@connienail.com / admin123</p>
         </div>
       </CardContent>
     </Card>

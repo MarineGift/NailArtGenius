@@ -62,13 +62,13 @@ export default function AdminDashboard() {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                <Sparkles className="h-8 w-8 text-white" />
+            <div className="flex justify-center mb-6">
+              <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-white/30 to-purple-200/20 flex items-center justify-center backdrop-blur-md border-2 border-white/40 shadow-xl pastel-float pastel-glow">
+                <Sparkles className="h-10 w-10 text-purple-700" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold text-white mb-2">ConnieNail</h1>
-            <p className="text-white/80">Luxury Nail Salon Admin</p>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent mb-3 drop-shadow-lg">ConnieNail</h1>
+            <p className="text-purple-700 font-medium text-lg drop-shadow-sm">럭셔리 네일 살롱 관리</p>
           </div>
           <LoginForm onSuccess={handleLoginSuccess} />
         </motion.div>
@@ -82,32 +82,31 @@ export default function AdminDashboard() {
       <header className="admin-gradient shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-white" />
+            <div className="flex items-center space-x-4">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-white/40 to-purple-200/30 flex items-center justify-center backdrop-blur-md border-2 border-white/50 shadow-lg pastel-float">
+                <Sparkles className="h-7 w-7 text-purple-700" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">ConnieNail Admin</h1>
-                <p className="text-white/80 text-sm">Luxury Nail Salon Management</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent drop-shadow-sm">ConnieNail Admin</h1>
+                <p className="text-purple-700 text-sm font-medium drop-shadow-sm">럭셔리 네일 살롱 관리 시스템</p>
               </div>
             </div>
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-3 text-white">
-                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                  <User className="h-4 w-4" />
+              <div className="flex items-center space-x-3">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-white/40 to-purple-200/30 flex items-center justify-center backdrop-blur-md border-2 border-white/50 shadow-lg">
+                  <User className="h-5 w-5 text-purple-700" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-semibold text-purple-700 drop-shadow-sm">
                     {user.firstName || user.email.split('@')[0]}
                   </p>
-                  <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
+                  <p className="text-xs text-purple-600 capitalize font-medium">{user.role.replace('_', ' ')}</p>
                 </div>
               </div>
               <Button
                 onClick={handleSignOut}
-                variant="outline"
+                className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-2 border-purple-200 hover:from-purple-200 hover:to-pink-200 hover:border-purple-300 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
                 size="sm"
-                className="border-white/30 text-white hover:bg-white/20 transition-all duration-200 backdrop-blur-sm"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 로그아웃
