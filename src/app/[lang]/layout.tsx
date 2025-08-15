@@ -14,9 +14,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }): Promise<Metadata> {
-  const dict = await getDictionary(params.lang as Locale)
+  const { lang } = await params
+  const dict = await getDictionary(lang as Locale)
   
   return {
     title: dict.site.title,
@@ -29,21 +30,23 @@ export default async function LangLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }) {
-  if (!locales.includes(params.lang)) {
+  const { lang } = await params
+  
+  if (!locales.includes(lang)) {
     notFound()
   }
 
-  const dict = await getDictionary(params.lang as Locale)
+  const dict = await getDictionary(lang as Locale)
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header lang={params.lang as Locale} dict={dict} />
+      <Header lang={lang as Locale} dict={dict} />
       <main className="flex-1">
         {children}
       </main>
-      <Footer lang={params.lang as Locale} dict={dict} />
+      <Footer lang={lang as Locale} dict={dict} />
     </div>
   )
 }

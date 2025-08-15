@@ -8,16 +8,17 @@ import { Locale } from '@/types/i18n'
 export default async function HomePage({
   params,
 }: {
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }) {
-  const dict = await getDictionary(params.lang as Locale)
+  const { lang } = await params
+  const dict = await getDictionary(lang as Locale)
 
   return (
     <div className="space-y-0">
-      <Hero lang={params.lang as Locale} dict={dict} />
-      <Services lang={params.lang as Locale} dict={dict} />
-      <AIFeatures lang={params.lang as Locale} dict={dict} />
-      <BookingCTA lang={params.lang as Locale} dict={dict} />
+      <Hero lang={lang as Locale} dict={dict} />
+      <Services lang={lang as Locale} dict={dict} />
+      <AIFeatures lang={lang as Locale} dict={dict} />
+      <BookingCTA lang={lang as Locale} dict={dict} />
     </div>
   )
 }
