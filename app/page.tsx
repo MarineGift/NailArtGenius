@@ -91,20 +91,26 @@ export default function AdminDashboard() {
                 <p className="text-white/80 text-sm">Luxury Nail Salon Management</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-white">
-                <User className="h-5 w-5" />
-                <span>{user.firstName || user.email.split('@')[0]}</span>
-                <span className="text-white/70">({user.role})</span>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-3 text-white">
+                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                  <User className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">
+                    {user.firstName || user.email.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-white/70 capitalize">{user.role.replace('_', ' ')}</p>
+                </div>
               </div>
               <Button
                 onClick={handleSignOut}
                 variant="outline"
                 size="sm"
-                className="text-white border-white/20 hover:bg-white/10"
+                className="border-white/30 text-white hover:bg-white/20 transition-all duration-200 backdrop-blur-sm"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+                로그아웃
               </Button>
             </div>
           </div>
