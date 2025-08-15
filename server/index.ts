@@ -1,55 +1,31 @@
-// Simple Next.js development server wrapper
-import { spawn } from 'child_process'
-import path from 'path'
+import { exec } from 'child_process';
 
-const isDev = process.env.NODE_ENV === 'development'
+console.log('🚀 Starting ConnieNail Next.js application...');
 
-if (isDev) {
-  console.log('Starting Next.js development server...')
-  
-  // Start Next.js dev server
-  const nextProcess = spawn('npx', ['next', 'dev', '-p', '5000'], {
-    stdio: 'inherit',
-    cwd: process.cwd()
-  })
-  
-  nextProcess.on('close', (code) => {
-    console.log(`Next.js dev server exited with code ${code}`)
-    process.exit(code || 0)
-  })
-  
-  // Handle process termination
-  process.on('SIGINT', () => {
-    console.log('\nShutting down server...')
-    nextProcess.kill('SIGINT')
-  })
-  
-  process.on('SIGTERM', () => {
-    console.log('\nShutting down server...')
-    nextProcess.kill('SIGTERM')
-  })
-} else {
-  console.log('Starting Next.js production server...')
-  
-  // Start Next.js production server
-  const nextProcess = spawn('npx', ['next', 'start', '-p', '5000'], {
-    stdio: 'inherit',
-    cwd: process.cwd()
-  })
-  
-  nextProcess.on('close', (code) => {
-    console.log(`Next.js production server exited with code ${code}`)
-    process.exit(code || 0)
-  })
-  
-  // Handle process termination
-  process.on('SIGINT', () => {
-    console.log('\nShutting down server...')
-    nextProcess.kill('SIGINT')
-  })
-  
-  process.on('SIGTERM', () => {
-    console.log('\nShutting down server...')
-    nextProcess.kill('SIGTERM')
-  })
-}
+const nextProcess = exec('npx next dev -p 5000', {
+  cwd: process.cwd(),
+  env: process.env
+});
+
+nextProcess.stdout?.on('data', (data) => {
+  console.log(data.toString());
+});
+
+nextProcess.stderr?.on('data', (data) => {
+  console.error(data.toString());
+});
+
+nextProcess.on('close', (code) => {
+  console.log(`Next.js process exited with code ${code}`);
+  process.exit(code || 0);
+});
+
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM, shutting down gracefully...');
+  nextProcess.kill('SIGTERM');
+});
+
+process.on('SIGINT', () => {
+  console.log('Received SIGINT, shutting down gracefully...');
+  nextProcess.kill('SIGINT');
+});

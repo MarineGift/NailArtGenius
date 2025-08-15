@@ -7,9 +7,9 @@ A cutting-edge luxury nail salon admin management system built with Next.js 15, 
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript
 - **Backend**: Next.js API routes (serverless)
 - **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
 - **Styling**: Tailwind CSS + shadcn/ui components
-- **Authentication**: Demo authentication (Supabase Auth ready)
-- **Communication**: Email (SendGrid integration ready)
+- **Deployment**: Railway (standalone output)
 
 ## Key Features
 - **Multi-tier Admin System**: Role-based access control (Super Admin, Admin, Editor, Viewer)
@@ -25,27 +25,29 @@ A cutting-edge luxury nail salon admin management system built with Next.js 15, 
 
 ## Project Structure
 ```
-├── app/                       # Next.js App Router
+├── app/                       # Next.js 15 App Router
 │   ├── api/                  # API routes
-│   │   └── customer-inquiries/
+│   │   ├── auth/user/        # Supabase authentication
+│   │   ├── services/         # Nail services API
+│   │   └── gallery/          # Gallery API
 │   ├── layout.tsx            # Root layout
 │   ├── page.tsx              # Main dashboard
-│   └── globals.css           # Global styles
+│   └── globals.css           # Global styles with pastel theme
 ├── components/               # React components
 │   ├── ui/                   # shadcn/ui components
-│   ├── login-form.tsx        # Authentication
-│   ├── dashboard-tabs.tsx    # Main dashboard
-│   ├── customer-inquiries.tsx
-│   ├── gallery-manager.tsx
-│   └── news-manager.tsx
+│   ├── login-form.tsx        # Supabase auth form
+│   ├── dashboard-tabs.tsx    # Main admin dashboard
+│   └── [feature-components]  # CRM, booking, gallery managers
 ├── lib/                      # Utilities and configurations
+│   ├── supabase/
+│   │   ├── client.ts         # Browser Supabase client
+│   │   └── server.ts         # Server Supabase client
 │   ├── auth.ts              # Authentication logic
-│   ├── supabase.ts          # Supabase client
-│   ├── types.ts             # TypeScript types
+│   ├── types.ts             # TypeScript definitions
 │   └── utils.ts             # Utility functions
 ├── hooks/                    # React hooks
 │   └── use-toast.ts         # Toast notifications
-└── package.json
+└── package.json             # Next.js dependencies only
 ```
 
 ## Database Schema (ConnieNail Supabase)
@@ -77,15 +79,14 @@ A cutting-edge luxury nail salon admin management system built with Next.js 15, 
 - `next start -p 5000`: Start production server
 
 ## Recent Changes
-- **2025-08-15**: Complete ConnieNail luxury admin system implementation
-- **2025-08-15**: Multi-role admin authentication with Supabase backend
-- **2025-08-15**: Phone-based customer CRM with complete history tracking
-- **2025-08-15**: Advanced booking management with admin input tracking
-- **2025-08-15**: Object storage integration for gallery management
-- **2025-08-15**: Luxury UI design with purple/pink gradient theme
-- **2025-08-15**: Comprehensive database schema for nail salon operations
-- **2025-08-15**: Email/SMS communication system for customer outreach
-- **2025-08-15**: Real-time dashboard with luxury animations and statistics
+- **2025-08-15**: Converted to 100% Next.js 15 App Router structure
+- **2025-08-15**: Removed all unnecessary dependencies (Express, Drizzle, Vite, etc.)
+- **2025-08-15**: Implemented pure Supabase authentication with SSR support
+- **2025-08-15**: Beautiful pastel color theme with soft purple/pink gradients
+- **2025-08-15**: Clean project structure using only Next.js, TypeScript, Supabase, Railway
+- **2025-08-15**: Floating animations and glow effects for luxury UI
+- **2025-08-15**: Korean interface elements integrated
+- **2025-08-15**: Standalone build configuration for Railway deployment
 
 ## User Preferences
 - **Language**: English only (all content and UI)

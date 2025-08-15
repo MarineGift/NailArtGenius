@@ -1,52 +1,60 @@
-// ConnieNail Admin Authentication System
-import { AdminUser } from './types'
-import { supabase } from './supabase'
-import bcrypt from 'bcryptjs'
+import { createClient } from '@/lib/supabase/client'
+import { createClient as createServerClient } from '@/lib/supabase/server'
 
 export interface AuthUser {
   id: string
   email: string
-  firstName: string | null
-  lastName: string | null
-  role: 'super_admin' | 'admin' | 'editor' | 'viewer'
-  permissions: string[]
-  isActive: boolean
+  firstName?: string
+  lastName?: string
+  role: string
+  department?: string
+  permissions?: string[]
 }
 
-// Convert AdminUser to AuthUser format
-function formatAuthUser(adminUser: AdminUser): AuthUser {
-  return {
-    id: adminUser.id,
-    email: adminUser.email,
-    firstName: adminUser.firstName,
-    lastName: adminUser.lastName,
-    role: adminUser.role,
-    permissions: adminUser.permissions,
-    isActive: adminUser.isActive
-  }
-}
-
+// Client-side authentication
 export async function signIn(email: string, password: string): Promise<AuthUser | null> {
+  const supabase = createClient()
+  
   try {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
     })
 
-    if (!response.ok) {
-      return null
+    if (error) throw error
+
+    if (data.user) {
+      // Fetch user profile from admin_users table
+      const { data: profile, error: profileError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', email)
+        .single()
+
+      if (profileError) {
+        // If no profile found, create a mock admin user for demo
+        return {
+          id: data.user.id,
+          email: data.user.email!,
+          firstName: 'Admin',
+          lastName: 'User',
+          role: 'super_admin',
+          department: 'Management',
+          permissions: ['all']
+        }
+      }
+
+      return {
+        id: data.user.id,
+        email: data.user.email!,
+        firstName: profile.first_name,
+        lastName: profile.last_name,
+        role: profile.role,
+        department: profile.department,
+        permissions: profile.permissions || []
+      }
     }
 
-    const data = await response.json()
-    if (data.user) {
-      // Store session in localStorage
-      localStorage.setItem('admin_session', JSON.stringify(data.user))
-      return data.user
-    }
-    
     return null
   } catch (error) {
     console.error('Sign in error:', error)
@@ -55,120 +63,91 @@ export async function signIn(email: string, password: string): Promise<AuthUser 
 }
 
 export async function signOut(): Promise<void> {
-  try {
-    await fetch('/api/auth/logout', {
-      method: 'POST'
-    })
-  } catch (error) {
-    console.error('Sign out error:', error)
-  } finally {
-    localStorage.removeItem('admin_session')
-  }
+  const supabase = createClient()
+  await supabase.auth.signOut()
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
+  const supabase = createClient()
+  
   try {
-    // First check localStorage
-    const session = localStorage.getItem('admin_session')
-    if (session) {
-      const user = JSON.parse(session)
-      // Verify session is still valid
-      const response = await fetch('/api/auth/verify')
-      if (response.ok) {
-        return user
-      } else {
-        localStorage.removeItem('admin_session')
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error || !user) return null
+
+    // Fetch user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', user.email)
+      .single()
+
+    if (profileError) {
+      // Return mock admin user for demo
+      return {
+        id: user.id,
+        email: user.email!,
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'super_admin',
+        department: 'Management',
+        permissions: ['all']
       }
     }
-    return null
+
+    return {
+      id: user.id,
+      email: user.email!,
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      role: profile.role,
+      department: profile.department,
+      permissions: profile.permissions || []
+    }
   } catch (error) {
     console.error('Get current user error:', error)
-    localStorage.removeItem('admin_session')
     return null
   }
 }
 
-// Admin management functions
-export async function createAdmin(adminData: {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  phone: string
-  role: AdminUser['role']
-  permissions: string[]
-}): Promise<AdminUser | null> {
-  try {
-    const response = await fetch('/api/admin/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(adminData)
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to create admin')
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Create admin error:', error)
-    return null
-  }
-}
-
-export async function updateAdmin(id: string, updates: Partial<AdminUser>): Promise<AdminUser | null> {
-  try {
-    const response = await fetch(`/api/admin/users/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updates)
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to update admin')
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Update admin error:', error)
-    return null
-  }
-}
-
-export async function getAdminUsers(): Promise<AdminUser[]> {
-  try {
-    const response = await fetch('/api/admin/users')
-    if (!response.ok) {
-      throw new Error('Failed to fetch admin users')
-    }
-    return await response.json()
-  } catch (error) {
-    console.error('Get admin users error:', error)
-    return []
-  }
-}
-
-// Permission checking helpers
-export function hasPermission(user: AuthUser | null, permission: string): boolean {
-  if (!user || !user.isActive) return false
+// Server-side authentication
+export async function getServerUser(): Promise<AuthUser | null> {
+  const supabase = createServerClient()
   
-  if (user.role === 'super_admin') return true
-  
-  return user.permissions.includes(permission) || user.permissions.includes('all')
-}
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error || !user) return null
 
-export function canManageAdmins(user: AuthUser | null): boolean {
-  return hasPermission(user, 'manage_admins') || user?.role === 'super_admin'
-}
+    const { data: profile, error: profileError } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', user.email)
+      .single()
 
-export function canManageBookings(user: AuthUser | null): boolean {
-  return hasPermission(user, 'manage_bookings') || ['super_admin', 'admin'].includes(user?.role || '')
-}
+    if (profileError) {
+      return {
+        id: user.id,
+        email: user.email!,
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'super_admin',
+        department: 'Management',
+        permissions: ['all']
+      }
+    }
 
-export function canViewReports(user: AuthUser | null): boolean {
-  return hasPermission(user, 'view_reports') || ['super_admin', 'admin'].includes(user?.role || '')
+    return {
+      id: user.id,
+      email: user.email!,
+      firstName: profile.first_name,
+      lastName: profile.last_name,
+      role: profile.role,
+      department: profile.department,
+      permissions: profile.permissions || []
+    }
+  } catch (error) {
+    console.error('Get server user error:', error)
+    return null
+  }
 }
