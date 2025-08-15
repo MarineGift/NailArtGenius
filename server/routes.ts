@@ -239,9 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username,
         password: hashedPassword,
         role: 'admin',
-        isActive: false, // Needs admin activation
-        createdAt: new Date(),
-        updatedAt: new Date()
+        isActive: false // Needs admin activation
       });
 
       res.status(201).json({
@@ -1121,8 +1119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointment routes
   app.get("/api/appointments/booked-slots/:date", async (req, res) => {
     try {
-      const date = new Date(req.params.date + 'T00:00:00');
-      const bookedSlots = await storage.getBookedSlotsByDate(date);
+      const bookedSlots = await storage.getBookedSlotsByDate(req.params.date);
       res.json(bookedSlots);
     } catch (error) {
       console.error("Error fetching booked slots:", error);
@@ -1199,7 +1196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const appointment = await storage.createAppointment({
         customerId: savedCustomer.id,
-        appointmentDate: new Date(appointmentDate),
+        bookingDate: new Date(appointmentDate),
         timeSlot,
         visitReason: visitReason || "General visit",
         status: "scheduled",
@@ -1223,7 +1220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const smsMessage = `[Connie's Nail] ${savedCustomer.name}님, ${formattedDate} ${timeSlot}에 예약이 완료되었습니다. 문의: 02-1234-5678`;
         
-        await smsService.sendSMS(savedCustomer.phoneNumber || '', smsMessage);
+        await smsService.sendSMS(savedCustomer.phoneNumber, smsMessage);
         console.log(`SMS sent successfully to ${savedCustomer.phoneNumber}`);
       } catch (smsError) {
         console.error('Failed to send SMS:', smsError);
@@ -1367,15 +1364,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create appointment with real-time booking flag
       const appointment = await storage.createAppointment({
         customerId: savedCustomer.id,
-        appointmentDate: new Date(appointmentDate),
+        bookingDate: new Date(appointmentDate),
         timeSlot,
         visitReason: serviceName || "일반 방문",
         status: "confirmed", // Real-time bookings are immediately confirmed
         notes: customer.notes || null,
         serviceId: serviceId || null,
         duration: duration || 60,
-        price: price || 0,
-        // realTimeBooking: true // This field doesn't exist in schema
+        price: price?.toString() || "0",
       });
       
       res.json({ 
@@ -1857,7 +1853,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create appointment
       const appointment = await storage.createAppointment({
         customerId: customer.id,
-        appointmentDate: new Date(appointmentDate),
+        bookingDate: new Date(appointmentDate),
         timeSlot,
         status: "scheduled",
       });
@@ -1876,7 +1872,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "날짜를 지정해주세요." });
       }
 
-      const bookedSlots = await storage.getBookedSlotsByDate(new Date(date as string));
+      const bookedSlots = await storage.getBookedSlotsByDate(date as string);
       res.json(bookedSlots);
     } catch (error) {
       console.error("Error fetching booked slots:", error);
@@ -1969,7 +1965,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check if time slot is still available
       const isAvailable = await storage.isTimeSlotAvailable(
-        new Date(validatedData.appointmentDate),
+        new Date(validatedData.bookingDate),
         validatedData.timeSlot
       );
       
@@ -2540,14 +2536,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Create booking with customer ID
-      const booking = await storage.createBooking({
+      const booking = await storage.createAppointment({
         customerId: customer.id,
         bookingDate: new Date(bookingData.bookingDate),
         timeSlot: bookingData.timeSlot,
         serviceDetails: bookingData.serviceDetails,
         status: bookingData.status || 'scheduled',
         notes: bookingData.notes || null,
-        price: bookingData.price || null,
+        price: bookingData.price?.toString() || null,
         duration: bookingData.duration || null,
         serviceId: bookingData.serviceId || null,
         visitReason: bookingData.visitReason || null
@@ -2895,6 +2891,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const imagePath = `/uploads/${req.file.filename}`;
 
       const galleryData = {
+        galleryNo: `GAL-${Date.now()}`, // Generate unique gallery number
         title: title || 'New Gallery Item',
         description: description || '',
         imagePath,
@@ -3033,15 +3030,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const aiNailArt = await db.insert(aiNailArtImages).values({
         customerPhone: customerPhone.trim(),
-        originalImageUrl,
-        generatedImageUrl,
+        nailPosition: fingerPosition,
+        direction: "front", // Default direction
+        originalImagePath: originalImageUrl,
+        aiGeneratedImagePath: generatedImageUrl,
         designPrompt,
-        fingerPosition,
-        nailShape,
-        nailLength,
-        nailCondition,
-        designStyle,
-        colorPreferences,
+        nailName: `${nailShape} ${designStyle}`,
         sessionId: sessionId || `ai_${Date.now()}`
       }).returning();
 

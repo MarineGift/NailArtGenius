@@ -10,12 +10,12 @@ export interface AdminUser {
   id: number;
   username: string;
   name: string;
-  email?: string;
+  email?: string | null;
   role: string;
   isActive: boolean;
-  lastLogin?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  lastLogin?: Date | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
 }
 
 export async function hashPassword(password: string): Promise<string> {
