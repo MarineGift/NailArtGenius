@@ -1,11 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import http from "http";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { seedBookingData } from "./seedData";
-import { seedTestCustomersAndReservations } from "./test-data-seeder";
-import { seedComprehensiveData } from "./comprehensive-seed-data";
-import { seedTodayDateData } from "./today-date-seeder";
+// import { setupVite, serveStatic, log } from "./vite";
+import { seedData } from "./seedData";
 
 const app = express();
 app.use(express.json());
@@ -34,7 +31,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      console.log(logLine);
     }
   });
 
@@ -42,69 +39,18 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  console.log('🔄 Migrating from Access DB to Supabase PostgreSQL...');
+  console.log('🔄 Starting Admin Dashboard Server...');
   
   // Initialize PostgreSQL/Supabase data seeding
   try {
-    await seedBookingData();
-    console.log('✅ Booking data seeded to Supabase');
+    await seedData();
+    console.log('✅ Admin data seeded to Supabase');
   } catch (error) {
-    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
-  }
-  
-  // Seed test customers and reservations
-  try {
-    await seedTestCustomersAndReservations();
-    console.log('✅ Test customers seeded to Supabase');
-  } catch (error) {
-    console.log('Note: Test data seeding skipped (already exists or error occurred)');
-  }
-  
-  // Seed comprehensive data (carousel, gallery, AI nail art)
-  try {
-    await seedComprehensiveData();
-    console.log('✅ Comprehensive data seeded to Supabase');
-  } catch (error) {
-    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
-  }
-
-  // Seed comprehensive sample data for testing
-  try {
-    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
-    await seedComprehensiveSampleData();
-    console.log('✅ Comprehensive sample data seeded to Supabase');
-  } catch (error) {
-    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
-  }
-
-  // Create booking data for all customers (1-5 bookings each)
-  try {
-    const { seedBookingData } = await import('./booking-data-seeder');
-    await seedBookingData();
-    console.log('✅ Customer booking data seeded to Supabase');
-  } catch (error) {
-    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
-  }
-
-  // Update gallery with Gallery_No unique identifiers
-  try {
-    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
-    await updateGalleryWithGalleryNo();
-    console.log('✅ Gallery updated in Supabase');
-  } catch (error) {
-    console.log('Note: Gallery update skipped (already exists or error occurred)');
-  }
-  
-  // Seed today's date sample data for dashboard testing
-  try {
-    await seedTodayDateData();
-    console.log('✅ Today date data seeded to Supabase');
-  } catch (error) {
-    console.log('Note: Today date seeding skipped (already exists or error occurred)');
+    console.log('Note: Admin data seeding skipped (already exists or error occurred)');
   }
   
   const server = await registerRoutes(app);
-  console.log('✅ Supabase PostgreSQL routes registered successfully');
+  console.log('✅ Admin routes registered successfully');
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -114,13 +60,9 @@ app.use((req, res, next) => {
     throw err;
   });
   
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+  // Serve static files in production (Next.js will handle this in development)
+  if (app.get("env") !== "development") {
+    app.use(express.static('public'));
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
@@ -133,6 +75,6 @@ app.use((req, res, next) => {
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    console.log(`Admin dashboard serving on port ${port}`);
   });
 })();
