@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const { spawn } = require('child_process');
 
-console.log('🚀 Starting ConnieNail Next.js development server...');
+console.log('🚀 ConnieNail - 럭셔리 네일 살롱 관리 시스템 시작 중...');
 
 const nextDev = spawn('npx', ['next', 'dev', '-p', '5000'], {
   stdio: 'inherit',
