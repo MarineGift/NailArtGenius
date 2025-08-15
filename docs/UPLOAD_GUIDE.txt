@@ -1,0 +1,24 @@
+GitHub Pages 업로드 가이드
+========================
+
+📁 업로드할 파일들 (이 폴더의 모든 파일):
+
+핵심 파일:
+- index.html (65K) - 메인 웹사이트
+- script.js (81K) - JavaScript 기능
+- styles.css (47K) - CSS 스타일
+- CNAME - 도메인 설정
+- .nojekyll - Jekyll 비활성화
+
+추가 파일:
+- README.md - 프로젝트 설명
+- deploy-instructions.md - 배포 가이드
+- 기타 백업 및 테스트 파일들
+
+업로드 방법:
+1. GitHub.com에서 새 repository 생성: 'connienail'
+2. 이 폴더의 모든 파일을 repository에 업로드
+3. Settings → Pages에서 main branch 설정
+4. https://marinegift.github.io/connienail/ 접속
+
+완료!

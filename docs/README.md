@@ -1,33 +1,72 @@
-# Connie's Nail - Documentation
+# Connie's Nail - GitHub Pages Deployment
 
-## Project Overview
-Connie's Nail is a multilingual nail salon website built with Next.js 14, featuring AI-powered nail art generation, online booking capabilities, and comprehensive customer management.
+## 🚀 Live Site
+Visit: https://marinegift.github.io/connienail/
 
-## Features
-- **Multilingual Support**: Korean (default), English, Japanese, Spanish
-- **AI-Powered Nail Art**: Generate custom nail designs
-- **Online Booking**: Schedule appointments with real-time availability
-- **Progressive Web App**: Mobile-first experience with offline capabilities
-- **Supabase Integration**: Modern backend with authentication
+## 📋 Features
 
-## Quick Start
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables (see `.env.example`)
-4. Run development server: `npm run dev`
+### Core Services
+- **Professional Nail Care**: Classic French manicure, floral designs, geometric patterns
+- **Premium Spa Services**: Hand treatments, paraffin wax, essential oil therapy
+- **AI Nail Art Generator**: Revolutionary smartphone-based nail analysis and design
+- **Online Booking System**: Real-time availability with instant confirmation
+- **Multilingual Support**: English, Korean, Japanese, Spanish
 
-## Architecture
-- **Frontend**: Next.js 14 with App Router
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Internationalization**: Custom i18n implementation
-- **Deployment**: Railway platform
+### Technical Highlights
+- **Responsive Design**: Mobile-first approach with PWA capabilities
+- **Real-time Features**: Live booking availability and interactive galleries
+- **Modern UI/UX**: Smooth animations and professional aesthetics
+- **Accessibility**: WCAG compliant with keyboard navigation support
 
-## Languages Supported
-- 🇰🇷 Korean (ko) - Default
-- 🇺🇸 English (en)
-- 🇯🇵 Japanese (ja)
-- 🇪🇸 Spanish (es)
+## 🛠 Deployment Guide
 
-## Development Guidelines
-See individual documentation files in this folder for detailed development instructions.
+### GitHub Pages Setup
+1. Fork or clone this repository
+2. Enable GitHub Pages in repository settings
+3. Set source to `docs/` folder
+4. Configure custom domain (optional)
+
+### File Structure
+```
+docs/
+├── index.html          # Main homepage
+├── styles.css          # Comprehensive styling
+├── script.js           # Interactive functionality
+├── CNAME              # Custom domain configuration
+└── README.md          # This documentation
+```
+
+### Customization
+- **Branding**: Update logo and colors in `styles.css`
+- **Content**: Modify services and pricing in `index.html`
+- **Languages**: Add translations in `script.js`
+- **Images**: Replace placeholder images with actual salon photos
+
+## 📱 Mobile Optimization
+- Touch-friendly interface with gesture support
+- Responsive breakpoints for all screen sizes
+- Progressive Web App (PWA) ready
+- Offline capability for basic browsing
+
+## 🔧 Browser Support
+- Chrome 70+ (recommended)
+- Firefox 65+
+- Safari 12+
+- Edge 79+
+- Mobile browsers (iOS Safari, Chrome Mobile)
+
+## 📞 Contact Information
+- **Phone**: +82 10-1234-5678
+- **Email**: info@connienail.com
+- **Address**: Seoul, Gangnam-gu, Nail Art Street 123
+- **Hours**: Mon-Fri 10:00-19:00, Sat 10:00-18:00
+
+## 🚀 Performance Features
+- Lazy loading for images
+- CSS and JavaScript minification ready
+- CDN integration for fonts and icons
+- Optimized image formats and sizes
+
+---
+
+© 2025 Connie's Nail. All rights reserved.

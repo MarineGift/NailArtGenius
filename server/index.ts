@@ -1,38 +1,138 @@
-// Compatibility bridge for Next.js app
-// This file exists to make the workflow work with Next.js
+import express, { type Request, Response, NextFunction } from "express";
+import http from "http";
+import { registerRoutes } from "./routes";
+import { setupVite, serveStatic, log } from "./vite";
+import { seedBookingData } from "./seedData";
+import { seedTestCustomersAndReservations } from "./test-data-seeder";
+import { seedComprehensiveData } from "./comprehensive-seed-data";
+import { seedTodayDateData } from "./today-date-seeder";
 
-import { spawn } from 'child_process';
-import path from 'path';
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-console.log('🚀 Starting Next.js development server...');
+app.use((req, res, next) => {
+  const start = Date.now();
+  const path = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
-// Change to the project root directory
-const projectRoot = path.resolve(process.cwd());
+  const originalResJson = res.json;
+  res.json = function (bodyJson, ...args) {
+    capturedJsonResponse = bodyJson;
+    return originalResJson.apply(res, [bodyJson, ...args]);
+  };
 
-// Start Next.js dev server
-const nextProcess = spawn('npx', ['next', 'dev', '-p', '5000'], {
-  cwd: projectRoot,
-  stdio: 'inherit',
-  shell: true
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (path.startsWith("/api")) {
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) {
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      }
+
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
+
+      log(logLine);
+    }
+  });
+
+  next();
 });
 
-nextProcess.on('error', (err) => {
-  console.error('❌ Failed to start Next.js server:', err);
-  process.exit(1);
-});
+(async () => {
+  console.log('🔄 Migrating from Access DB to Supabase PostgreSQL...');
+  
+  // Initialize PostgreSQL/Supabase data seeding
+  try {
+    await seedBookingData();
+    console.log('✅ Booking data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
+  
+  // Seed test customers and reservations
+  try {
+    await seedTestCustomersAndReservations();
+    console.log('✅ Test customers seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Test data seeding skipped (already exists or error occurred)');
+  }
+  
+  // Seed comprehensive data (carousel, gallery, AI nail art)
+  try {
+    await seedComprehensiveData();
+    console.log('✅ Comprehensive data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive data seeding skipped (already exists or error occurred)');
+  }
 
-nextProcess.on('close', (code) => {
-  console.log(`Next.js server exited with code ${code}`);
-  process.exit(code || 0);
-});
+  // Seed comprehensive sample data for testing
+  try {
+    const { seedComprehensiveSampleData } = await import('./comprehensive-sample-data');
+    await seedComprehensiveSampleData();
+    console.log('✅ Comprehensive sample data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Comprehensive sample data seeding skipped (already exists or error occurred)');
+  }
 
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\n🛑 Shutting down server...');
-  nextProcess.kill('SIGINT');
-});
+  // Create booking data for all customers (1-5 bookings each)
+  try {
+    const { seedBookingData } = await import('./booking-data-seeder');
+    await seedBookingData();
+    console.log('✅ Customer booking data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Booking data seeding skipped (already exists or error occurred)');
+  }
 
-process.on('SIGTERM', () => {
-  console.log('\n🛑 Shutting down server...');
-  nextProcess.kill('SIGTERM');
-});
+  // Update gallery with Gallery_No unique identifiers
+  try {
+    const { updateGalleryWithGalleryNo } = await import('./gallery-update');
+    await updateGalleryWithGalleryNo();
+    console.log('✅ Gallery updated in Supabase');
+  } catch (error) {
+    console.log('Note: Gallery update skipped (already exists or error occurred)');
+  }
+  
+  // Seed today's date sample data for dashboard testing
+  try {
+    await seedTodayDateData();
+    console.log('✅ Today date data seeded to Supabase');
+  } catch (error) {
+    console.log('Note: Today date seeding skipped (already exists or error occurred)');
+  }
+  
+  const server = await registerRoutes(app);
+  console.log('✅ Supabase PostgreSQL routes registered successfully');
+
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+
+    res.status(status).json({ message });
+    throw err;
+  });
+  
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
+
+  // ALWAYS serve the app on the port specified in the environment variable PORT
+  // Other ports are firewalled. Default to 5000 if not specified.
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = parseInt(process.env.PORT || '5000', 10);
+  server.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    log(`serving on port ${port}`);
+  });
+})();

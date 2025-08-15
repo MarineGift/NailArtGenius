@@ -1,156 +1,446 @@
-# Connie's Nail - Multilingual Nail Salon Website
+# Connie's Nail - Replit Project Guide
 
 ## Overview
-
-This is a modern, multilingual nail salon website built with Next.js 14, featuring AI-powered nail art generation, online booking capabilities, and comprehensive customer management. The application supports four languages (Korean, English, Japanese, Spanish) and provides a mobile-first, PWA-enabled experience for nail salon customers.
-
-**LATEST UPDATE (2025-07-28)**: Complete restructure to industry-standard Next.js architecture with proper folder organization for maximum maintainability.
+Connie's Nail is a full-stack web application for a traditional nail salon featuring comprehensive nail care and spa services. The platform provides multi-language support (Korean/English), detailed service menus with pricing, appointment booking, customer management, and PayPal payment integration. **MAJOR UPDATE: Migrated from PostgreSQL to Microsoft Access-style database using SQLite3 for improved operational stability.**
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
-Project Structure: Professional folder organization with docs/, scripts/, config/ folders for enterprise-level maintainability.
+
+## User Preferences
+- 비용 효율적인 솔루션 선호
+- 단계적 배포 및 확장 희망
+- nolsae.com 도메인으로 서비스 론칭 계획
+- **Database preference: Microsoft Access-style instead of PostgreSQL due to operational issues**
+
+## Recent Changes (July 2025)
+
+### GitHub Pages Static Site Deployment Complete (July 25, 2025)
+- **Complete Static Site Package**: Finalized comprehensive GitHub Pages deployment in `docs/` folder
+  - 65K HTML + 81K JavaScript + 47K CSS files optimized for production
+  - All external asset references converted to CDN and Unsplash images
+  - Configured GitHub Pages settings: CNAME, .nojekyll, deployment scripts
+  - **READY FOR UPLOAD**: Target deployment URL: https://marinegift.github.io/connienail/
+- **Production-Ready Features**: Full-featured static site with all original functionality preserved
+  - Complete multilingual support (Korean, English, Japanese, Spanish) with instant switching
+  - Interactive image carousel, professional gallery, booking system integration
+  - Revolutionary AI nail art generator with 6-photo upload system
+  - Responsive design with mobile-first approach and touch gesture support
+  - Professional animations, hover effects, and smooth user interactions
+- **Deployment Documentation**: Comprehensive guides and automation scripts
+  - Step-by-step upload guide with GitHub repository setup instructions
+  - Automated deployment script (deploy-github.sh) for streamlined updates
+  - Browser compatibility testing confirmed (Chrome 70+, Firefox 65+, Safari 12+, Edge 79+)
+  - SEO optimization with proper meta tags, structured data, and performance optimization
+- **Data Integration Status**: Database confirmed with real content
+  - 26 customers, 4,374 booking records, 39 orders, 14 gallery items
+  - VIP customer management system with 4 premium customers (gold/silver levels)
+  - Admin dashboard accessible at admin/1111 for backend management
+
+### Advanced Customer Management System Implementation (July 24, 2025)
+- **Enhanced Customer Schema**: Added comprehensive customer management fields to database
+  - VIP level system: regular, silver, gold, platinum, diamond with automatic tier management
+  - Loyalty points program with earning/redemption tracking and tier-based benefits
+  - Customer preferences tracking: preferred services, colors, styles, appointment times
+  - Advanced analytics: lifetime value calculation, retention metrics, satisfaction ratings
+  - Customer segmentation for targeted marketing and personalized service delivery
+- **New Database Tables**: Added 5 new customer-related tables for comprehensive CRM
+  - customerVisitHistory: Detailed visit tracking with service history and satisfaction scores
+  - customerPreferences: Personal preferences, allergies, communication preferences
+  - customerLoyalty: Complete loyalty program management with tier progression
+  - customerSegments: Marketing segmentation with automated criteria-based grouping
+  - Enhanced customers table with 15+ new fields for comprehensive customer profiling
+- **Advanced Management Interface**: Created sophisticated customer management dashboard
+  - Real-time customer analytics with VIP customer counts and lifetime value metrics
+  - Advanced filtering by category, VIP level, and search functionality
+  - Customer profile modal with complete visit history and loyalty information
+  - VIP level management with instant updates and loyalty point addition system
+  - Customer rating system and preference management for personalized service
+- **API Enhancement**: Complete backend API system for advanced customer operations
+  - GET /api/customers/enhanced - Enhanced customer list with all new fields
+  - GET /api/customers/analytics - Customer analytics dashboard data
+  - GET /api/customers/profile/:id - Detailed customer profile with history
+  - PATCH /api/customers/:id/vip-level - VIP level management system
+  - POST /api/customers/:id/loyalty-points - Loyalty points addition with reason tracking
+  - Customer retention metrics and segmentation management endpoints
+
+## Recent Changes (July 2025)
+
+### Supabase PostgreSQL Migration (July 24, 2025)
+- **Database Migration to Supabase**: Successfully migrated from temporary Access DB to Supabase PostgreSQL
+  - Restored original PostgreSQL/Drizzle ORM architecture with Supabase backend
+  - Connected to Supabase database using provided DATABASE_URL
+  - Re-enabled all original PostgreSQL-based data seeding and initialization
+  - Restored comprehensive REST API endpoints using original routes.ts
+  - All 35+ database tables with proper Drizzle schema definitions active
+- **Supabase Integration Benefits**: Modern cloud database with enhanced capabilities
+  - Real-time database subscriptions for live updates
+  - Automatic API generation from database schema
+  - Built-in authentication and row-level security
+  - Unlimited scalability compared to Access DB limitations
+  - Full PostgreSQL feature set with advanced querying capabilities
+- **Data Restoration**: All sample data and seed scripts re-activated
+  - Comprehensive test customers, bookings, orders, and gallery data
+  - Admin authentication system restored with proper JWT tokens
+  - Today's metrics and dashboard statistics fully operational
+  - Real-time booking system and customer management active
+
+## Recent Changes (July 2025)
+
+### Universal GetDate Timestamp System Implementation (July 24, 2025)
+- **Complete Database Schema Enhancement**: Added GetDate timestamp field to ALL database tables
+  - Universal data entry tracking: Every table now includes GetDate field with defaultNow()
+  - Systematic timestamp implementation across 35+ database tables for comprehensive tracking
+  - All insert operations automatically capture data entry timestamps for audit trail
+  - Enhanced dashboard filtering capabilities with precise date-based queries
+- **Today's Date Sample Data System**: Created comprehensive test data infrastructure
+  - New today-date-seeder.ts creating customers, bookings, orders with today's timestamps
+  - Dashboard now displays accurate "today" metrics using GetDate field filtering
+  - Sample data includes realistic customer profiles, booking appointments, orders, site visits
+  - Automatic seeding ensures dashboard shows active today metrics for testing
+- **Database Schema Completion**: Successfully resolved all timestamp field requirements
+  - Fixed duplicate table definitions and TypeScript errors in schema files
+  - Proper foreign key relationships maintained with GetDate additions
+  - Schema push completed with all 35+ tables including universal timestamp tracking
+
+### 5-Card Admin Dashboard Layout Implementation (July 24, 2025)
+- **Restructured Admin Dashboard**: Updated from 4-card to 5-card layout as requested
+  - Combined "Total" card showing Customers / Bookings / Orders in concise format
+  - Individual today cards: Today Customer, Today's Booking, Today's Visit, Today Orders
+  - Site visits tracking table (siteVisits) created for website visitor analytics
+  - All "today" metrics now properly filter by current date using database timestamps
+- **Enhanced Data Tracking**: Added comprehensive today-specific metrics
+  - Today Customer: New customers registered today (filtered by GetDate)
+  - Today's Booking: Booking appointments for today (filtered by GetDate) 
+  - Today's Visit: Website visitors today (tracked via site visit API)
+  - Today Orders: Order transactions completed today (filtered by GetDate)
+- **Site Visit Tracking System**: Complete visitor analytics infrastructure
+  - New siteVisits table storing IP, user agent, referrer, page, session data
+  - API endpoint /api/track-visit for visitor data collection
+  - Real-time today's visit count for dashboard analytics
+
+### Complete AI Nail Art System with Customer Integration (July 23, 2025)
+- **Customer-Centric 10-Finger AI Nail System**: Comprehensive nail art management connected to Customer table via phone number
+  - Created customer_nail_info table storing all 10 fingers data per customer session
+  - Each customer identified by phone number with complete nail information storage
+  - Finger positions: left_thumb, left_index, left_middle, left_ring, left_pinky, right_thumb, right_index, right_middle, right_ring, right_pinky
+  - Comprehensive nail data: original/AI images, design prompts, nail shape/length/condition, design style, color preferences
+- **Customer Nail Info Page**: Dedicated customer interface for viewing nail art history
+  - Phone number-based search to access personal nail information
+  - Latest session view showing all 10 fingers in current design session
+  - Complete history view with all past nail art records
+  - Responsive card layout with nail images, design details, and AI prompts
+- **Database Schema & API Integration**: Complete backend system for nail art management
+  - customer_nail_info table with foreign key to customers.phone_number
+  - Session-based grouping for complete 10-finger nail art sets
+  - REST API endpoints: GET/POST /api/customer/:phone/nail-info for customer access
+  - Admin API endpoints: /api/admin/customer-nail-info for management
+- **Sample Data Integration**: Test data with complete 10-finger nail art session
+  - Customer 010-1234-5678 with floral design session across all 10 fingers
+  - Design prompt: "Elegant floral design with roses" with oval shape, medium length
+  - Color preferences: pink, white, gold for consistent design theme
+
+### Complete Database-Driven Gallery System with Board-Style Pagination (July 24, 2025)
+- **Database Schema Completion**: Successfully created gallery and gallery_desc tables with proper relationships
+  - Gallery table stores basic information: title, description, category, tags, image_path, display_order
+  - Real database integration with 14+ actual gallery items loaded from Supabase PostgreSQL
+  - Foreign key relationship between gallery_desc.gallery_id and gallery.id for detailed modal views
+- **Board-Style Pagination Implementation**: Complete pagination system for large gallery datasets
+  - 12 items per page with Previous/Next navigation and numbered page buttons
+  - Smart pagination display showing current page ± 2 pages for better navigation
+  - Real-time pagination state management with URL parameters
+  - Smooth scroll-to-top functionality when changing pages
+- **Advanced Search and Filter System**: Comprehensive gallery browsing capabilities
+  - Real-time search functionality by title and description using database ILIKE queries
+  - Category filtering: All Categories, Nail Art, Spa, Treatment with instant results
+  - Combined search and filter capabilities with result count display
+  - Clear filters functionality to reset search and category selections
+- **Gallery UI/UX Enhancements**: Professional gallery presentation with responsive design
+  - Card-based layout with hover effects and image zoom on hover
+  - Detail modal view with full-size images and comprehensive tag display
+  - Error-safe image loading with fallback placeholder images
+  - Category badges with color-coded display for easy identification
+- **API Integration**: Full REST API implementation for gallery management
+  - GET /api/gallery - Public paginated gallery with search and filter parameters
+  - GET /api/admin/gallery - Admin gallery management with authentication
+  - POST /api/admin/gallery - Create new gallery items with image upload
+  - PUT/DELETE /api/admin/gallery/:id - Update and delete gallery items
+  - Comprehensive error handling and logging for debugging
+
+## Recent Changes (July 2025)
+
+### Progressive Web App (PWA) Implementation (July 23, 2025)
+- **Complete Mobile App Conversion**: Transformed web application into installable PWA for Android and iOS
+  - Added comprehensive PWA manifest with app shortcuts and screenshots
+  - Implemented service worker with offline caching and background sync
+  - Created PWA install prompt component with smart timing and dismissal handling
+  - Added mobile-optimized meta tags and viewport settings for native app experience
+  - Integrated push notifications and Web Share API support
+  - Safe area insets support for iPhone X+ devices and Android notches
+  - Touch optimizations and gesture handling for mobile interactions
+- **Mobile-First Enhancements**: Native app-like features and performance
+  - Offline mode with cached content and sync capabilities
+  - App shortcuts for quick booking, services, and admin access
+  - Responsive design with mobile header component and navigation
+  - Status bar styling and full-screen PWA display mode
+  - Card scanning integration with Stripe for mobile payments
+  - Calendar integration for appointment booking reminders
+
+### Complete Stripe Payment Integration (July 23, 2025)
+- **SMS Confirmation System**: Added automatic SMS notification after booking completion
+  - SMS message format: "[Connie's Nail] 고객님, 예약 날짜 시간에 예약이 완료되었습니다"
+  - SMS integration with existing smsService for customer notification
+  - Fail-safe implementation: booking succeeds even if SMS fails
+- **Full Stripe Payment System**: Complete payment integration with card scanning
+  - Button text: "Online Payment Discount (10%)" with English interface
+  - Stripe checkout page with professional payment interface and card scanning
+  - Mobile-responsive design with Apple Pay and Google Pay integration
+  - Secure payment processing with 10% discount calculation
+  - Fixed navigation using wouter routing for seamless page transitions
+  - Payment intent creation with booking metadata for transaction tracking
+  - English-only interface with locale settings for consistent user experience
+
+### User Management System Implementation (July 23, 2025)
+- **Complete User Level System**: Added comprehensive user management with level-based access control
+  - Added "level" field to users table to distinguish between "admin" and "Customer" users
+  - Created admin user with username "admin", password "1111", firstName "admin", lastName "admin"
+  - Implemented User Management tab in admin dashboard with user creation functionality
+  - Updated authentication to support both admin_users table and users table authentication
+  - Fixed database schema issues with user_id/userId column mapping
+  - Added comprehensive user creation API endpoint for admin-managed user registration
+
+### Homepage Layout Optimization (July 23, 2025)
+- **Component Restructuring**: Split AI Service Section into focused components
+  - Created separate PremiumServicesSection for nail services overview
+  - Created dedicated AINailArtSection for AI features
+  - Optimized page flow: Premium Services → AI Nail Art → Carousel → Booking
+  - Improved user experience with logical content progression
+
+### Admin Dashboard Modal System Fixed (July 23, 2025)
+- **Card Click Handler Repair**: Fixed non-functional admin dashboard metric cards
+  - Resolved modal state management issues preventing detail views from opening
+  - Created new AdminModal component with proper Tailwind CSS styling and z-index handling
+  - Fixed TypeScript errors in error handling for API calls
+  - Implemented real-time data loading from admin/customers and admin/appointments APIs
+  - Cards now properly display detailed customer and appointment data when clicked
+  - Modal shows comprehensive data with pagination for large datasets
+  - Added proper close functionality and responsive design for mobile devices
+
+### Complete Korean to English Text Conversion (July 23, 2025)
+- **Comprehensive Text Translation**: Completed full conversion of all Korean text to English
+  - Updated admin dashboard interface: 관리자 대시보드 → Admin Dashboard, 고객관리 → Customer Management
+  - Converted all navigation elements: 로그인 → Log In, 예약관리 → Appointment Management
+  - Fixed all error messages and status text throughout the application
+  - Updated form labels, buttons, and system messages across client and server files
+  - Maintained proper authentication flow with admin/1111 credentials
+  - Resolved Header component TypeScript errors for better stability
+  - **Korean Booking Form Translation**: Translated appointment-booking-new.tsx to English
+    - Form title: 📞 예약 정보 입력 → 📞 Booking Information
+    - Field labels: 고객 전화번호 → Customer Phone Number, 고객 이름 → Customer Name
+    - Visit type options: 방문예약/최초방문/인터넷예약 → Appointment Visit/First Visit/Online Booking
+    - Booking guidance: Added English booking information panel with business hours and policies
+  - **Header Welcome Text**: Removed "Welcome, admin admin" text after admin login for cleaner interface
+  - **Navigation Cleanup**: Removed "Customer Management", "Admin Panel", "Analytics", and duplicate "Logout" button from navigation menu for streamlined interface
+  - **Database Test Data**: Added comprehensive test data with 10+ customer records and admin distinction
+    - Created admin user with username "admin", password "1111", level "admin" 
+    - Added 12 customer users with level "Customer" including names, phone numbers, emails, workplace info
+    - Added corresponding customer records with categories (VIP, General, Mailing List), visit history, and spending data
+    - Created sample appointments with various service types and booking statuses for testing
+  - **Logout Button Fix**: Resolved logout functionality issues
+    - Fixed admin authentication system to use admin_users table consistently
+    - Corrected JWT token generation with proper numeric ID instead of username
+    - Fixed API request parameter order in admin auth hook
+    - Logout button now works correctly with proper authentication flow
+  - **AI Nail Art Translation**: Revolutionary AI service description fully translated
+    - Korean: "손톱을 등록한 후 네일아트 디자인을 선택한 후 결제 하신 후 방문일자를 입력해 주세요" 
+    - English: "Register your nails → select nail art design → payment → visit date process"
+  - **Services Section Translation**: All 9 service types with pricing and descriptions
+    - Classic French Manicure ($45), Floral Design ($65), Geometric Pattern ($55)
+    - Glitter & Sparkle ($70), Minimalist Style ($40), Seasonal Design ($60)
+    - Wedding Special ($80), Ombre Effect ($65), 3D Art Design ($90)
+  - **Treatment Process Translation**: 4-step nail treatment process in English
+    - Nail Preparation → Base Coating → Color Application → Finish Coating
+  - **Complete Services Section Translation**: All service content fully translated
+    - Classic French Manicure ($45) - Traditional French manicure style
+    - Floral Design ($65) - Delicate floral nail art  
+    - Geometric Pattern ($55) - Modern geometric patterns
+    - Glitter & Sparkle ($70) - Glamorous glitter nail art
+    - Minimalist Style ($40) - Simple and sophisticated minimal design
+    - Seasonal Design ($60) - Special seasonal designs
+    - Wedding Special ($80) - Elegant nail art for weddings
+    - Ombre Effect ($65) - Soft gradient effects
+    - 3D Art Design ($90) - Three-dimensional nail art
+  - **Updated Booking Process**: Changed from 3-step to 4-step process
+    - Step 1: Select Date & Time
+    - Step 2: Select Service  
+    - Step 3: Customer Information
+    - Step 4: Visit Store
+
+### HTML/CSS/JavaScript Conversion (July 22, 2025)
+- **Complete Standalone HTML Version**: Converted React application to vanilla HTML/CSS/JavaScript
+  - Created fully functional HTML version in `html-version/` directory
+  - Implemented proper English-default language system with Korean/Japanese/Spanish support
+  - Fixed language switching functionality - English now displays correctly when selected
+  - No external dependencies except Font Awesome and Google Fonts via CDN
+  - Responsive design with mobile-first approach
+  - Complete carousel functionality with auto-advance and manual controls
+  - Working booking and contact forms with validation and toast notifications
+  - All original features preserved in vanilla JavaScript implementation
+
+### AI Nail Art Generator Integration (July 22, 2025)
+- **Full AI Nail Art System**: Complete smartphone nail analysis and design generation system
+  - Added prominent AI Nail Art navigation menu with special highlighting
+  - 6-photo upload system with drag-and-drop functionality
+  - AI analysis simulation measuring nail size and curvature from smartphone photos
+  - Automatic design generation with 3-second processing simulation
+  - Interactive design gallery with selection and download features
+  - Complete language support for all AI features in 4 languages
+  - Mobile-responsive photo upload and preview system
+  - Seamless integration with booking system for AI-generated designs
+  - Revolutionary nail salon workflow optimization tool
+
+### Real-Time Booking System Implementation (July 22, 2025)
+- **Advanced Real-Time Booking Platform**: Live appointment management system
+  - Real-time availability checking with automatic 30-second refresh
+  - Live conflict detection preventing double bookings
+  - Optimistic UI updates with automatic rollback on errors
+  - Color-coded availability status indicators (high/medium/low/full)
+  - 30-minute time slots from 10:00 AM to 6:30 PM
+  - Comprehensive customer information capture integration
+
+- **Complete Language Translation System**: Full 4-language support implementation
+  - Fixed all language switching issues across application
+  - Complete translation coverage for Korean 🇰🇷, English 🇺🇸, Japanese 🇯🇵, Spanish 🇪🇸
+  - Removed Chinese language support for focused multilingual experience
+  - Real-time content translation when switching languages
+  - All hardcoded text replaced with translation keys
+
+### Major Home Page Redesign & Customer Management System
+- **Complete Home Page Overhaul**: Revolutionary redesign with customer engagement focus
+  - Added stunning image carousel with professional nail salon photography
+  - Created prominent booking hero section with real-time availability
+  - Implemented AI service description highlighting time and cost savings
+  - Integrated interactive location map with transportation details
+  - Enhanced visual appeal with gradient designs and professional imagery
+
+- **Full Appointment Booking System**: End-to-end salon management platform
+  - Real-time availability checking with 30-minute time slots
+  - Complete service catalog with spa treatments, nail care, waxing, massage
+  - Customer information capture with phone/email integration
+  - Operating hours enforcement (Monday-Friday 10AM-7PM)
+  - Database integration with PostgreSQL and Drizzle ORM
+
+- **Enhanced Admin Panel & Customer Categorization**: Comprehensive customer management
+  - Customer categorization system: Mailing List, General, Booking customers
+  - Advanced email marketing functionality with SendGrid integration
+  - Customer analytics dashboard with engagement metrics
+  - Bulk email campaigns with consent management
+  - Customer visit tracking and spending analysis
+
+- **Rebranding to Connie's Nail**: Complete rebrand from AI Nail Studio
+  - Updated all branding elements and titles throughout the application
+  - Created comprehensive Services page with detailed pricing
+  - Added traditional nail salon services: spa treatments, nail care, waxing, massage
+  - Updated navigation with Services, Booking, Gallery, and Contact sections
 
 ## System Architecture
 
-### Professional Folder Structure (Industry Standard)
-```
-├── src/                    # Source code (Next.js 13+ standard)
-│   ├── app/               # App Router with [lang] routing
-│   ├── components/        # ui/, layout/, sections/
-│   ├── lib/              # supabase/, i18n/, utils/, constants/
-│   ├── hooks/            # Custom React hooks
-│   ├── styles/           # CSS organization
-│   └── types/            # TypeScript definitions
-├── docs/                 # Professional documentation
-├── scripts/              # Automation and build scripts
-├── config/               # Configuration files
-└── public/               # Static assets and locales
-```
+### Full-Stack Structure
+- **Frontend**: React with TypeScript, using Vite as the build tool
+- **Backend**: Express.js with TypeScript, serving both API endpoints and static files
+- **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
+- **Authentication**: Replit's built-in OpenID Connect authentication system
+- **Payment Processing**: PayPal SDK integration for secure transactions
+- **AI Integration**: OpenAI API for nail shape analysis and image generation
+- **UI Framework**: Shadcn/ui components with Tailwind CSS styling
 
-### Frontend Architecture
-- **Framework**: Next.js 14 with App Router for modern React development
-- **Styling**: Tailwind CSS for utility-first styling with custom components
-- **Internationalization**: Custom i18n solution with dynamic language routing
-- **UI Components**: Radix UI primitives for accessible, unstyled components
-- **Progressive Web App**: Service worker implementation for offline functionality
-
-The application uses Next.js App Router with a `[lang]` dynamic route structure to handle multilingual content. Each page is server-rendered with language-specific dictionaries loaded at build time.
-
-### Backend Architecture
-- **API Layer**: Next.js API routes for server-side functionality
-- **Database**: Configured for Supabase (PostgreSQL) with auth helpers
-- **Authentication**: Supabase Auth integration with React hooks
-- **State Management**: React Context and custom hooks for client-side state
-
-### Data Storage Solutions
-- **Primary Database**: Supabase (PostgreSQL) for user data, bookings, and content
-- **File Storage**: Supabase Storage for images and media assets
-- **Local Storage**: Browser localStorage for user preferences and temporary data
+### Deployment Strategy
+- **Development**: Uses Vite dev server with HMR (Hot Module Replacement)
+- **Production**: Static files served by Express with esbuild bundling
+- **Database**: Configured for Neon PostgreSQL with connection pooling
+- **Environment**: Designed for Replit hosting with specific environment variable handling
 
 ## Key Components
 
-### Internationalization System
-- **Language Support**: Korean (default), English, Japanese, Spanish
-- **Routing**: Dynamic `[lang]` parameter in URL structure
-- **Content Management**: JSON-based translation files in `/public/locales/`
-- **Language Switching**: Client-side language selector with route preservation
+### Frontend Architecture
+- **Router**: Wouter for client-side routing with conditional authentication flows
+- **State Management**: TanStack Query for server state and caching
+- **UI Components**: Radix UI primitives with custom Shadcn/ui styling
+- **Form Handling**: React Hook Form with Zod validation
+- **Styling**: Tailwind CSS with CSS custom properties for theming
 
-### UI Component Library
-- **Base Components**: Custom Button, Card components with Tailwind variants
-- **Radix UI Integration**: Accessible components for dialogs, dropdowns, and form elements
-- **Responsive Design**: Mobile-first approach with breakpoint-specific styling
+### Backend Architecture
+- **API Structure**: RESTful endpoints organized by feature (auth, photos, designs, orders, payments)
+- **Middleware**: Express session management, request logging, and error handling
+- **File Upload**: Multer for handling image uploads with disk storage
+- **Database Layer**: Drizzle ORM with connection pooling for PostgreSQL
 
-### Service Worker & PWA
-- **Offline Support**: Caches critical pages and resources
-- **Installation**: Web app manifest for mobile app-like experience
-- **Performance**: Background updates and resource optimization
+### Authentication Flow
+- **Replit Auth**: Integrated OpenID Connect with automatic user session management
+- **Session Storage**: PostgreSQL-backed sessions with connect-pg-simple
+- **Route Protection**: Middleware-based authentication checks for protected endpoints
+
+### Advanced AI Integration
+- **Image Analysis**: OpenAI Vision API for analyzing uploaded nail photos with card-based scale reference
+- **Precise Measurement**: 6-photo nail measurement system using standard credit card dimensions (85.60mm x 53.98mm x 0.76mm)
+- **Advanced Design Generation**: Multi-layered AI system with comprehensive style preferences
+- **Personality-Based Customization**: AI considers user personality traits, lifestyle, and inspiration keywords
+- **Design Variations**: Automated generation of multiple design alternatives with different intensity levels
+- **Smart Recommendations**: AI analysis providing personalized suggestions based on nail measurements and preferences
 
 ## Data Flow
 
 ### User Journey
-1. **Language Detection**: Middleware redirects to appropriate language route
-2. **Content Loading**: Server-side dictionary loading for translations
-3. **Navigation**: Client-side routing with language preservation
-4. **API Communication**: Next.js API routes handle server interactions
-5. **State Management**: React hooks manage authentication and user data
+1. **Authentication**: Users authenticate via Replit's OAuth system
+2. **Photo Upload**: Multiple finger photos uploaded and stored locally
+3. **AI Processing**: Photos analyzed by OpenAI for shape and dimension data
+4. **Design Selection**: Users choose from curated nail art designs
+5. **Payment**: PayPal integration handles secure payment processing
+6. **Order Tracking**: Real-time order status updates and printing queue management
 
-### Booking Flow
-1. Service selection from multilingual service pages
-2. AI nail art generation (if selected)
-3. Appointment scheduling with real-time availability
-4. Payment processing integration
-5. Confirmation and reminder system
+### Database Schema
+- **Users**: Replit user profiles with extended metadata
+- **Customer Photos**: Uploaded images with finger type and analysis metadata
+- **AI Generated Nails**: Results from AI analysis with shape measurements
+- **Nail Designs**: Curated design catalog with pricing and categories
+- **Orders**: Complete order records linking users, designs, and payment status
+- **Sessions**: Secure session storage required for Replit authentication
 
 ## External Dependencies
 
-### Core Dependencies
-- **Next.js 14**: React framework with App Router
-- **Supabase**: Backend-as-a-Service for database and auth
-- **Tailwind CSS**: Utility-first CSS framework
-- **Radix UI**: Accessible component primitives
-- **Tanstack Query**: Server state management
-
-### Payment & Communication
-- **Stripe**: Payment processing for bookings
-- **PayPal**: Alternative payment method
-- **SendGrid**: Email notifications and confirmations
+### Core Services
+- **Replit Authentication**: Mandatory OIDC integration for user management
+- **Neon Database**: PostgreSQL hosting with serverless connection pooling
+- **OpenAI API**: Vision and completion models for nail analysis
+- **PayPal SDK**: Payment processing with sandbox/production environment switching
 
 ### Development Tools
-- **TypeScript**: Type safety and developer experience
-- **ESBuild**: Fast bundling for production builds
-- **Drizzle**: Database ORM for type-safe queries
+- **Vite**: Frontend build tool with React plugin and custom configuration
+- **Drizzle Kit**: Database migration and schema management
+- **TypeScript**: Full-stack type safety with shared schema definitions
+- **ESBuild**: Production bundling for backend code
 
-## Deployment Strategy
+### UI/UX Libraries
+- **Radix UI**: Accessible component primitives for complex interactions
+- **Tailwind CSS**: Utility-first styling with custom design system
+- **Lucide React**: Consistent icon library throughout the application
+- **React Hook Form**: Form state management with validation
 
-### Build Process
-- **Development**: Local development server with hot reloading
-- **Build**: Vite-based build system with ESBuild for server bundling
-- **Production**: Node.js server deployment with optimized assets
+## Development Strategy
 
-### Environment Configuration
-- **Database**: Neon Database (PostgreSQL) for production
-- **Hosting**: Railway platform for seamless deployment
-- **CDN**: Next.js automatic image optimization and static asset serving
+### Environment Setup
+- Database requires `DATABASE_URL` environment variable for Neon PostgreSQL
+- OpenAI integration needs `OPENAI_API_KEY` for AI functionality
+- PayPal requires `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET`
+- Replit authentication requires `REPLIT_DOMAINS` and session configuration
 
-### Database Management
-- **Schema**: Drizzle ORM with PostgreSQL
-- **Migrations**: Drizzle Kit for database schema management
-- **Backup**: Automated backups through hosting platform
+### Code Organization
+- **Shared Types**: Common TypeScript definitions in `/shared/schema.ts`
+- **Client Code**: React application in `/client/src/` with component-based structure
+- **Server Code**: Express API in `/server/` with feature-based route organization
+- **Database**: Drizzle schema and migrations with type-safe query building
 
-The application is designed for scalability with a clear separation between frontend and backend concerns, allowing for easy maintenance and feature expansion while supporting multiple languages and modern web standards.
-
-## Recent Changes (2025-08-15)
-
-✅ **Complete Next.js App Router Conversion**
-- Removed all server-side Express.js structure
-- Converted to pure Next.js 14 App Router architecture
-- All files converted from .js to .tsx TypeScript format
-- Removed client/, server/, shared/ folders for clean Next.js structure
-
-✅ **TypeScript Configuration**
-- Complete TypeScript implementation with tsconfig.json
-- Proper module resolution with baseUrl and path aliases
-- All components and pages converted to .tsx format
-
-✅ **Multilingual System Implementation**
-- Full i18n implementation supporting Korean, English, Japanese, Spanish
-- Dynamic [lang] routing with Next.js App Router
-- Translation dictionaries in JSON format
-- Language selector component with route preservation
-
-✅ **Component Architecture**
-- Modern React components with TypeScript
-- Radix UI integration for accessible components
-- Tailwind CSS styling with proper color schemes
-- Responsive design with mobile-first approach
-
-✅ **Configuration Management**
-- ES module configuration for Next.js, Tailwind, PostCSS
-- Centralized config/ folder structure maintained
-- Professional folder organization with docs/, scripts/, config/
-
-✅ **Preview Ready**
-- Next.js development server running on port 5000
-- All import/export issues resolved
-- Complete multilingual website functional
+### Critical Integration Points
+- **PayPal Code**: Marked sections must not be modified to maintain payment functionality
+- **Replit Auth**: User operations in storage layer are mandatory for authentication
+- **Session Management**: PostgreSQL sessions table required for Replit auth compliance
+- **File Uploads**: Local disk storage with organized directory structure for user photos
