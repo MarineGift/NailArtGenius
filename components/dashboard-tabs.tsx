@@ -9,7 +9,9 @@ import { NewsManager } from '@/components/news-manager'
 import { AdminManagement } from '@/components/admin-management'
 import { BookingManagement } from '@/components/booking-management'
 import { CustomerCRM } from '@/components/customer-crm'
-import { Users, Image, Newspaper, BarChart3, Shield, Calendar, UserCheck, Package, Sparkles, Settings } from 'lucide-react'
+import { ARNailTryOn } from '@/components/ar-nail-tryon'
+import { NailDesignManager } from '@/components/nail-design-manager'
+import { Users, Image, Newspaper, BarChart3, Shield, Calendar, UserCheck, Package, Sparkles, Settings, Camera, Palette } from 'lucide-react'
 
 interface DashboardTabsProps {
   currentUser: any
@@ -67,7 +69,7 @@ export function DashboardTabs({ currentUser }: DashboardTabsProps) {
 
       {/* Luxury Main Tabs */}
       <Tabs defaultValue="bookings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7 bg-gradient-to-r from-purple-100 to-pink-100 p-1 rounded-xl shadow-inner">
+        <TabsList className="grid w-full grid-cols-9 bg-gradient-to-r from-purple-100 to-pink-100 p-1 rounded-xl shadow-inner">
           <TabsTrigger 
             value="bookings" 
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
@@ -104,11 +106,25 @@ export function DashboardTabs({ currentUser }: DashboardTabsProps) {
             제품
           </TabsTrigger>
           <TabsTrigger 
+            value="designs" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
+          >
+            <Palette className="h-4 w-4 mr-2" />
+            디자인
+          </TabsTrigger>
+          <TabsTrigger 
             value="carousel" 
             className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             캐러셀
+          </TabsTrigger>
+          <TabsTrigger 
+            value="ar-tryon" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-pink-600 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
+          >
+            <Camera className="h-4 w-4 mr-2" />
+            AR 체험
           </TabsTrigger>
           <TabsTrigger 
             value="admin" 
@@ -195,6 +211,14 @@ export function DashboardTabs({ currentUser }: DashboardTabsProps) {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="designs" className="space-y-4">
+          <NailDesignManager />
+        </TabsContent>
+        
+        <TabsContent value="ar-tryon" className="space-y-4">
+          <ARNailTryOn />
         </TabsContent>
         
         <TabsContent value="admin" className="space-y-4">

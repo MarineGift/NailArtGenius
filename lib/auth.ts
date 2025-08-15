@@ -151,3 +151,40 @@ export async function getServerUser(): Promise<AuthUser | null> {
     return null
   }
 }
+
+// Permission helper functions
+export function hasPermission(user: AuthUser | null, permission: string): boolean {
+  if (!user) return false
+  return user.permissions?.includes('all') || user.permissions?.includes(permission) || false
+}
+
+export function canManageAdmins(user: AuthUser | null): boolean {
+  return hasPermission(user, 'manage_admins') || user?.role === 'super_admin'
+}
+
+export function canManageBookings(user: AuthUser | null): boolean {
+  return hasPermission(user, 'manage_bookings') || ['super_admin', 'admin'].includes(user?.role || '')
+}
+
+// Mock admin management functions for demo
+export async function getAdminUsers(): Promise<any[]> {
+  return [
+    {
+      id: '1',
+      email: 'admin@connienail.com',
+      first_name: 'ConnieNail',
+      last_name: 'Admin',
+      role: 'super_admin',
+      department: 'Management',
+      created_at: '2024-08-15'
+    }
+  ]
+}
+
+export async function createAdmin(adminData: any): Promise<any> {
+  return {
+    id: Math.random().toString(36).substr(2, 9),
+    ...adminData,
+    created_at: new Date().toISOString()
+  }
+}
