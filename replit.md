@@ -1,48 +1,50 @@
 # KICT Group Admin Dashboard
 
 ## Project Overview
-A comprehensive admin management platform built with Next.js and TypeScript for handling customer inquiries, gallery management, and news management. The system includes email and SMS functionality for customer responses and uses Supabase for database management.
+A clean, modern admin management platform built with Next.js 15, TypeScript, and Supabase for handling customer inquiries, gallery management, and news management. Features a professional design with purple/blue gradient theme and full App Router architecture.
 
 ## Technology Stack
-- **Frontend**: Next.js 13+ with App Router, React, TypeScript
-- **Backend**: Express.js API routes
+- **Frontend**: Next.js 15 with App Router, React 19, TypeScript
+- **Backend**: Next.js API routes (serverless)
 - **Database**: Supabase (PostgreSQL)
 - **Styling**: Tailwind CSS + shadcn/ui components
-- **Authentication**: JWT-based admin authentication
-- **Communication**: Email (SendGrid integration ready) + SMS functionality
+- **Authentication**: Demo authentication (Supabase Auth ready)
+- **Communication**: Email (SendGrid integration ready)
 
 ## Key Features
-- Admin authentication system
-- Customer inquiry management with email/SMS responses
-- Gallery management with image upload capabilities
+- Modern admin authentication system
+- Customer inquiry management dashboard
+- Gallery management with image handling
 - News article management and publishing
-- Dashboard with statistics overview
-- Email and SMS template management
+- Statistics overview dashboard
+- Responsive design with dark mode support
 
 ## Project Structure
 ```
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx         # Root layout
-│   │   ├── page.tsx           # Main dashboard
-│   │   └── globals.css        # Global styles
-│   ├── components/            # React components
-│   │   ├── ui/               # shadcn/ui components
-│   │   ├── login.tsx         # Authentication
-│   │   ├── customer-inquiries.tsx
-│   │   ├── gallery-manager.tsx
-│   │   └── news-manager.tsx
-│   └── lib/                   # Utilities
-├── server/                    # Backend Express server
-│   ├── routes.ts             # API routes
-│   ├── storage.ts            # Database layer
-│   └── seedData.ts           # Sample data seeding
-├── shared/
-│   └── schema.ts             # Database schema with Drizzle ORM
+├── app/                       # Next.js App Router
+│   ├── api/                  # API routes
+│   │   └── customer-inquiries/
+│   ├── layout.tsx            # Root layout
+│   ├── page.tsx              # Main dashboard
+│   └── globals.css           # Global styles
+├── components/               # React components
+│   ├── ui/                   # shadcn/ui components
+│   ├── login-form.tsx        # Authentication
+│   ├── dashboard-tabs.tsx    # Main dashboard
+│   ├── customer-inquiries.tsx
+│   ├── gallery-manager.tsx
+│   └── news-manager.tsx
+├── lib/                      # Utilities and configurations
+│   ├── auth.ts              # Authentication logic
+│   ├── supabase.ts          # Supabase client
+│   ├── types.ts             # TypeScript types
+│   └── utils.ts             # Utility functions
+├── hooks/                    # React hooks
+│   └── use-toast.ts         # Toast notifications
 └── package.json
 ```
 
-## Database Schema
+## Database Schema (Supabase Ready)
 - **customer_inquiries**: Customer contact messages and status
 - **gallery**: Image gallery with categories and publishing status
 - **news**: News articles with content and publishing workflow
@@ -51,37 +53,40 @@ A comprehensive admin management platform built with Next.js and TypeScript for 
 - **sms_templates**: SMS response templates
 
 ## Default Credentials
-- Username: `admin`
-- Password: `admin123`
 - Email: `admin@kictgroup.com`
+- Password: `admin123`
 
 ## Environment Variables
-- `DATABASE_URL`: Supabase PostgreSQL connection string
-- `JWT_SECRET`: Secret for JWT token signing (optional, defaults to development key)
-- `SENDGRID_API_KEY`: For email functionality (when implemented)
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anonymous key
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key (server-side)
+- `SENDGRID_API_KEY`: For email functionality (optional)
 
 ## Development Commands
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm run db:push`: Push database schema changes
+- `next dev -p 5000`: Start development server
+- `next build`: Build for production
+- `next start -p 5000`: Start production server
 
 ## Recent Changes
-- **2025-01-15**: Created clean Next.js admin system with TypeScript
-- **2025-01-15**: Implemented customer inquiry management with email/SMS response
-- **2025-01-15**: Added gallery management with image handling
-- **2025-01-15**: Built news management system with publishing workflow
-- **2025-01-15**: Set up Supabase integration with proper schema
-- **2025-01-15**: Added admin authentication with JWT tokens
+- **2025-08-15**: Complete migration to Next.js 15 + Supabase architecture
+- **2025-08-15**: Removed all Express.js and Drizzle dependencies
+- **2025-08-15**: Implemented clean App Router structure
+- **2025-08-15**: Created modern shadcn/ui component library
+- **2025-08-15**: Added demo authentication system (Supabase Auth ready)
+- **2025-08-15**: Built responsive dashboard with statistics overview
+- **2025-08-15**: Cleaned up unnecessary files for Railway deployment
 
 ## User Preferences
 - **Language**: English only (all content and UI)
-- **Framework**: Next.js with App Router structure
+- **Framework**: Next.js 15 with App Router structure
 - **Database**: Supabase (PostgreSQL)
-- **Deployment**: Railway (planned)
+- **Deployment**: Railway
 - **Design**: Professional admin dashboard with purple/blue gradient theme
+- **Architecture**: Clean, modern, minimal dependencies
 
 ## Deployment Notes
-- Configured for Railway deployment with standalone output
+- Configured for Railway deployment with Next.js standalone output
 - All necessary environment variables should be set in Railway
-- Database schema will be automatically created on first run
-- Sample data includes admin user and demo content
+- Supabase database will need to be configured separately
+- No server-side dependencies required (serverless architecture)
+- Professional design optimized for admin workflows

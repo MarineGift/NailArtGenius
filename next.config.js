@@ -8,9 +8,8 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
-    domains: ['localhost'],
+    domains: ['localhost', 'images.unsplash.com'],
   },
-  trailingSlash: true,
   output: 'standalone',
 }
 
