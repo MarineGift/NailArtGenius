@@ -74,9 +74,16 @@ A cutting-edge luxury nail salon admin management system built with Next.js 15, 
 - `SENDGRID_API_KEY`: For email functionality (optional)
 
 ## Development Commands
-- `next dev -p 5000`: Start development server
-- `next build`: Build for production
-- `next start -p 5000`: Start production server
+- `node dev.js`: Start development server (사용자 친화적)
+- `npx next dev -p 5000`: Next.js 개발 서버 직접 실행
+- `npx next build`: 프로덕션 빌드
+- `node production-start.js`: 프로덕션 서버 시작 (Railway/배포용)
+
+## 배포 해결책
+현재 Replit 배포 시스템이 이전 Vite 설정을 참조하는 문제로 인해, 다음 방법으로 배포하세요:
+1. `npx next build`로 빌드 (성공 확인됨)
+2. `node production-start.js`로 프로덕션 서버 실행
+3. 또는 Railway에서 직접 `npx next start -p $PORT` 사용
 
 ## Recent Changes
 - **2025-08-15**: Converted to 100% Next.js 15 App Router structure
