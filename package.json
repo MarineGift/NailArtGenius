@@ -1,70 +1,21 @@
-# Dockerfile - 안정적인 npm 설치를 위한 설정
-FROM node:18-alpine AS base
-
-# 필요한 시스템 패키지 설치
-RUN apk add --no-cache libc6-compat
-
-# npm 버전 고정 (호환성 문제 해결)
-RUN npm install -g npm@10.8.2
-
-WORKDIR /app
-
-# 의존성 설치 단계
-FROM base AS deps
-
-# package.json만 먼저 복사
-COPY package.json ./
-
-# package-lock.json이 있으면 복사, 없으면 무시
-COPY package-lock.json* ./
-
-# npm 설치 (더 안정적인 방식)
-RUN npm ci --only=production --ignore-scripts || npm install --only=production --ignore-scripts
-
-# 빌드 단계
-FROM base AS builder
-WORKDIR /app
-
-# 의존성 복사
-COPY --from=deps /app/node_modules ./node_modules
-
-# 모든 소스 파일 복사
-COPY . .
-
-# 환경변수 설정
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-
-# Next.js 빌드
-RUN npm run build || (echo "Build failed, checking files..." && ls -la && exit 1)
-
-# 런타임 단계
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# 보안을 위한 사용자 생성
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# 정적 파일 복사
-COPY --from=builder /app/public ./public
-
-# Next.js 빌드 결과물 복사
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Standalone 빌드 결과물 복사
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-CMD ["node", "server.js"]
+{
+  "name": "nail-art-genius",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.5",
+    "@types/react": "18.2.45",
+    "@types/react-dom": "18.2.18",
+    "typescript": "5.3.3"
+  }
+}
