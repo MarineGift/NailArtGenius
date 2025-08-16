@@ -1,15 +1,49 @@
+version: '3.8'
+
 services:
-  web:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      target: runner
+    container_name: nail-art-genius-app
     ports:
       - "3000:3000"
     environment:
-      # 서버사이드에서만 쓰는 키가 있다면 여기에(RUNTIME 주입)
-      # SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-    # 개발 때는 bind mount로 dev 서버 돌리는 방식도 가능하지만
-    # 이 Dockerfile은 prod 빌드용이라 compose up마다 빌드가 도는 구조입니다.
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    volumes:
+      # 개발 시 로그 확인용
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - nail-art-network
+
+  # 개발용 nginx (선택사항)
+  nginx:
+    image: nginx:alpine
+    container_name: nail-art-genius-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - nail-art-network
+    restart: unless-stopped
+
+volumes:
+  logs:
+
+networks:
+  nail-art-network:
+    driver: bridge
