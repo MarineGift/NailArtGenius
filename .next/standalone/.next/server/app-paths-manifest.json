@@ -1,8 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/auth/user/route": "app/api/auth/user/route.js",
-  "/api/gallery/route": "app/api/gallery/route.js",
-  "/api/nail-designs/route": "app/api/nail-designs/route.js",
-  "/api/services/route": "app/api/services/route.js",
-  "/page": "app/page.js"
-}
