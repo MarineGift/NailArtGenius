@@ -64,3 +64,4 @@ Thumbs.db
 # Database
 *.sqlite
 *.db
+tsconfig.tsbuildinfo
