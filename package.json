@@ -1,21 +1,30 @@
---- a/package.json
-+++ b/package.json
-@@
--  "type": "module",
--  "name": "...",
--  "version": "...",
-+  "name": "connienail-admin",
-+  "version": "1.0.0",
-+  "private": true,
-   "scripts": {
--    "dev": "node dev.js",
--    "build": "node build.js",
--    "start": "node production-start.js",
--    "deploy": "node deploy.js",
--    "whatever-old": "..."
-+    "dev": "next dev",
-+    "build": "next build",
-+    "start": "next start",
-+    "lint": "next lint",
-+    "type-check": "tsc --noEmit"
-   }
+{
+  "name": "nail-art-genius",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "@supabase/supabase-js": "^2.38.0",
+    "@supabase/auth-helpers-nextjs": "^0.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
