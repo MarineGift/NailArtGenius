@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "railway:build": "npm install && npm run build",
+    "railway:start": "npm start"
   },
   "dependencies": {
     "next": "^14.0.0",
@@ -25,6 +26,7 @@
     "eslint-config-next": "^14.0.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
