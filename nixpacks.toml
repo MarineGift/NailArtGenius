@@ -1,14 +1,15 @@
+# nixpacks.toml
+providers = ["node"]
+
 [phases.setup]
-nixPkgs = ["nodejs_18", "npm"]
+# npm을 별도 패키지로 깔지 말고 Node 20만 설치
+nixPkgs = ["nodejs_20"]
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm ci || npm install"]
 
 [phases.build]
 cmds = ["npm run build"]
 
 [start]
-cmd = "npm start"
-
-[variables]
-NODE_ENV = "production"
+cmd = "npm run start"
