@@ -1,0 +1,12 @@
+.git
+.github
+node_modules
+.next
+out
+npm-debug.log*
+.vscode
+.idea
+.DS_Store
+*.local
+*.env
+tsconfig.tsbuildinfo
