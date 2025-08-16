@@ -1,29 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  serverExternalPackages: ['@mediapipe/hands', '@mediapipe/camera_utils'],
-  webpack: (config) => {
-    // Handle MediaPipe modules for AR functionality
-    config.resolve = config.resolve || {}
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-      crypto: false,
-    }
-    
-    return config
+  experimental: {
+    appDir: true,
   },
   images: {
-    domains: ['cdn.jsdelivr.net', 'storage.googleapis.com']
-  },
-  // Disable TypeScript during build for faster deployment
-  typescript: {
-    ignoreBuildErrors: true,
+    domains: ['localhost'],
+    unoptimized: process.env.NODE_ENV === 'development'
   },
   eslint: {
+    // 빌드 시 ESLint 에러 무시 (임시)
     ignoreDuringBuilds: true,
-  }
+  },
+  typescript: {
+    // 빌드 시 TypeScript 에러 무시 (임시)
+    ignoreBuildErrors: true,
+  },
+  env: {
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  },
+  // Docker/Railway 배포를 위한 설정
+  output: 'standalone',
+  // 실험적 기능들
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
 }
 
-export default nextConfig
+module.exports = nextConfig
