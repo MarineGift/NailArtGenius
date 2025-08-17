@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": false,
+    "noEmit": true
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": { "@/*": ["./*"] },
