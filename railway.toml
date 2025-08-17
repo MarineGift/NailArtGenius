@@ -1,6 +1,9 @@
 [build]
-builder = "DOCKERFILE"        # Dockerfile 빌드 강제
+builder = "NIXPACKS"
 
 [deploy]
-startCommand = "node server.js"  # Dockerfile의 CMD와 일치
+startCommand = "npm start"
+restartPolicyType = "ON_FAILURE"
 
+[variables]
+PORT = "3000"
