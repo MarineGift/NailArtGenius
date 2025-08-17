@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'NailArtGenius',
-  description: 'AI-powered nail art helper',
+  description: 'AI-powered nail art design platform',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <header className="border-b bg-white">
           <nav className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-semibold">NailArtGenius</Link>
+            <Link href="/" className="font-semibold">NailArt Genius</Link>
             <div className="space-x-6 text-sm">
               <Link href="/admin-login">Admin</Link>
               <Link href="/gallery">Gallery</Link>
