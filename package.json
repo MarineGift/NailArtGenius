@@ -2,23 +2,32 @@
   "name": "nail-art-genius",
   "version": "1.0.0",
   "private": true,
+  "description": "AI-powered nail art design platform",
   "scripts": {
-    "dev": "npx next dev",
-    "build": "npx next build",
-    "start": "npx next start",
-    "postinstall": "echo 'Dependencies installed successfully' && ls node_modules/.bin/next"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "docker:build": "docker build -t nail-art-genius .",
+    "docker:run": "docker run -p 3000:3000 nail-art-genius",
+    "docker:dev": "docker-compose up --build"
   },
   "dependencies": {
     "next": "14.0.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "eslint": "8.56.0",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
     "eslint-config-next": "14.0.4"
   },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
   }
 }

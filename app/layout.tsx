@@ -1,27 +1,29 @@
-import './globals.css'
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'NailArtGenius',
+  title: 'NailArt Genius',
   description: 'AI-powered nail art design platform',
+  keywords: ['nail art', 'AI', 'design', 'beauty'],
+  authors: [{ name: 'NailArt Genius Team' }],
+  viewport: 'width=device-width, initial-scale=1',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50 text-gray-900">
-        <header className="border-b bg-white">
-          <nav className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="font-semibold">NailArt Genius</Link>
-            <div className="space-x-6 text-sm">
-              <Link href="/admin-login">Admin</Link>
-              <Link href="/gallery">Gallery</Link>
-              <Link href="/contact">Contact</Link>
-            </div>
-          </nav>
-        </header>
-        <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+        <div id="root">
+          {children}
+        </div>
       </body>
     </html>
   )
