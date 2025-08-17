@@ -1,8 +1,26 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    serverActions: { allowedOrigins: ['*'] }
-  }
-};
+const nextConfig = {}
+module.exports = nextConfig
 
-export default nextConfig;
+=== 파일 8: tsconfig.json ===
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "es6"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{"name": "next"}],
+    "baseUrl": ".",
+    "paths": {"@/*": ["./*"]}
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
