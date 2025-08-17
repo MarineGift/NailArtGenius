@@ -1,8 +1,6 @@
 [build]
-builder = "nixpacks"
+builder = "DOCKERFILE"        # Dockerfile 빌드 강제
 
 [deploy]
-startCommand = "npm start"
+startCommand = "node server.js"  # Dockerfile의 CMD와 일치
 
-[variables]
-NODE_ENV = "production"
