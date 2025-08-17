@@ -1,6 +1,82 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Remove or replace the problematic globals.pure.css file */
+/* This file should contain valid CSS syntax only */
 
-/* custom global styles (optional) */
-html, body { height: 100%; }
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+}
+
+/* Nail art specific styles */
+.nail-gradient-bg {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+}
+
+.nail-card-shadow {
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.1);
+}
+
+.nail-button-hover {
+  transition: all 0.3s ease;
+}
+
+.nail-button-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hidden {
+    display: none;
+  }
+}
